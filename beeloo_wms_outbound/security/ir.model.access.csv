@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_beeloo_shelf_life_query_wizard,access.beeloo.shelf.life.query.wizard,model_beeloo_shelf_life_query_wizard,stock.group_stock_user,1,1,1,1
+access_beeloo_shelf_life_query_wizard_line,access.beeloo.shelf.life.query.wizard.line,model_beeloo_shelf_life_query_wizard_line,stock.group_stock_user,1,1,1,1
+access_beeloo_shelf_life_mixin,access.beeloo.shelf.life.mixin,model_beeloo_shelf_life_mixin,stock.group_stock_user,1,1,1,1
+access_beeloo_shelf_life_flow,access.beeloo.shelf.life.flow,model_beeloo_shelf_life_flow,stock.group_stock_user,1,1,1,1
+access_res_partner_outbound,access.res.partner.outbound,model_res_partner,stock.group_stock_user,1,1,0,0
+access_stock_move_outbound,access.stock.move.outbound,model_stock_move,stock.group_stock_user,1,1,0,0
+access_beeloo_outbound_report,beeloo.outbound.report,model_beeloo_outbound_report,stock.group_stock_user,1,1,1,1

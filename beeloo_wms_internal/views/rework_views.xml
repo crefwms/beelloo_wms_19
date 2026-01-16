@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_beeloo_rework_form" model="ir.ui.view">
+        <field name="name">beeloo.rework.form</field>
+        <field name="model">beeloo.rework</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm_rework" string="Confirmar Retrabalho (Desmontar)" type="object" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Produto Avariado">
+                            <field name="product_id" domain="[('bom_ids', '!=', False)]"/>
+                            <field name="lot_id" context="{'default_product_id': product_id}"/>
+                            <field name="product_qty"/>
+                            <field name="location_id" domain="[('usage', '=', 'internal')]"/>
+                        </group>
+                        <group string="Detalhes">
+                            <field name="reason"/>
+                            <field name="unbuild_order_id" readonly="1"
+                                   invisible="unbuild_order_id == False"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_beeloo_rework_list" model="ir.ui.view">
+        <field name="name">beeloo.rework.list</field>
+        <field name="model">beeloo.rework</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="lot_id"/>
+                <field name="product_qty"/>
+                <field name="location_id"/>
+                <field name="state" widget="badge" decoration-warning="state == 'draft'" decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_beeloo_rework" model="ir.actions.act_window">
+        <field name="name">Ordens de Retrabalho</field>
+        <field name="res_model">beeloo.rework</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem
+        id="menu_beeloo_rework"
+        name="Ordens de Retrabalho"
+        parent="beeloo_wms_internal.menu_beeloo_wms_internal_root"
+        action="action_beeloo_rework"
+        sequence="20"/>
+
+</odoo>

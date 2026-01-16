@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem
+        id="menu_beeloo_wms_internal_root"
+        name="Operações Internas"
+        parent="beeloo_wms_presentation.menu_beeloo_wms_root"
+        sequence="30"/>
+
+    <menuitem
+        id="menu_beeloo_wms_inventory_root"
+        name="Inventário"
+        parent="menu_beeloo_wms_internal_root"
+        sequence="20"/>
+
+</odoo>

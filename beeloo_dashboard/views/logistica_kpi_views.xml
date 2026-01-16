@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_beeloo_kpi_form" model="ir.ui.view">
+        <field name="name">beeloo.logistica.kpi.form</field>
+        <field name="model">beeloo.logistica.kpi</field>
+        <field name="arch" type="xml">
+            <form string="Detalhes da Carga">
+                <header>
+                    <button name="action_update_legacy" 
+                            string="💾 Enviar Alterações para Legado" 
+                            type="object" 
+                            class="oe_highlight"
+                            confirm="Você tem certeza que deseja alterar os dados (Placa/Doca) no Banco de Dados Antigo?"/>
+                    
+                    <button name="action_delete_legacy" 
+                            string="🗑️ Excluir no Legado" 
+                            type="object" 
+                            class="btn-danger"
+                            groups="base.group_system"
+                            confirm="PERIGO: Isso vai apagar o registro permanentemente do SQL Server e não pode ser desfeito. Tem certeza absoluta?"/>
+
+                    <field name="status_desc" widget="statusbar" statusbar_visible="Agendado,Portaria,Entrada Doca,Saída Portaria"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="doc_dt" placeholder="Número da DT"/></h1>
+                        <h3><field name="transportadora" placeholder="Transportadora"/></h3>
+                    </div>
+                    <group>
+                        <group string="Operacional">
+                            <field name="placa"/>
+                            <field name="motorista"/>
+                            <field name="doca" decoration-bf="1" widget="badge"/>
+                            <field name="cliente_destino"/>
+                            <field name="total_pallets"/>
+                        </group>
+                        <group string="Tempos (Horas)">
+                            <field name="data_saida"/>
+                            <field name="kpi_trt_total" widget="float_time" decoration-danger="kpi_trt_total > 5"/>
+                            <field name="kpi_operacao" widget="float_time"/>
+                            <field name="kpi_fila" widget="float_time"/>
+                            <field name="kpi_pontualidade" widget="float_time" decoration-danger="kpi_pontualidade > 0" decoration-success="kpi_pontualidade &lt;= 0"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="📦 Itens da Carga">
+                            <field name="produto_ids">
+                                <list editable="bottom" decoration-muted="status_item == '1'">
+                                    <field name="codigo_produto" string="SKU" decoration-bf="1"/>
+                                    <field name="descricao"/>
+                                    <field name="status_item" widget="badge" decoration-success="status_item == '0'" decoration-danger="status_item == '1'"/>
+                                    <field name="status_execucao" widget="badge" 
+                                           decoration-info="status_execucao == 'iniciado'"
+                                           decoration-warning="status_execucao == 'andamento'"
+                                           decoration-success="status_execucao == 'concluido'"/>
+                                    <field name="quantidade_prevista" string="Plan." sum="Total Plan."/>
+                                    <field name="quantidade_bipada" string="Bipado" optional="hide"/>
+                                    <field name="progresso" widget="progressbar" string="Progresso"/>   
+                                </list>
+                            </field>
+                        </page>
+                        <page string="📝 Observações">
+                            <field name="observacao_ids">
+                                <list decoration-muted="1" create="0" delete="0" edit="0">
+                                    <field name="data_registro" widget="datetime"/>
+                                    <field name="autor" widget="badge" decoration-info="1"/>
+                                    <field name="texto"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="⏱️ Auditoria">
+                            <group col="4">
+                                <field name="data_agendada" widget="datetime" optional="hide"/>
+                                <field name="data_portaria" widget="datetime" optional="hide"/>
+                                <field name="kpi_pontualidade" widget="float_time" decoration-danger="kpi_pontualidade > 0" decoration-success="kpi_pontualidade &lt;= 0"/>
+                                <field name="data_entrada" widget="datetime" optional="hide"/>
+                                <field name="kpi_acolhimento" widget="float_time"/>
+                                <field name="kpi_fila" widget="float_time"/>
+                                <field name="kpi_carregamento" widget="float_time"/>
+                                <field name="kpi_amarracao" widget="float_time"/>
+                                <field name="kpi_operacao" widget="float_time"/>
+                                <field name="kpi_documental" widget="float_time"/>
+                                <field name="kpi_trt_total" widget="float_time"/>
+                                <field name="kpi_trt_clean" widget="float_time"/>
+                                <field name="kpi_trt_consolidado" widget="float_time"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_beeloo_kpi_tree" model="ir.ui.view">
+        <field name="name">beeloo.logistica.kpi.tree</field>
+        <field name="model">beeloo.logistica.kpi</field>
+        <field name="arch" type="xml">
+            <list string="Monitoramento WMS" 
+                  decoration-danger="kpi_trt_total > 5" 
+                  decoration-muted="status_desc == 'Saída Portaria'"
+                  default_order="data_portaria desc">
+                <field name="id_externo" optional="hide"/>
+                <field name="doc_dt" decoration-bf="1"/>
+                <field name="doca" optional="show"/>
+                <field name="transportadora" optional="show"/>
+                <field name="status_desc" widget="badge" decoration-success="status_desc == 'Saída Portaria'"/>
+                <field name="total_pallets" sum="Pallets" optional="show"/>
+                <field name="data_agendada" widget="datetime" optional="hide"/>
+                <field name="data_portaria" widget="datetime" optional="hide"/>
+                <field name="data_entrada" widget="datetime" optional="hide"/>
+                <field name="data_saida" widget="datetime" optional="hide"/>
+                <field name="kpi_pontualidade" optional="show" widget="float_time" decoration-danger="kpi_pontualidade > 0" decoration-success="kpi_pontualidade &lt;= 0"/>
+                <field name="kpi_acolhimento" optional="show" widget="float_time" avg="Med. Acolhimento"/>
+                <field name="kpi_fila" optional="show" widget="float_time" avg="Med. Fila"/>
+                <field name="kpi_operacao" optional="show" widget="float_time" avg="Med. Op."/>
+                <field name="kpi_trt_total" optional="show" widget="float_time" avg="Med. TRT"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_beeloo_kpi_pivot" model="ir.ui.view">
+        <field name="name">beeloo.logistica.kpi.pivot</field>
+        <field name="model">beeloo.logistica.kpi</field>
+        <field name="arch" type="xml">
+            <pivot string="Produtividade por Hora" sample="1" display_quantity="true">
+                <field name="data_saida" interval="day" type="row"/>
+                <field name="data_saida" interval="hour" type="row"/>
+                
+                <field name="kpi_trt_total" type="measure" widget="float_time"/>
+                <field name="kpi_operacao" type="measure" widget="float_time"/>
+                <field name="kpi_fila" type="measure" widget="float_time"/>
+                <field name="kpi_pontualidade" type="measure" widget="float_time"/>
+                
+                <field name="total_pallets" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_beeloo_kpi_graph" model="ir.ui.view">
+        <field name="name">beeloo.logistica.kpi.graph</field>
+        <field name="model">beeloo.logistica.kpi</field>
+        <field name="arch" type="xml">
+            <graph string="Eficiência po Dt" type="bar" sample="1">
+                <field name="doc_dt"/>
+                <field name="kpi_trt_total" type="measure" widget="float_time"/>
+                <field name="kpi_operacao" type="measure" widget="float_time"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_beeloo_kpi" model="ir.actions.act_window">
+        <field name="name">Monitoramento de Cargas</field>
+        <field name="res_model">beeloo.logistica.kpi</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+    </record>
+
+    <record id="action_sync_sql_server" model="ir.actions.server">
+        <field name="name">Sincronizar SQL Server</field>
+        <field name="model_id" ref="model_beeloo_logistica_kpi"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_sync_sql()</field>
+    </record>
+
+    <menuitem id="menu_beeloo_root" name="Monitoramento WMS" sequence="10" web_icon="base,static/description/icon.png"/>
+    <menuitem id="menu_beeloo_kpi" name="Dashboard Logística" parent="menu_beeloo_root" action="action_beeloo_kpi" sequence="1"/>
+    <menuitem id="menu_beeloo_sync" name="🔄 Sincronizar Agora" parent="menu_beeloo_root" action="action_sync_sql_server" sequence="2"/>
+
+</odoo>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- WIZARD: Formulário Pop-up para Reportar Avaria -->
+    <record id="view_damage_report_wizard_form" model="ir.ui.view">
+        <field name="name">beeloo.damage.report.wizard.form</field>
+        <field name="model">beeloo.damage.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Reportar Avaria">
+                <group>
+                    <group string="Produto">
+                        <field name="move_line_id" invisible="1"/>
+                        <field name="product_id"/>
+                        <field name="lot_id"/>
+                    </group>
+                    <group string="Quantidades">
+                        <field name="quantity_total"/>
+                        <field name="quantity_done_good"/>
+                        <field name="quantity_damaged"/>
+                    </group>
+                </group>
+                <group>
+                    <field name="reason" placeholder="Descreva o motivo da avaria..."/>
+                </group>
+                <group>
+                    <field name="damage_location_id" 
+                           options="{'no_create': True, 'no_open': True}"/>
+                </group>
+                <footer>
+                    <button name="action_confirm_damage" 
+                            string="Confirmar Avaria" 
+                            type="object" 
+                            class="btn-primary"/>
+                    <button string="Cancelar" 
+                            class="btn-secondary" 
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ACTION: Abre o Wizard -->
+    <record id="action_damage_report_wizard" model="ir.actions.act_window">
+        <field name="name">Reportar Avaria</field>
+        <field name="res_model">beeloo.damage.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

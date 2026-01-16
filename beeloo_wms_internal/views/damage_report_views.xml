@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_beeloo_damage_report_form" model="ir.ui.view">
+        <field name="name">beeloo.damage.report.form</field>
+        <field name="model">beeloo.damage.report</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_send_to_rework" string="Enviar para Retrabalho" type="object" class="oe_highlight"
+                            invisible="state != 'pending'"/>
+                    <button name="action_send_to_return" string="Devolver à Fábrica" type="object" class="oe_highlight"
+                            invisible="state != 'pending'"/>
+
+                    <button name="action_print_bo" string="Imprimir BO" type="object"
+                            invisible="state in ('draft', 'cancel')"/>
+
+                    <field name="state" widget="statusbar" statusbar_visible="pending,rework,returned,scrapped"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group id="group_details" string="Detalhes da Avaria">
+                            <field name="product_id"/>
+                            <field name="lot_id"/>
+                            <field name="quantity_damaged"/>
+                            <field name="reason"/>
+                        </group>
+                        <group id="group_links" string="Rastreabilidade">
+                            <field name="picking_id"/>
+                            <field name="presentation_id"/>
+                            <field name="move_line_id"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Assinaturas">
+                            <group>
+                                <group string="Responsáveis (Interno)">
+                                    <field name="responsible_user_id" readonly="1" force_save="1"/>
+                                    <field name="operation_user_id"/>
+                                </group>
+                                <group string="Motorista (Externo)">
+                                    <field name="driver_name_signed"/>
+                                    <field name="driver_document"/>
+                                    <field name="driver_signature" widget="signature"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Decisão" invisible="state == 'pending'">
+                            <group>
+                                <field name="rework_order_id"/>
+                                <field name="return_picking_id"/>
+                            </group>
+                        </page>
+                    </notebook>
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_beeloo_damage_report_list" model="ir.ui.view">
+        <field name="name">beeloo.damage.report.list</field>
+        <field name="model">beeloo.damage.report</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="presentation_id"/>
+                <field name="picking_id"/>
+                <field name="product_id"/>
+                <field name="quantity_damaged"/>
+                <field name="responsible_user_id"/>
+                <field name="state" widget="badge" decoration-warning="state == 'pending'" decoration-success="state in ('rework', 'returned', 'scrapped')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_beeloo_damage_report" model="ir.actions.act_window">
+        <field name="name">Boletim de Avarias</field>
+        <field name="res_model">beeloo.damage.report</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

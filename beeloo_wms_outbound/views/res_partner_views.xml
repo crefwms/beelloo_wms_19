@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_shelf_life_outbound" model="ir.ui.view">
+        <field name="name">res.partner.form.shelf.life.outbound</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='sales_purchases']//group[@name='sale']" position="inside">
+                <group string="Política de Shelf Life (Beeloo)">
+                    <field name="x_channel_type"/>
+                    <field name="x_policy_type"/>
+                    <field name="x_shelf_life_percent" 
+                           invisible="[('x_policy_type', '!=', 'percentage')]"/>
+                    <field name="x_fixed_days_value" 
+                           invisible="[('x_policy_type', '!=', 'fixed_days')]"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

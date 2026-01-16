@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_warehouse_form_inherit_beeloo" model="ir.ui.view">
+        <field name="name">stock.warehouse.form.inherit.beeloo</field>
+        <field name="model">stock.warehouse</field>
+        <field name="inherit_id" ref="stock.view_warehouse"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Configuração Contratual (Beeloo)">
+                    <group>
+                        <group string="Metas Contratuais">
+                            <field name="x_standard_stacking_factor"/>
+                        </group>
+                        <group string="Footprints Contratados">
+                            <field name="x_contracted_footprint_internal"/>
+                            <field name="x_contracted_footprint_external"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

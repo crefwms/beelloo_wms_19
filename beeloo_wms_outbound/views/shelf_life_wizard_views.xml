@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_beeloo_shelf_life_query_wizard_form" model="ir.ui.view">
+            <field name="name">beeloo.shelf.life.query.wizard.form</field>
+            <field name="model">beeloo.shelf.life.query.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Assistente de Consulta de Shelf Life (Tabelão)">
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="product_id"/>
+                            <field name="dt_number"/>
+                        </group>
+                        <group>
+                            <field name="x_policy_type"/>
+                            <field name="x_fixed_days_value"/>
+                            <field name="x_shelf_life_percent"/>
+                        </group>
+                    </group>
+                    
+                    <footer>
+                        <button name="action_search_shelf_life" string="Pesquisar Estoque" type="object" class="btn-primary"/>
+                        <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                    </footer>
+                    
+                    <notebook>
+                        <page string="Resultados do Estoque">
+                            <field name="result_line_ids" readonly="1">
+                                <list>
+                                    <field name="product_id"/>
+                                    <field name="lot_id"/>
+                                    <field name="location_id"/>
+                                    <field name="total_quantity"/>
+                                    <field name="production_date"/>
+                                    <field name="shelf_life_percentage" string="Vida Útil (%)"/>
+                                    <field name="status" widget="badge" decoration-success="status == 'aprovado'" decoration-danger="status == 'reprovado'"/>
+                                    <field name="flow_status"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_beeloo_shelf_life_query_wizard" model="ir.actions.act_window">
+            <field name="name">Consulta de Shelf Life (Tabelão)</field>
+            <field name="res_model">beeloo.shelf.life.query.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field> </record>
+
+        <menuitem id="menu_beeloo_shelf_life_query_wizard"
+                  name="Consulta Shelf Life (Tabelão)"
+                  parent="stock.menu_stock_inventory_control"
+                  action="action_beeloo_shelf_life_query_wizard"
+                  sequence="100"/>
+
+    </data>
+</odoo>

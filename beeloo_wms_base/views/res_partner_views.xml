@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_inherit_beeloo" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.beeloo</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='sales_purchases']" position="inside">
+
+                <group string="Configuração de Motorista (Beeloo)" name="group_beeloo_driver_header">
+                     <field name="is_motorist"/>
+                </group>
+
+                <group string="Detalhes do Motorista" name="group_beeloo_driver_details"
+                       invisible="is_motorist == False">
+
+                    <group string="Documentação">
+                        <field name="cnh_number"/>
+                        <field name="cnh_category"/>
+                        <field name="cnh_expiration_date"/>
+                        <field name="mopp_certificate"/>
+                        <field name="mopp_expiration_date"/>
+                        <field name="validade_integracao"/>
+                    </group>
+
+                    <group string="Bloqueio de Acesso">
+                        <field name="x_is_blocked"/>
+                        <field name="x_block_reason" invisible="x_is_blocked == False"/>
+                        <field name="x_block_source" invisible="x_is_blocked == False"/>
+                    </group>
+
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

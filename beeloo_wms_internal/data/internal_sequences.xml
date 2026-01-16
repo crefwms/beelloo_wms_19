@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_beeloo_damage_report" model="ir.sequence">
+        <field name="name">Sequência de Boletim de Avaria Beeloo</field>
+        <field name="code">beeloo.damage.report</field>
+        <field name="prefix">BO/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_beeloo_rework" model="ir.sequence">
+        <field name="name">Sequência de Retrabalho Beeloo</field>
+        <field name="code">beeloo.rework</field>
+        <field name="prefix">REWORK/</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+</odoo>

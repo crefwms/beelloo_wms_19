@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem
+        id="menu_beeloo_wms_configuration"
+        name="Configuração"
+        parent="beeloo_wms_presentation.menu_beeloo_wms_root"
+        sequence="99"/>
+
+    <menuitem
+        id="menu_beeloo_wms_config_vehicle"
+        name="Veículos"
+        parent="menu_beeloo_wms_configuration"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_beeloo_wms_config_operation"
+        name="Operação"
+        parent="menu_beeloo_wms_configuration"
+        sequence="20"/>
+
+</odoo>

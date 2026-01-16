@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_logistica_movimento,logistica.movimento,model_logistica_movimento,base.group_user,1,1,1,1
+access_logistica_auditoria,logistica.auditoria,model_logistica_auditoria,base.group_user,1,1,1,1
+access_logistica_auditoria_saida,logistica.auditoria.saida,model_logistica_auditoria_saida,base.group_user,1,1,1,1
+access_logistica_auditoria_saida_linha,logistica.auditoria.saida.linha,model_logistica_auditoria_saida_linha,base.group_user,1,1,1,1
+access_logistica_auditoria_paletizacao,logistica.auditoria.paletizacao,model_logistica_auditoria_paletizacao,base.group_user,1,1,1,1

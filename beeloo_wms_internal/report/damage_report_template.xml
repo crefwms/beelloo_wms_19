@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_damage_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Boletim de Ocorrência de Avaria: <span t-field="doc.name"/></h2>
+                        
+                        <div class="row mt32 mb32">
+                            <div class="col-6">
+                                <strong>Apresentação:</strong> <span t-field="doc.presentation_id.name"/><br/>
+                                <strong>Recebimento:</strong> <span t-field="doc.picking_id.name"/><br/>
+                                <strong>Data:</strong> <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y %H:%M')"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Motorista:</strong> <span t-field="doc.driver_name_signed"/><br/>
+                                <strong>Documento:</strong> <span t-field="doc.driver_document"/>
+                            </div>
+                        </div>
+
+                        <h3>Detalhes da Avaria</h3>
+                        <table class="table table-sm o_main_table">
+                            <thead>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th>Lote/No. Série</th>
+                                    <th>Qtd. Avariada</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span t-field="doc.product_id.display_name"/></td>
+                                    <td><span t-field="doc.lot_id.name"/></td>
+                                    <td><span t-field="doc.quantity_damaged"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <strong>Motivo:</strong>
+                        <p t-field="doc.reason"/>
+
+                        <h3 class="mt32">Assinaturas</h3>
+                        <div class="row">
+                            <div class="col-4 text-center">
+                                <hr style="border-top: 1px solid black;"/>
+                                <strong>Responsável (Beeloo):</strong><br/>
+                                <span t-field="doc.responsible_user_id.name"/>
+                            </div>
+                            <div class="col-4 text-center">
+                                <hr style="border-top: 1px solid black;"/>
+                                <strong>Conferente (Operação):</strong><br/>
+                                <span t-field="doc.operation_user_id.name"/>
+                            </div>
+                            <div class="col-4 text-center">
+                                <t t-if="doc.driver_signature">
+                                    <img t-att-src="image_data_uri(doc.driver_signature)" style="max-height: 120px;"/>
+                                </t>
+                                <hr style="border-top: 1px solid black;"/>
+                                <strong>Motorista (Externo):</strong><br/>
+                                <span t-field="doc.driver_name_signed"/>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="report_damage" model="ir.actions.report">
+        <field name="name">Boletim de Avaria (BO)</field>
+        <field name="model">beeloo.damage.report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">beeloo_wms_internal.report_damage_template</field>
+        <field name="report_file">beeloo_wms_internal.report_damage_template</field>
+        <field name="print_report_name">'Boletim de Avaria - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_beeloo_damage_report"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

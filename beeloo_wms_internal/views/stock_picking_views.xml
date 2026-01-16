@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_picking_form_inherit_beeloo_internal_damage" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit.beeloo.internal.damage</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Avarias (Beeloo)" name="beeloo_damage_page">
+                    <button name="%(beeloo_wms_internal.action_damage_report_wizard)d" 
+                            type="action" 
+                            icon="fa-exclamation-triangle" 
+                            string="Reportar Avaria (Wizard)"
+                            class="oe_highlight"
+                            groups="stock.group_stock_user"/>
+                    <p>Use o botão acima para reportar avarias encontradas *durante* este recebimento.</p>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

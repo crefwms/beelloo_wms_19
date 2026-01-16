@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_beeloo_presentation" model="ir.actions.act_window">
+        <field name="name">Apresentações (Portaria)</field>
+        <field name="res_model">beeloo.presentation</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Nenhuma apresentação de veículo registrada.
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_beeloo_wms_root"
+        name="Beeloo WMS"
+        web_icon="beeloo_wms_base,static/description/icon.png" 
+        sequence="25"/>
+        
+    <menuitem
+        id="menu_beeloo_presentation"
+        name="Portaria (Apresentações)"
+        parent="menu_beeloo_wms_root"
+        action="action_beeloo_presentation"
+        sequence="10"/>
+
+    <record id="beeloo_presentation_view_list" model="ir.ui.view">
+        <field name="name">beeloo.presentation.list</field>
+        <field name="model">beeloo.presentation</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" string="Apresentação"/>
+                <field name="presentation_time"/>
+                <field name="vehicle_id"/>
+                <field name="implement_line_ids"/>
+                <field name="driver_id"/>
+                <field name="partner_id" optional="hide"/>
+                <field name="state" widget="badge" decoration-success="state == 'done'" decoration-info="state in ('ready', 'in_progress')" decoration-warning="state == 'nf_exchange'" decoration-muted="state == 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="beeloo_presentation_view_form" model="ir.ui.view">
+        <field name="name">beeloo.presentation.form</field>
+        <field name="model">beeloo.presentation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_hard_reset" string="♻️ Resetar Teste" type="object" groups="base.group_no_one"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,nf_exchange,ready,done"/>
+
+                    <button name="action_skip_nf_exchange" 
+                            string="Liberar (Sem Troca NF)" 
+                            type="object" 
+                            class="oe_highlight" 
+                            invisible="state != 'draft' or requires_nf_exchange == True"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,ready,in_progress,done"/>
+
+                    <button name="action_confirm_nf_exchange" 
+                            string="✅ Validar Documentação" 
+                            type="object" class="btn-primary"
+                            invisible="state != 'nf_exchange'"/>
+
+                    <button name="action_set_docked" 
+                            string="🚛 Encostar na Doca" 
+                            type="object" class="btn-secondary"
+                            invisible="state != 'ready'"/> <button name="action_set_exit_allowed" 
+                            string="📝 Liberar Saída" 
+                            type="object" class="btn-primary"
+                            invisible="state != 'op_done'"/> <button name="action_gate_out" 
+                            string="🏁 Registrar Saída (Gate Out)" 
+                            type="object" class="btn-success"
+                            confirm="Confirmar a saída definitiva deste veículo?"
+                            invisible="state != 'exit_allowed'"/>
+
+                    <field name="state" widget="statusbar" 
+                        statusbar_visible="draft,nf_exchange,ready,docked,in_progress,op_done,exit_allowed,done"/>
+
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group id="group_left">
+                            <!--<field name="movement_type"/> 
+                            <field name="agenda_id" domain="[('state', '=', 'draft')]"/>-->
+                            <field name="partner_id" string="Transportadora"/>
+                            <field name="driver_id"/>
+                            <field name="vehicle_id" string="Veículo (Tração)"/>
+                            
+                        </group>
+                        <group id="group_right">
+                            <field name="presentation_time"/>
+                            <!--<field name="operation_type_id"/>-->
+                            <field name="requires_nf_exchange"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Agendas (DTs)" name="agendas">
+                            <field name="agenda_ids" 
+                                domain="[('presentation_id', '=', False), ('state', '=', 'draft')]"
+                                context="{'default_presentation_id': id}">
+
+                                <list editable="bottom">
+                                    <field name="dt_documento"/> 
+                                    
+                                    <field name="cliente_name" readonly="1" force_save="1"/>
+                                    <field name="direction" readonly="1" force_save="1"/>
+                                    <field name="prioridade_id" readonly="1" force_save="1"/>
+                                    <field name="data_agendamento" readonly="1" force_save="1"/>
+
+                                    <button name="action_create_picking" 
+                                            type="object" 
+                                            icon="fa-truck" 
+                                            string="Processar"/>
+                                    
+                                    <field name="state" readonly="1" widget="badge"/>
+                                </list>
+                                
+                            </field>
+                        </page>
+
+                        <page string="Troca de NF" name="nf_exchange_page" invisible="requires_nf_exchange == False">
+                            <group>
+                                <group string="Dados da NF Original (Fornecedor)">
+                                    <field name="original_nf_number"/>
+                                    <!-- (Nós ainda não temos o 'original_nf_xml', só o 'hnk_nf_xml') -->
+                                </group>
+                                <group string="Dados da NF HNK (Armazenagem)">
+                                    <field name="hnk_nf_number"/>
+                                    <field name="hnk_nf_xml" widget="binary" filename="'NFe_HNK.xml'"/>
+                                </group>
+                            </group>
+                            <!-- O "Caminho A" (Botão de confirmar) -->
+                            <button name="action_confirm_nf_exchange" 
+                                    string="Confirmar Troca de NF (Liberar)" 
+                                    type="object" 
+                                    class="btn-primary" 
+                                    invisible="state != 'draft'"/>
+                        </page>
+
+                        <page string="Detalhes do Transporte" name="transport_details">
+                            <group>
+                                <group string="Implementos (Carretas)">
+                                    <field name="implement_line_ids" nolabel="1">
+                                        <list editable="bottom">
+                                            <field name="implemento_id" 
+                                                   domain="[('tipo_frota', '=', 'implemento')]"/>
+                                        </list>
+                                    </field>
+                                </group>
+                                <group string="Lacres">
+                                    <field name="lacre_line_ids" nolabel="1">
+                                        <list editable="bottom">
+                                            <field name="lacre_id" 
+                                                   domain="[('status', '=', 'disponivel')]"/>
+                                            <field name="imagem_evidencia" widget="image" readonly="0"/>
+                                        </list>
+                                    </field>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Movimentações de Estoque" name="stock_pickings">
+                            <field name="stock_picking_ids" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    </div>
+            </form>
+        </field>
+    </record>
+
+</odoo>

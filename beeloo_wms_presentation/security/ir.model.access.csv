@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_beeloo_presentation,beeloo.presentation,model_beeloo_presentation,stock.group_stock_user,1,1,1,1
+access_beeloo_agenda,beeloo.agenda,model_beeloo_agenda,stock.group_stock_user,1,1,1,1
+access_beeloo_agenda_line,beeloo.agenda.line,model_beeloo_agenda_line,stock.group_stock_user,1,1,1,1
+access_beeloo_vehicle,beeloo.vehicle,model_beeloo_vehicle,stock.group_stock_user,1,1,1,1
+access_beeloo_lacre,beeloo.lacre,model_beeloo_lacre,stock.group_stock_user,1,1,1,1
+access_beeloo_lacre_wizard,beeloo.lacre.wizard,model_beeloo_lacre_create_batch,stock.group_stock_user,1,1,1,1
+access_beeloo_pres_lacre_line,beeloo.pres.lacre.line,model_beeloo_presentation_lacre_line,stock.group_stock_user,1,1,1,1
+access_beeloo_pres_impl_line,beeloo.pres.impl.line,model_beeloo_presentation_implement_line,stock.group_stock_user,1,1,1,1
+
+access_beeloo_vehicle_type,beeloo.vehicle.type,model_beeloo_vehicle_type,stock.group_stock_user,1,1,1,1
+access_beeloo_body_type,beeloo.body.type,model_beeloo_body_type,stock.group_stock_user,1,1,1,1
+access_beeloo_tie_type,beeloo.tie.type,model_beeloo_tie_type,stock.group_stock_user,1,1,1,1
+access_beeloo_tightening_type,beeloo.tightening.type,model_beeloo_tightening_type,stock.group_stock_user,1,1,1,1
+access_beeloo_operation_type,beeloo.operation.type,model_beeloo_operation_type,stock.group_stock_user,1,1,1,1
+access_beeloo_priority,beeloo.priority,model_beeloo_priority,stock.group_stock_user,1,1,1,1

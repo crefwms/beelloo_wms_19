@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_picking_inbound_list" model="ir.ui.view">
+        <field name="name">stock.picking.inbound.list</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <list string="Inbound Pickings">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_picking_form_beeloo_inbound" model="ir.ui.view">
+        <field name="name">stock.picking.form.beeloo.inbound</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            
+            <xpath expr="//header" position="inside">
+                <button name="action_open_scanner" 
+                        string="📱 ABRIR SCANNER" 
+                        type="object" 
+                        class="btn-primary"
+                        invisible="state not in ('assigned', 'processing')"/>
+
+                <button name="action_load_items_from_xml" 
+                        string="Carregar Itens via XML (HNK)" 
+                        type="object" 
+                        class="btn-secondary" 
+                        data-hotkey="x"
+                        invisible="state not in ('draft', 'assigned')"/>
+                
+                <button name="action_implode_boms" 
+                        string="⚙️ Implodir Paletes (BoM)" 
+                        type="object" 
+                        class="btn-secondary"
+                        invisible="state not in ('draft', 'assigned')"/>
+            </xpath>
+
+            <xpath expr="//field[@name='origin']" position="after">
+                 <field name="x_nfe_number" readonly="1"/>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Documentos Fiscais (GED)" name="page_beeloo_docs">
+                    <group>
+                        <field name="x_document_ids" widget="many2many_binary" string="Arquivos Anexados" nolabel="1">
+                            <list>
+                                <field name="name"/>
+                                <field name="mimetype"/>
+                                <field name="create_date"/>
+                                <field name="file_size"/>
+                            </list>
+                        </field>
+                    </group>
+                    <div class="text-muted">
+                        <i class="fa fa-info-circle"/> 
+                        Aqui ficam arquivados todos os XMLs e PDFs processados. 
+                        Você pode adicionar novos arquivos manualmente aqui.
+                    </div>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

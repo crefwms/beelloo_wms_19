@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_beeloo_video_wizard_form" model="ir.ui.view">
+        <field name="name">beeloo.video.wizard.form</field>
+        <field name="model">beeloo.video.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Gravar Evidência">
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                         Use a câmera do celular para gravar.
+                    </div>
+                    <group>
+                        <field name="note"/>
+                        <field name="evidence_file" filename="filename" widget="binary"/>
+                        <field name="filename" invisible="1"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_save_evidence" string="Salvar" type="object" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_beeloo_video_wizard" model="ir.actions.act_window">
+        <field name="name">Anexar Evidência</field>
+        <field name="res_model">beeloo.video.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="view_picking_form_beeloo_multimedia" model="ir.ui.view">
+        <field name="name">stock.picking.form.beeloo.multimedia</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            
+            <xpath expr="//field[@name='state']" position="before">
+                <button name="%(action_beeloo_video_wizard)d" 
+                        string="🎥 Evidência" 
+                        type="action" 
+                        class="btn-primary"
+                        context="{'default_picking_id': id}"/>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Multimídia Beeloo" name="beeloo_multimedia_page">
+                    <field name="x_document_ids" widget="many2many_binary"/>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>
