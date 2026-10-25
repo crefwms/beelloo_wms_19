@@ -4,3 +4,5 @@ access_logistica_auditoria,logistica.auditoria,model_logistica_auditoria,base.gr
 access_logistica_auditoria_saida,logistica.auditoria.saida,model_logistica_auditoria_saida,base.group_user,1,1,1,1
 access_logistica_auditoria_saida_linha,logistica.auditoria.saida.linha,model_logistica_auditoria_saida_linha,base.group_user,1,1,1,1
 access_logistica_auditoria_paletizacao,logistica.auditoria.paletizacao,model_logistica_auditoria_paletizacao,base.group_user,1,1,1,1
+access_logistica_saldo_insumo,logistica.saldo.rua.insumo,model_logistica_saldo_rua_insumo,base.group_user,1,1,1,1
+access_logistica_saldo_rua,logistica.saldo.rua,model_logistica_saldo_rua,base.group_user,1,1,1,1

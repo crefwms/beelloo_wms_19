@@ -192,4 +192,43 @@
               parent="menu_logistica_legacy_root" 
               action="action_logistica_paletizacao" 
               sequence="30"/>
+    <record id="view_saldo_insumo_tree" model="ir.ui.view">
+        <field name="name">logistica.saldo.insumo.tree</field>
+        <field name="model">logistica.saldo.rua.insumo</field>
+        <field name="arch" type="xml">
+            <list string="Saldo Insumos" decoration-info="qtd_pallets > 0">
+                <field name="galpao"/>
+                <field name="rua_endereco"/>
+                <field name="produto_codigo"/>
+                <field name="produto_descricao" optional="show"/>
+                <field name="qtd_pallets" sum="Total"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_saldo_insumo_pivot" model="ir.ui.view">
+        <field name="name">logistica.saldo.insumo.pivot</field>
+        <field name="model">logistica.saldo.rua.insumo</field>
+        <field name="arch" type="xml">
+            <pivot string="BI Insumos">
+                <field name="galpao" type="row"/>
+                <field name="rua_endereco" type="row"/>
+                <field name="produto_codigo" type="col"/>
+                <field name="qtd_pallets" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_saldo_insumo" model="ir.actions.act_window">
+        <field name="name">Saldo de Insumos</field>
+        <field name="res_model">logistica.saldo.rua.insumo</field>
+        <field name="view_mode">list,pivot</field>
+        <field name="context">{'search_default_group_galpao': 1}</field>
+    </record>
+
+    <menuitem id="menu_saldo_insumo" 
+              name="Saldo INSUMO" 
+              parent="menu_logistica_legacy_root" 
+              action="action_saldo_insumo" 
+              sequence="70"/>
 </odoo>

@@ -131,15 +131,15 @@ class BeelooCycleCountPlan(models.Model):
         self.ensure_one()
         if not self.line_ids: raise UserError(_("Gere as linhas primeiro."))
         
-        adjustment = self.env['stock.inventory.adjustment'].create({
-            'name': f"Contagem: {self.name}",
-            'product_ids': [(6, 0, self.line_ids.product_id.ids)],
-            'location_ids': [(6, 0, self.line_ids.location_id.ids)],
-        })
-        adjustment.action_start_inventory() # Inicia no Odoo
+        #adjustment = self.env['stock.inventory.adjustment'].create({
+        #    'name': f"Contagem: {self.name}",
+        #    'product_ids': [(6, 0, self.line_ids.product_id.ids)],
+        #    'location_ids': [(6, 0, self.line_ids.location_id.ids)],
+        #})
+        #adjustment.action_start_inventory() # Inicia no Odoo
         
         # Vincula
-        self.write({'inventory_adjustment_id': adjustment.id, 'state': 'in_progress'})
+        #self.write({'inventory_adjustment_id': adjustment.id, 'state': 'in_progress'})
         
         return self.action_view_adjustment()
         
@@ -147,8 +147,8 @@ class BeelooCycleCountPlan(models.Model):
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'res_model': 'stock.inventory.adjustment',
-            'res_id': self.inventory_adjustment_id.id,
+            #'res_model': 'stock.inventory.adjustment',
+            #'res_id': self.inventory_adjustment_id.id,
             'view_mode': 'form',
             'target': 'current',
         }
