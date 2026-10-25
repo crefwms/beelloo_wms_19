@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="oea_compliance_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <h2>Relatório de Conformidade OEA</h2>
+                    <p>Data: <span t-esc="doc['requirement'].name"/></p>
+                    <p>Modalidade: <span t-esc="doc['requirement'].modality"/></p>
+                    
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Total</th>
+                                <th>Validados</th>
+                                <th>Em Andamento</th>
+                                <th>Pendente</th>
+                                <th>Rascunho</th>
+                                <th>Rejeitados</th>
+                                <th>Não Aplicável</th>
+                                <th>Progresso</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span t-esc="doc['total_items']"/></td>
+                                <td><span t-esc="doc['validated']"/></td>
+                                <td><span t-esc="doc['in_progress']"/></td>
+                                <td><span t-esc="doc['pending']"/></td>
+                                <td><span t-esc="doc['draft']"/></td>
+                                <td><span t-esc="doc['rejected']"/></td>
+                                <td><span t-esc="doc['not_applicable']"/></td>
+                                <td><span t-esc="doc['progress']"/>%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="row mt32">
+                        <div class="col-3">
+                            <strong>Referência:</strong> <span t-esc="doc['requirement'].reference"/>
+                        </div>
+                        <div class="col-3">
+                            <strong>Tipo:</strong> <span t-esc="doc['requirement'].type"/>
+                        </div>
+                        <div class="col-3">
+                            <strong>Complexidade:</strong> <span t-esc="doc['requirement'].complexity"/>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="oea_audit_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <h2>Relatório de Auditoria OEA</h2>
+                    <p><strong>Auditoria:</strong> <span t-esc="doc['audit'].name"/></p>
+                    <p><strong>Data:</strong> <span t-esc="doc['audit'].date"/></p>
+                    
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Total Itens</th>
+                                <th>Validados</th>
+                                <th>Em Andamento</th>
+                                <th>Pendente</th>
+                                <th>Rascunho</th>
+                                <th>Rejeitados</th>
+                                <th>Não Aplicável</th>
+                                <th>Progresso</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span t-esc="doc['total_lines']"/></td>
+                                <td><span t-esc="doc['validated']"/></td>
+                                <td><span t-esc="doc['in_progress']"/></td>
+                                <td><span t-esc="doc['pending']"/></td>
+                                <td><span t-esc="doc['draft']"/></td>
+                                <td><span t-esc="doc['rejected']"/></td>
+                                <td><span t-esc="doc['not_applicable']"/></td>
+                                <td><span t-esc="doc['progress']"/>%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="oea_consolidated_report">
+        <t t-call="web.html_container">
+            <div class="page">
+                <div class="oe_structure"/>
+                <h2>Relatório Consolidado de Conformidade OEA</h2>
+                <p><strong>Data:</strong> <span t-esc="date"/></p>
+                <p t-if="date_from or date_to">
+                    <strong>Período:</strong> <span t-esc="date_from"/> até <span t-esc="date_to"/>
+                </p>
+                
+                <div class="row mt32">
+                    <div class="col-4">
+                        <h3>Total de Itens</h3>
+                        <p style="font-size: 24px;"><span t-esc="total_items"/></p>
+                    </div>
+                    <div class="col-4">
+                        <h3>Validados</h3>
+                        <p style="font-size: 24px;"><span t-esc="validated"/></p>
+                    </div>
+                    <div class="col-4">
+                        <h3>Progresso Geral</h3>
+                        <p style="font-size: 24px;"><span t-esc="overall_progress"/>%</p>
+                    </div>
+                </div>
+                
+                <h3 class="mt32">Por Modalidade</h3>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Modalidade</th>
+                            <th>Total</th>
+                            <th>Validados</th>
+                            <th>Progresso</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="by_modality" t-as="mod">
+                            <td><span t-esc="mod"/></td>
+                            <td><span t-esc="by_modality[mod].total"/></td>
+                            <td><span t-esc="by_modality[mod].validated"/></td>
+                            <td><span t-esc="by_modality[mod].progress"/>%</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3 class="mt32">Por Tipo</h3>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Total</th>
+                            <th>Validados</th>
+                            <th>Progresso</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="by_type" t-as="typ">
+                            <td><span t-esc="typ"/></td>
+                            <td><span t-esc="by_type[typ].total"/></td>
+                            <td><span t-esc="by_type[typ].validated"/></td>
+                            <td><span t-esc="by_type[typ].progress"/>%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+
+    <template id="oea_evolution_report">
+        <t t-call="web.html_container">
+            <div class="page">
+                <div class="oe_structure"/>
+                <h2>Evolução da Conformidade OEA</h2>
+                <p><strong>Data:</strong> <span t-esc="date"/></p>
+                <p><strong>Período:</strong> <span t-esc="date_from"/> até <span t-esc="date_to"/></p>
+                
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Validados no Dia</th>
+                            <th>Acumulado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="evolution" t-as="e">
+                            <td><span t-esc="e.date"/></td>
+                            <td><span t-esc="e.validated"/></td>
+                            <td><span t-esc="e.cumulative"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+
+    <template id="oea_risk_report">
+        <t t-call="web.html_container">
+            <div class="page">
+                <div class="oe_structure"/>
+                <h2>Relatório de Riscos e Incidentes de Segurança</h2>
+                <p><strong>Data:</strong> <span t-esc="date"/></p>
+                <p t-if="date_from or date_to">
+                    <strong>Período:</strong> <span t-esc="date_from"/> até <span t-esc="date_to"/>
+                </p>
+                
+                <div class="row mt32">
+                    <div class="col-4">
+                        <h3>Total de Riscos</h3>
+                        <p style="font-size: 24px;"><span t-esc="total_risks"/></p>
+                    </div>
+                    <div class="col-4">
+                        <h3>Total de Incidentes</h3>
+                        <p style="font-size: 24px;"><span t-esc="total_incidents"/></p>
+                    </div>
+                </div>
+                
+                <h3 class="mt32">Riscos por Classificação</h3>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Classificação</th>
+                            <th>Quantidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="by_rating" t-as="rating">
+                            <td><span t-esc="rating"/></td>
+                            <td><span t-esc="by_rating[rating]"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3 class="mt32">Riscos por Status</h3>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Quantidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="by_state" t-as="state">
+                            <td><span t-esc="state"/></td>
+                            <td><span t-esc="by_state[state]"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3 class="mt32">Incidentes por Severidade</h3>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Severidade</th>
+                            <th>Quantidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="by_severity" t-as="severity">
+                            <td><span t-esc="severity"/></td>
+                            <td><span t-esc="by_severity[severity]"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+</odoo>

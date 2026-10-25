@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_report_vehicle_presentation" model="ir.actions.report">
+            <field name="name">Imprimir Apresentação</field>
+            <field name="model">lusitana_logistics.vehicle_presentation</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">lusitana_logistics.report_vehicle_presentation_template</field>
+            <field name="report_file">lusitana_logistics.report_vehicle_presentation_template</field>
+            <field name="print_report_name">'Apresentação - %s' % (object.name)</field>
+            <field name="binding_model_id" eval="False"/>
+        </record>
+
+        <template id="report_vehicle_presentation_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <h2><span t-field="o.name"/> - Marcação de Veículo</h2>
+                            
+                            <div class="row mt-4 mb-4">
+                                <div class="col-6">
+                                    <strong>Data/Hora Marcação:</strong> <span t-field="o.data_apresentacao" t-options='{"widget": "datetime"}'/><br/>
+                                    <strong>Status:</strong> <span t-field="o.state"/><br/>
+                                    <strong>Motorista:</strong> <span t-field="o.motorista_id.name"/><br/>
+                                    <strong>Localização Atual:</strong> <span t-field="o.current_location_id.display_name"/>
+                                </div>
+                                <div class="col-6">
+                                    <strong>Transportadora:</strong> <span t-field="o.cavalo_id.transportadora_id.name"/><br/>
+                                    <strong>Cavalo/Veículo (Placa):</strong> <span t-field="o.cavalo_id.name"/><br/>
+                                    <strong>Total de Eixos:</strong> <span t-field="o.total_eixos"/><br/>
+                                    <strong>Criado Por:</strong> <span t-field="o.user_criacao_id.name"/>
+                                </div>
+                            </div>
+
+                            <h3>Implementos</h3>
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Implemento (Placa)</th>
+                                        <th>Transportadora do Implemento</th>
+                                        <th class="text-right">Eixos</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.implemento_ids" t-as="line">
+                                        <td><span t-field="line.implemento_id.name"/></td>
+                                        <td><span t-field="line.implemento_id.transportadora_id.name"/></td>
+                                        <td class="text-right"><span t-field="line.qtde_eixos_implemento"/></td>
+                                    </tr>
+                                    <tr t-if="not o.implemento_ids">
+                                        <td colspan="3">Nenhum implemento registrado.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h3>Operações a Realizar</h3>
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Tipo</th>
+                                        <th>DT/NF</th>
+                                        <th>Início</th>
+                                        <th>Fim</th>
+                                        <th>Duração (min)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.operation_line_ids" t-as="line">
+                                        <td><span t-field="line.operation_type_id.name"/></td>
+                                        <td><t t-if="line.dt_documento"><span t-field="line.dt_documento"/></t><t t-if="line.nf_referencia"> / <span t-field="line.nf_referencia"/></t></td>
+                                        <td><span t-field="line.start_time" t-options='{"widget": "datetime"}'/></td>
+                                        <td><span t-field="line.end_time" t-options='{"widget": "datetime"}'/></td>
+                                        <td><span t-field="line.duration"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h3 class="mt-4">Lacres Aplicados</h3>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Número do Lacre</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.lacre_ids" t-as="lacre_line">
+                                    <td>Heineken (HNK)</td>
+                                    <td><span t-field="lacre_line.lacre_id.name"/></td>
+                                </tr>
+                                <tr t-if="o.lacre_armador_manual">
+                                    <td>Armador (Manual)</td>
+                                    <td><span t-field="o.lacre_armador_manual"/></td>
+                                </tr>
+                                <tr t-if="not o.lacre_ids and not o.lacre_armador_manual">
+                                    <td colspan="2">Nenhum lacre registrado para esta apresentação.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="row mt-5 pt-5">
+                            <div class="col-4 text-center">
+                                <hr style="border-top: 1px solid black;"/>
+                                <p><strong>Assinatura do Motorista</strong></p>
+                                <p><span t-field="o.motorista_id.name"/></p>
+                            </div>
+                            <div class="col-4 text-center">
+                                <hr style="border-top: 1px solid black;"/>
+                                <p><strong>Assinatura do Monitoramento</strong></p>
+                                <p><span t-field="o.monitoramento_user_id.name"/></p>
+                            </div>
+                            <div class="col-4 text-center">
+                                <hr style="border-top: 1px solid black;"/>
+                                <p><strong>Assinatura da Finalização (ATO)</strong></p>
+                                <p><span t-field="o.conclusao_user_id.name"/></p>
+                            </div>
+                        </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- View: List -->
+    <record id="view_osint_result_list" model="ir.ui.view">
+        <field name="name">osint.result.list</field>
+        <field name="model">osint.result</field>
+        <field name="arch" type="xml">
+            <list string="Resultados OSINT">
+                <field name="date"/>
+                <field name="target_id"/>
+                <field name="name"/>
+                <field name="process_number"/>
+                <field name="summary"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- View: Form -->
+    <record id="view_osint_result_form" model="ir.ui.view">
+        <field name="name">osint.result.form</field>
+        <field name="model">osint.result</field>
+        <field name="arch" type="xml">
+            <form string="Resultado OSINT">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="target_id"/>
+                            <field name="process_number"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="summary"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="content" string="Conteúdo Completo">
+                            <field name="content" widget="html"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_osint_result" model="ir.actions.act_window">
+        <field name="name">Resultados OSINT</field>
+        <field name="res_model">osint.result</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Ainda não há resultados de monitoramento capturados.
+            </p>
+        </field>
+    </record>
+</odoo>

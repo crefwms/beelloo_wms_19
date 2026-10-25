@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_beeloo_scanner_form" model="ir.ui.view">
+        <field name="name">beeloo.scanner.form</field>
+        <field name="model">beeloo.scanner</field>
+        <field name="arch" type="xml">
+            <form string="Scanner WMS">
+                <sheet>
+                    <group>
+                        <div class="alert alert-info text-center" role="alert">
+                            <h3 style="color: #00A09D;">🔫 MODO SCANNER ATIVO</h3>
+                            <p>Bipe o código. O sistema processa automaticamente.</p>
+                        </div>
+                    </group>
+                    
+                    <group>
+                        <field name="barcode_input" 
+                               placeholder="Bipe aqui..." 
+                               default_focus="1"
+                               style="font-size: 2em; text-align: center; height: 60px; border: 2px solid #00A09D;"
+                               on_change="1"/> </group>
+
+                    <button name="process_barcode" string="PROCESSAR (ENTER)" type="object" class="btn-primary w-100" style="height: 50px; font-size: 1.2em;"/>
+
+                    <group>
+                        <field name="last_message" 
+                               readonly="1" 
+                               style="font-size: 1.5em; font-weight: bold;"
+                               decoration-success="message_type == 'success'"
+                               decoration-danger="message_type == 'error'"/>
+                        <field name="message_type" invisible="1"/>
+                    </group>
+
+                    <separator string="Histórico Recente"/>
+                    <field name="log_ids" readonly="1">
+                        <list>
+                            <field name="create_date" string="Hora"/>
+                            <field name="message"/>
+                        </list>
+                    </field>
+                </sheet>
+                <footer>
+                    <button string="Fechar e Atualizar Picking" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

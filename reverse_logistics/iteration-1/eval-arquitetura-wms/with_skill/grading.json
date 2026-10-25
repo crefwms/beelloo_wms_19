@@ -1,0 +1,36 @@
+{
+  "eval_id": 1,
+  "eval_name": "arquitetura-wms",
+  "expectations": [
+    {
+      "text": "(tres-locacoes) Nomeia pelo menos 3 locações distintas para a área de reversa",
+      "passed": true,
+      "evidence": "7 locações nomeadas: QUARENTENA-REVERSA, TRIAGEM-TECNICA, INSPECAO, RECONDICIONAMENTO, ESTOQUE-OUTLET, DESCARTE, BLOQUEADO-FRAUDE — todas filhas do nó pai LOGISTICA-REVERSA."
+    },
+    {
+      "text": "(segregacao-estoque) Explica mecanismo concreto para evitar mistura com estoque novo",
+      "passed": true,
+      "evidence": "'NUNCA criar como filha do local de estoque regular'. Status intermediário RETORNO-PENDENTE-VALIDACAO: 'Nenhum produto devolvido volta ao estoque sem passar por esse status.' Fluxo explícito de reintegração com validação de supervisor."
+    },
+    {
+      "text": "(odoo-especifico) Menciona o Odoo com configuração concreta (locations, picking types, módulos ou campos)",
+      "passed": true,
+      "evidence": "Caminhos concretos: 'Inventário > Configuração > Locações', 'Inventário > Configuração > Tipos de Operação'. Menciona Automated Actions, rastreamento por número de série no produto, grupos de acesso, e o campo de prefixo DEV-AAAAMM-NNNNN."
+    },
+    {
+      "text": "(fluxo-passo-a-passo) Apresenta fluxo operacional sequencial com pelo menos 4 etapas numeradas",
+      "passed": true,
+      "evidence": "Fluxo com 5 etapas numeradas: 1. CHEGADA, 2. INSPEÇÃO DE SAFETY, 3. TRIAGEM TÉCNICA, 4. DECISÃO DE DESTINO, 5. EVENTO FINANCEIRO."
+    },
+    {
+      "text": "(picking-types) Menciona picking types ou tipos de operação dedicados para movimentos de devolução",
+      "passed": true,
+      "evidence": "Seção 'Picking Types dedicados' com tabela de 5 tipos: Recebimento Devolução, Triagem LR, Classificação LR, Reintegração Estoque, Baixa LR — cada um com origem e destino padrão."
+    },
+    {
+      "text": "(idioma-pt) Resposta inteiramente em português do Brasil",
+      "passed": true,
+      "evidence": "Todo o conteúdo está em português do Brasil, sem trechos em outro idioma."
+    }
+  ]
+}

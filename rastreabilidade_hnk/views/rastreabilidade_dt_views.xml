@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_rastreabilidade_dt_form" model="ir.ui.view">
+        <field name="name">rastreabilidade.dt.form</field>
+        <field name="model">rastreabilidade.dt</field>
+        <field name="arch" type="xml">
+            <form string="Rastreabilidade HNK">
+                <header>
+                    <button name="action_iniciar" string="🚀 Iniciar Conferência" type="object" class="oe_highlight" invisible="state != 'rascunho'"/>
+                    <button name="action_concluir" string="✅ Finalizar" type="object" class="oe_highlight" invisible="state != 'conferencia'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="rascunho,conferencia,concluido"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="numero_dt" string="Número da DT"/>
+                        <h1><field name="numero_dt" placeholder="Ex: DT-2026-001"/></h1>
+                    </div>
+                    
+                    <group>
+                        <group string="📄 Documentação">
+                            <field name="nfe"/>
+                            <field name="registro"/>
+                            <field name="tipo"/>
+                            <field name="data"/>
+                        </group>
+                        <group string="🚚 Logística">
+                            <field name="motorista_id" options="{'no_create': True}"/>
+                            <field name="placa_cavalo_id" options="{'no_create': True}"/>
+                            <field name="placa_carreta_id" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+
+                    <group string="📦 Área de Bipagem" invisible="state != 'conferencia'" class="oe_edit_only" style="background-color: #f8f9fa; padding: 10px; border-radius: 5px;">
+                        <group>
+                            <field name="produto_conferencia_id" required="state == 'conferencia'" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="barcode_scan" placeholder="Bipe a etiqueta aqui..."/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="📋 Itens Conferidos">
+                            <field name="linha_ids" readonly="state == 'concluido'">
+                                <list editable="bottom" decoration-danger="tem_avaria == True">
+                                    <field name="barcode_lido"/>
+                                    <field name="produto_id" readonly="1"/>
+                                    <field name="data_leitura" readonly="1"/>
+                                    <field name="tem_avaria" widget="boolean_toggle"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="📸 Evidências">
+                            <group>
+                                <field name="foto_avaria" widget="image"/>
+                                <field name="informacao_extra"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+</odoo>

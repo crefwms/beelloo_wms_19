@@ -1,0 +1,36 @@
+{
+  "eval_id": 2,
+  "eval_name": "integracao-financeira",
+  "expectations": [
+    {
+      "text": "(mapeamento-eventos) Mapeia pelo menos 3 eventos logísticos distintos com sua ação financeira correspondente",
+      "passed": true,
+      "evidence": "Tabela com 9 eventos, cada um com ação financeira: ex. Evento 5 (entrada no CD) → comunicar cliente; Evento 6 (A-Grade) → liberar 100%; Evento 7 (B-Grade) → estorno parcial; Evento 9 (fraude) → bloquear crédito."
+    },
+    {
+      "text": "(grading-gatilho) Menciona grading (A/B/C-Grade ou equivalente) como gatilho para liberar ou reter o crédito",
+      "passed": true,
+      "evidence": "'Grading A-Grade confirmado → Liberar 100% do estorno imediatamente'; 'Grading B-Grade confirmado → Liberar estorno parcial (ex: 80-90%)'; 'Grading C-Grade (defeito confirmado) → Acionar garantia do fabricante ou seguro'."
+    },
+    {
+      "text": "(sla-marketplace) Aborda SLA do marketplace (Magalu) e consequências de descumprimento",
+      "passed": true,
+      "evidence": "'rebaixamento de posição nos resultados de busca e risco de penalização de conta'; tabela 'Meta de SLA: Ciclo em 5-7 Dias Úteis'; 'fica dentro do SLA da Magalu, elimina as reclamações e protege sua reputação'."
+    },
+    {
+      "text": "(estorno-parcial-total) Distingue estorno total (produto ok) de estorno parcial ou retido (avaria ou fraude)",
+      "passed": true,
+      "evidence": "A-Grade = 100% estorno; B-Grade = 'estorno parcial (ex: 80-90%)'; fraude = 'Bloquear crédito, acionar jurídico'. Distinção clara entre os três cenários."
+    },
+    {
+      "text": "(integracao-gateway) Menciona integração com gateway de pagamento ou API do marketplace para disparar estorno",
+      "passed": true,
+      "evidence": "Semana 3: 'Vincular conclusão do grading à liberação automática do estorno via gateway.' + 'Notificação automática à Magalu via API'."
+    },
+    {
+      "text": "(idioma-pt) Resposta inteiramente em português do Brasil",
+      "passed": true,
+      "evidence": "Todo o conteúdo está em português do Brasil, sem trechos em outro idioma."
+    }
+  ]
+}

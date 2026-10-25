@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ir_cron_oea_overdue_check" model="ir.cron">
+        <field name="name">OEA: Verificar Itens Atrasados</field>
+        <field name="model_id" ref="model_oea_requirement_item"/>
+        <field name="code">model._cron_check_overdue_items()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <!-- Activity Types for OEA Management -->
+    <record id="oea_activity_type_review" model="mail.activity.type">
+        <field name="name">Revisão de Item OEA</field>
+        <field name="summary">Revisar evidência do item de requisito</field>
+        <field name="category">default</field>
+        <field name="delay_count">3</field>
+        <field name="delay_unit">days</field>
+    </record>
+
+    <record id="oea_activity_type_evidence" model="mail.activity.type">
+        <field name="name">Coleta de Evidência</field>
+        <field name="summary">Coletar evidências para conformidade</field>
+        <field name="category">default</field>
+        <field name="delay_count">5</field>
+        <field name="delay_unit">days</field>
+    </record>
+
+    <record id="oea_activity_type_audit" model="mail.activity.type">
+        <field name="name">Planejamento de Auditoria</field>
+        <field name="summary">Planejar auditoria de conformidade</field>
+        <field name="category">default</field>
+        <field name="delay_count">7</field>
+        <field name="delay_unit">days</field>
+    </record>
+
+    <record id="oea_activity_type_risk" model="mail.activity.type">
+        <field name="name">Análise de Risco</field>
+        <field name="summary">Analisar e classificar risco</field>
+        <field name="category">default</field>
+        <field name="delay_count">5</field>
+        <field name="delay_unit">days</field>
+    </record>
+
+    <record id="oea_activity_type_incident" model="mail.activity.type">
+        <field name="name">Investigação de Incidente</field>
+        <field name="summary">Investigar incidente de segurança</field>
+        <field name="category">default</field>
+        <field name="delay_count">1</field>
+        <field name="delay_unit">days</field>
+    </record>
+
+    <record id="oea_activity_type_overdue" model="mail.activity.type">
+        <field name="name">OEA - Item Atrasado</field>
+        <field name="category">default</field>
+    </record>
+</odoo>

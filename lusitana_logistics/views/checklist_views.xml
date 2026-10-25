@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="checklist_template_form_view" model="ir.ui.view">
+            <field name="name">lusitana_logistics.checklist.template.form</field>
+            <field name="model">lusitana_logistics.checklist_template</field>
+            <field name="arch" type="xml">
+                <form string="Modelo de Checklist">
+                    <sheet>
+                        <div class="oe_title"><h1><field name="name"/></h1></div>
+                        <group>
+                            <field name="description"/>
+                            <field name="active"/>
+                            <field name="is_mandatory_for_container"/>
+                        </group>
+                        <notebook>
+                            <page string="Itens do Checklist">
+                                <field name="item_ids">
+                                    <list editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="name"/>
+                                        <field name="answer_type"/>
+                                        <field name="selection_options" modifiers="{'invisible': [('answer_type', '!=', 'selection')]}"/>
+                                        <field name="is_critical"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="checklist_template_list_view" model="ir.ui.view">
+            <field name="name">lusitana_logistics.checklist.template.list</field>
+            <field name="model">lusitana_logistics.checklist_template</field>
+            <field name="arch" type="xml">
+                <list string="Modelos de Checklist">
+                    <field name="name"/>
+                    <field name="active" widget="boolean_toggle"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="vehicle_presentation_checklist_form_view" model="ir.ui.view">
+            <field name="name">lusitana_logistics.vehicle.presentation.checklist.form</field>
+            <field name="model">lusitana_logistics.vehicle_presentation_checklist</field>
+            <field name="arch" type="xml">
+                <form string="Checklist da Apresentação">
+                    <header>
+                        <button name="%(lusitana_logistics.action_report_presentation_checklist)d" string="Imprimir" type="action" class="oe_link"/>
+                        <button name="action_start_filling" string="Iniciar Preenchimento" type="object" class="oe_highlight" modifiers="{'invisible': [('status', '!=', 'pendente')]}"/>
+                        <button name="action_finish_filling" string="Concluir Checklist" type="object" class="oe_highlight" modifiers="{'invisible': [('status', '!=', 'em_preenchimento')]}"/>
+                        <field name="status" widget="statusbar" statusbar_visible="pendente,em_preenchimento,concluido_ok,concluido_nok"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title"><h1><field name="display_name" readonly="1"/></h1></div>
+                        <group>
+                            <group><field name="presentation_id" readonly="1"/><field name="checklist_template_id" readonly="1"/></group>
+                            <group><field name="start_time" readonly="1"/><field name="end_time" readonly="1"/><field name="filled_by_id" readonly="1"/><field name="has_critical_failures" decoration-danger="has_critical_failures == True"/></group>
+                        </group>
+                        <notebook>
+                            <page string="Itens da Vistoria">
+                                <field name="item_line_ids" readonly="status != 'em_preenchimento'">
+                                    <list editable="bottom" decoration-danger="is_critical_item and not is_ok">
+                                        <field name="name" readonly="1"/>
+                                        <field name="is_critical_item" readonly="1"/>
+                                        <field name="answer_boolean" invisible="answer_type != 'boolean'" string="OK?"/>
+                                        <field name="answer_text" invisible="answer_type != 'text'"/>
+                                        <field name="answer_integer" invisible="answer_type != 'integer'"/>
+                                        <field name="answer_float" invisible="answer_type != 'float'"/>
+                                        <field name="answer_selection" invisible="answer_type != 'selection'"/>                                        
+                                        <field name="is_conforming" 
+                                            invisible="answer_type == 'boolean'" 
+                                            string="Conforme?" 
+                                            widget="boolean_toggle"/>
+                                        <field name="is_ok" column_invisible="True"/>
+                                        <field name="answer_type" column_invisible="True"/>
+                                    </list>
+                                </field> 
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="vehicle_presentation_checklist_list_view" model="ir.ui.view">
+            <field name="name">lusitana_logistics.vehicle.presentation.checklist.list</field>
+            <field name="model">lusitana_logistics.vehicle_presentation_checklist</field>
+            <field name="arch" type="xml">
+                <list string="Checklists da Apresentação">
+                    <field name="display_name"/>
+                    <field name="status" widget="badge" decoration-success="status == 'concluido_ok'" decoration-danger="status == 'concluido_nok'"/>
+                    <field name="filled_by_id"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="action_checklist_template" model="ir.actions.act_window">
+             <field name="name">Modelos de Checklist</field>
+             <field name="res_model">lusitana_logistics.checklist_template</field>
+             <field name="view_mode">list,form</field>
+        </record>
+
+        <menuitem id="menu_checklist_root" 
+                  name="Checklists" 
+                  parent="lusitana_logistics.lusitana_logistics_config_menu" 
+                  sequence="10"/>
+
+        <menuitem id="menu_checklist_templates" 
+                  name="Modelos de Checklist" 
+                  parent="menu_checklist_root" 
+                  action="action_checklist_template" 
+                  sequence="10"/>
+
+        <record id="action_vehicle_presentation_checklist_all" model="ir.actions.act_window">
+            <field name="name">Checklists Preenchidos</field>
+            <field name="res_model">lusitana_logistics.vehicle_presentation_checklist</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{'search_default_group_by_presentation': 1}</field> 
+        </record>
+
+        <menuitem id="menu_checklist_instances"
+                  name="Checklists Preenchidos"
+                  parent="lusitana_logistics.lusitana_logistics_operation_menu" 
+                  action="action_vehicle_presentation_checklist_all"
+                  sequence="20"/>   
+    </data>
+</odoo>

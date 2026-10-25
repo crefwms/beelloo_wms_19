@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="beeloo_agenda_view_list" model="ir.ui.view">
+        <field name="name">beeloo.agenda.list</field>
+        <field name="model">beeloo.agenda</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="dt_documento" string="DT"/>
+                <field name="presentation_id"/>
+                <field name="direction"/>
+                <field name="data_agendamento"/>
+                <field name="hora_agendamento"/>
+                <field name="transportadora_id" optional="hide"/>
+                <field name="placa_cavalo" optional="hide"/>
+                <field name="placa_carreta" optional="hide"/>
+                <field name="cliente_name" optional="hide"/>
+                <field name="state" widget="badge" decoration-success="state == 'done'" decoration-info="state == 'draft'" decoration-danger="state == 'cancel'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="beeloo_agenda_view_form" model="ir.ui.view">
+        <field name="name">beeloo.agenda.form</field>
+        <field name="model">beeloo.agenda</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                     <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="dt_documento" string="Documento de Transporte (DT)"/>
+                        <h1><field name="dt_documento"/></h1>
+                    </div>
+                    <group>
+                        <group id="group_main">
+                            <field name="presentation_id" readonly="1"/>
+                            <field name="direction" string="Sentido" required="1"/>
+                            <field name="data_agendamento" required="1"/>
+                            <field name="hora_agendamento"/>
+                        </group>
+                        <group id="group_sap">
+                            <field name="centro"/>
+                            <field name="remessa"/>
+                            <field name="deposito"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Transporte &amp; Cliente">
+                            <group>
+                                <group string="Transporte">
+                                    <field name="transportadora_id"/>
+                                    <field name="placa_cavalo"/>
+                                    <field name="placa_carreta"/>
+                                </group>
+                                <group string="Cliente &amp; Prioridade">
+                                    <field name="canal_vendas"/>
+                                    <field name="prioridade_id"/>
+                                    <field name="cliente_code"/>
+                                    <field name="cliente_name" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Itens da Agenda">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="product_sku_sap"/>
+                                    <field name="product_descr_sap"/>
+                                    <field name="product_id" readonly="1" force_save="1"/>
+                                    <field name="quantidade"/>
+                                    <field name="quantidade_paletes"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_beeloo_agenda" model="ir.actions.act_window">
+        <field name="name">Agenda (DTs)</field>
+        <field name="res_model">beeloo.agenda</field>
+        <field name="view_mode">list,form</field>
+        </record>
+
+    <menuitem
+        id="menu_beeloo_agenda"
+        name="Agenda (DTs)"
+        parent="menu_beeloo_presentation"
+        action="action_beeloo_agenda"
+        sequence="5"/>
+</odoo>

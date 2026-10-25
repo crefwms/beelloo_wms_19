@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_beeloo_consolidation_wizard_form" model="ir.ui.view">
+        <field name="name">beeloo.consolidation.wizard.form</field>
+        <field name="model">beeloo.consolidation.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Consolidação de Sobras">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Consolidação de Retrabalho</h1>
+                    </div>
+                    
+                    <group>
+                        <group string="Configuração">
+                            <field name="location_id" options="{'no_create': True}"/>
+                            <field name="product_id" options="{'no_create': True}"/>
+                        </group>
+                        <group string="Parâmetros">
+                            <field name="palletization_qty"/>
+                            <field name="rpm_dest_location_id" placeholder="Ex: WH/Sucata ou WH/Estoque/Paletes"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-info" role="alert" invisible="total_qty_units == 0">
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>Resultado da Consolidação:</strong><br/>
+                                <span style="font-size: 1.2em;">
+                                    <field name="total_qty_units" readonly="1" class="fw-bold"/> Unidades
+                                </span>
+                            </div>
+                            <div class="col-6">
+                                <strong>Logística Reversa (RPM):</strong><br/>
+                                Serão liberados <field name="rpm_surplus_qty" readonly="1" class="fw-bold text-danger"/> paletes vazios.
+                            </div>
+                        </div>
+                        <div class="row mt-2" invisible="total_qty_units == 0">
+                            <div class="col-12 text-muted">
+                                <em>Nota: Esta operação irá criar UM Lote Unificado com a soma total.</em>
+                            </div>
+                        </div>
+                    </div>
+
+                    <notebook>
+                        <page string="Lotes Disponíveis">
+                            <button name="action_search_lots" 
+                                    string=" Recarregar Lotes" 
+                                    type="object" 
+                                    class="btn-secondary btn-sm mb-2" 
+                                    icon="fa-refresh"/>
+
+                            <field name="line_ids" nolabel="1">
+                                <list editable="bottom" create="0" delete="0" decoration-info="selected == True">
+                                    <field name="selected" widget="boolean_toggle"/>
+                                    <field name="lot_id" readonly="1" force_save="1"/>
+                                    <field name="stock_quant_id" column_invisible="1"/>
+                                    <field name="quantity" readonly="1" force_save="1"/>
+                                    <field name="uom_id" readonly="1" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                
+                <footer>
+                    <button name="action_consolidate" 
+                            string="Consolidar Estoque" 
+                            type="object" 
+                            class="btn-primary"
+                            data-hotkey="q"/>
+                    
+                    <button string="Cancelar" class="btn-secondary" special="cancel" data-hotkey="z"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_beeloo_consolidation_wizard" model="ir.actions.act_window">
+        <field name="name">Wizard de Consolidação</field>
+        <field name="res_model">beeloo.consolidation.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_beeloo_consolidation"
+              name="Consolidação de Sobras"
+              parent="beeloo_wms_internal.menu_beeloo_wms_internal_root" 
+              action="action_beeloo_consolidation_wizard"
+              sequence="30"/>
+
+</odoo>

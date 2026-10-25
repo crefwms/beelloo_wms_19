@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_beeloo_lacre_create_batch" model="ir.actions.act_window">
+        <field name="name">Criar Lacres em Lote</field>
+        <field name="res_model">beeloo.lacre.create_batch</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field> </record>
+
+    <record id="beeloo_lacre_create_batch_view_form" model="ir.ui.view">
+        <field name="name">beeloo.lacre.create_batch.form</field>
+        <field name="model">beeloo.lacre.create_batch</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group string="Sequência">
+                        <field name="prefixo"/>
+                        <field name="numero_inicial"/>
+                        <field name="numero_final"/>
+                        <field name="padding"/>
+                    </group>
+                    <group string="Informações Padrão">
+                        <field name="tipo_lacre"/>
+                        <field name="fornecedor_id"/>
+                        <field name="data_recebimento"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_create_lacres" string="Criar Lacres" type="object" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="beeloo_lacre_view_list" model="ir.ui.view">
+        <field name="name">beeloo.lacre.list</field>
+        <field name="model">beeloo.lacre</field>
+        <field name="arch" type="xml">
+            <list>
+                <header>
+                    <button name="%(action_beeloo_lacre_create_batch)d" 
+                            string="Criar em Lote" type="action" class="oe_highlight"/>
+                </header>
+                
+                <field name="name"/>
+                <field name="tipo_lacre"/>
+                <field name="status" widget="badge" decoration-success="status == 'disponivel'" decoration-info="status == 'em_uso'" decoration-muted="status == 'utilizado'"/>
+                <field name="data_recebimento"/>
+                <field name="data_atribuicao"/>
+                <field name="user_atribuicao_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="beeloo_lacre_view_form" model="ir.ui.view">
+        <field name="name">beeloo.lacre.form</field>
+        <field name="model">beeloo.lacre</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="status" widget="statusbar" statusbar_visible="disponivel,em_uso,utilizado"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Número do Lacre"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="tipo_lacre"/>
+                            <field name="fornecedor_id" 
+                                   invisible="tipo_lacre == 'armador'"/>
+                            <field name="data_recebimento" 
+                                   invisible="tipo_lacre == 'armador'"/>
+                        </group>
+                        <group string="Atribuição (Automático)">
+                            <field name="data_atribuicao"/>
+                            <field name="user_atribuicao_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Observações">
+                            <field name="observacoes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_beeloo_lacre" model="ir.actions.act_window">
+        <field name="name">Cadastro de Lacres</field>
+        <field name="res_model">beeloo.lacre</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem
+        id="menu_beeloo_lacre"
+        name="Lacres"
+        parent="menu_beeloo_wms_config_operation"
+        action="action_beeloo_lacre"
+        sequence="30"/>
+
+</odoo>

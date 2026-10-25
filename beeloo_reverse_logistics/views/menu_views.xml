@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Top Menu -->
+    <menuitem id="menu_reverse_logistics_root"
+              name="Logística Reversa"
+              web_icon="beeloo_reverse_logistics,static/description/icon.png"
+              sequence="10"/>
+
+    <!-- Control Tower (Main Dashboard) -->
+    <menuitem id="menu_reverse_logistics_dashboard"
+              name="Control Tower"
+              parent="menu_reverse_logistics_root"
+              action="action_reverse_logistics_control_tower"
+              sequence="10"/>
+
+    <!-- Operations -->
+    <menuitem id="menu_reverse_logistics_ops"
+              name="Operações"
+              parent="menu_reverse_logistics_root"
+              sequence="20"/>
+
+    <menuitem id="menu_reverse_logistics_rma"
+              name="Devoluções (RMA)"
+              parent="menu_reverse_logistics_ops"
+              action="action_reverse_logistics_rma"
+              sequence="10"/>
+
+    <menuitem id="menu_reverse_logistics_batch"
+              name="Coletas / Rotas"
+              parent="menu_reverse_logistics_ops"
+              action="action_reverse_logistics_batch"
+              sequence="20"/>
+
+    <!-- Configurations -->
+    <menuitem id="menu_reverse_logistics_config"
+              name="Configurações"
+              parent="menu_reverse_logistics_root"
+              sequence="100"/>
+
+    <menuitem id="menu_reverse_logistics_safety_checklist"
+              name="Checklists de Segurança"
+              parent="menu_reverse_logistics_config"
+              action="action_reverse_logistics_safety_checklist"
+              sequence="10"/>
+</odoo>

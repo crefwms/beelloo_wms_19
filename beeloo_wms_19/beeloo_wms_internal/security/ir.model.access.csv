@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_beeloo_rework,beeloo.rework,model_beeloo_rework,stock.group_stock_user,1,1,1,1
+access_beeloo_cycle_count_plan,beeloo.cycle.count.plan,model_beeloo_cycle_count_plan,stock.group_stock_user,1,1,1,1
+access_beeloo_damage_report,beeloo.damage.report,model_beeloo_damage_report,stock.group_stock_user,1,1,1,1
+access_beeloo_damage_report_wizard,beeloo.damage.report.wizard,model_beeloo_damage_report_wizard,stock.group_stock_user,1,1,1,1
+access_beeloo_cycle_count_plan_line,beeloo.cycle.count.plan.line,model_beeloo_cycle_count_plan_line,stock.group_stock_user,1,1,1,1
+access_beeloo_consolidation_wizard,beeloo.consolidation.wizard,model_beeloo_consolidation_wizard,base.group_user,1,1,1,1
+access_beeloo_consolidation_line,beeloo.consolidation.line,model_beeloo_consolidation_line,base.group_user,1,1,1,1

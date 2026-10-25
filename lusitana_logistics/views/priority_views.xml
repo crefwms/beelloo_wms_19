@@ -1,0 +1,44 @@
+<odoo>
+    <data>
+
+        <record id="view_lusitana_logistics_priority_list" model="ir.ui.view">
+            <field name="name">lusitana_logistics.priority.list</field>
+            <field name="model">lusitana_logistics.priority</field>
+            <field name="arch" type="xml">
+                <list string="Prioridades de Carregamento" editable="top">
+                    <field name="sequence" widget="handle"/>
+                    <field name="direction"/>
+                    <field name="name"/>
+                    <field name="sap_code"/>
+                    <field name="urgency_level"/> 
+                    <field name="is_priority_client"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_lusitana_logistics_priority_form" model="ir.ui.view">
+            <field name="name">lusitana_logistics.priority.form</field>
+            <field name="model">lusitana_logistics.priority</field>
+            <field name="arch" type="xml">
+                <form string="Prioridade">
+                    <sheet>
+                        <group>
+                            <field name="direction"/>
+                            <field name="name"/>
+                            <field name="sap_code"/>
+                            <field name="urgency_level"/>
+                            <field name="is_priority_client"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_lusitana_logistics_priority" model="ir.actions.act_window">
+            <field name="name">Prioridades de Carregamento</field>
+            <field name="res_model">lusitana_logistics.priority</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+    </data>
+</odoo>

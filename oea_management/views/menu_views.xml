@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_oea_root"
+              name="OEA"
+              web_icon="oea_management,static/description/icon.png"
+              sequence="10"/>
+
+    <menuitem id="menu_oea_main"
+              name="Gestão OEA"
+              parent="menu_oea_root"
+              sequence="10"/>
+
+    <menuitem id="menu_oea_requirements"
+              name="Requisitos"
+              parent="menu_oea_main"
+              action="action_oea_requirement"
+              sequence="10"/>
+
+    <menuitem id="menu_oea_requirement_items"
+              name="Itens de Ação"
+              parent="menu_oea_main"
+              action="oea_requirement_item_action"
+              sequence="15"/>
+
+    <menuitem id="menu_oea_audits"
+              name="Auditorias"
+              parent="menu_oea_main"
+              action="action_oea_audit"
+              sequence="20"/>
+
+    <menuitem id="menu_oea_sgsi"
+              name="SGSI"
+              parent="menu_oea_root"
+              sequence="5"/>
+
+    <menuitem id="menu_oea_it_assets"
+              name="Ativos de TI"
+              parent="menu_oea_sgsi"
+              action="oea_it_asset_action"
+              sequence="10"/>
+
+    <menuitem id="menu_oea_security_incidents"
+              name="Incidentes de Segurança"
+              parent="menu_oea_sgsi"
+              action="oea_security_incident_action"
+              sequence="20"/>
+
+    <menuitem id="menu_oea_config"
+              name="Configuração"
+              parent="menu_oea_root"
+              sequence="100"/>
+
+    <menuitem id="menu_oea_import"
+              name="Importar do Trello"
+              parent="menu_oea_config"
+              action="action_oea_import_trello"
+              sequence="10"/>
+</odoo>

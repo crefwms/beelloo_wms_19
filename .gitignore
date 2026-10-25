@@ -2,3 +2,10 @@
 __pycache__/
 .vscode/
 .idea/
+
+# IDEs, Agentes e Chaves
+.claude/
+*/.claude/
+.env*
+*.key
+settings.json

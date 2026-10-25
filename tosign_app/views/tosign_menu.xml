@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_tosign_root"
+              name="ToSign"
+              sequence="100"
+              web_icon="tosign_app,static/description/icon.png"/>
+    
+    <menuitem id="menu_tosign_documents"
+              name="Documentos"
+              parent="menu_tosign_root"
+              action="action_tosign_document"
+              sequence="10"/>
+</odoo>

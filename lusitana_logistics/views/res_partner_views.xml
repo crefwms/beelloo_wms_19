@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_partner_form_inherit_lusitana_logistics" model="ir.ui.view">
+            <field name="name">res.partner.form.inherit.lusitana.logistics</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='function']" position="after">
+                    <field name="is_motorist"/>
+                    <field name="is_location"/>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page string="Informações do Motorista" modifiers="{'invisible': [('is_motorist', '=', False)]}">
+                        <group>
+                            <group>
+                                <field name="cnh_number"/>
+                                <field name="cnh_category"/>
+                                <field name="cnh_expiration_date"/>
+                            </group>
+                             <group>
+                                <field name="validade_integracao"/>
+                            </group>
+                            <group>
+                                <field name="mopp_certificate"/>
+                                <field name="mopp_expiration_date"/>
+                            </group>
+                        </group> 
+                        <group/> 
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

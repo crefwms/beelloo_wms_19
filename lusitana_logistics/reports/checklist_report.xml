@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_report_presentation_checklist" model="ir.actions.report">
+            <field name="name">Imprimir Checklist de Vistoria</field>
+            <field name="model">lusitana_logistics.vehicle_presentation_checklist</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">lusitana_logistics.report_checklist_template</field>
+            <field name="report_file">lusitana_logistics.report_checklist_template</field>
+            <field name="print_report_name">'Checklist - %s' % (object.presentation_id.name)</field>
+            <field name="binding_model_id" eval="False"/>
+        </record>
+
+        <template id="report_checklist_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <h2>Vistoria de Veículo: <span t-field="o.checklist_template_id.name"/></h2>
+                            
+                            <div class="row mt-4 mb-4">
+                                <div class="col-6">
+                                    <strong>Apresentação:</strong> <span t-field="o.presentation_id.name"/><br/>
+                                    <strong>Data da Vistoria:</strong> <span t-field="o.end_time" t-options='{"widget": "datetime"}'/><br/>
+                                    <strong>Vistoriador:</strong> <span t-field="o.filled_by_id.name"/>
+                                </div>
+                                <div class="col-6">
+                                    <strong>Motorista:</strong> <span t-field="o.presentation_id.motorista_id.name"/><br/>
+                                    <strong>Transportadora:</strong> <span t-field="o.presentation_id.cavalo_id.transportadora_id.name"/><br/>
+                                    <strong>Veículo (Placa):</strong> <span t-field="o.presentation_id.cavalo_id.name"/>
+                                </div>
+                            </div>
+
+                            <h3 t-if="o.presentation_id.implemento_ids">Implementos</h3>
+                            <ul t-if="o.presentation_id.implemento_ids" class="list-inline">
+                                <li t-foreach="o.presentation_id.implemento_ids" t-as="implemento" class="list-inline-item">
+                                    <span class="badge badge-secondary" t-field="implemento.implemento_id.name"/>
+                                </li>
+                            </ul>
+
+                            <h3>Itens Verificados</h3>
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 60%;">Pergunta / Item de Verificação</th>
+                                        <th class="text-center">Resposta</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.item_line_ids" t-as="line">
+                                        <td><span t-field="line.name"/></td>
+                                        <td class="text-center">
+                                            <span t-if="line.answer_type == 'boolean' and line.answer_boolean" class="fa fa-check-square-o text-success"/>
+                                            <span t-if="line.answer_type == 'boolean' and not line.answer_boolean" class="fa fa-square-o text-danger"/>
+                                            <span t-if="line.answer_type != 'boolean'">
+                                                <span t-field="line.answer_text"/>
+                                                <span t-field="line.answer_long_text"/>
+                                                <span t-field="line.answer_selection"/>
+                                                <span t-field="line.answer_integer"/>
+                                                <span t-field="line.answer_float"/>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            <div class="row mt-5">
+                                <div class="col-6 text-center">
+                                    <hr/>
+                                    <p>Assinatura do Vistoriador</p>
+                                    <p><span t-field="o.filled_by_id.name"/></p>
+                                </div>
+                                <div class="col-6 text-center">
+                                    <hr/>
+                                    <p>Assinatura do Motorista</p>
+                                    <p><span t-field="o.presentation_id.motorista_id.name"/></p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

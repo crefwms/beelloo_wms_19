@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="tosign_sign_page">
+        <t t-call="web.layout">
+            <t t-set="title">Assinar Documento</t>
+            <div class="o_tosign_sign_container">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="text-center mb-4">Assinar Documento</h2>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 offset-md-2">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4><t t-esc="document.name"/></h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="alert alert-info">
+                                        <strong>Status:</strong> <t t-esc="document.state"/>
+                                    </div>
+                                    <div class="signature-container">
+                                        <h5>Assinatura Digital</h5>
+                                        <canvas id="signature-canvas" width="500" height="200" 
+                                                style="border: 2px dashed #ccc; background: white;"></canvas>
+                                        <div class="mt-2">
+                                            <button type="button" class="btn btn-secondary" id="clear-signature">
+                                                Limpar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button type="button" class="btn btn-primary" id="save-signature">
+                                        Confirmar Assinatura
+                                    </button>
+                                    <a t-attf-href="/web#id={{document_id}}&amp;model=tosign.document&amp;view_type=form" 
+                                       class="btn btn-secondary">
+                                        Cancelar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <t t-set="signature_document_id" t-value="document_id"/>
+            <t t-call="tosign_app.signature_script"/>
+        </t>
+    </template>
+
+    <template id="signature_script">
+        <script type="text/javascript">
+            (function() {
+                var canvas = document.getElementById('signature-canvas');
+                var ctx = canvas.getContext('2d');
+                var drawing = false;
+                var document_id = <t t-esc="signature_document_id"/>;
+
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+
+                canvas.addEventListener('mousedown', function(e) {
+                    drawing = true;
+                    ctx.beginPath();
+                    ctx.moveTo(e.offsetX, e.offsetY);
+                });
+
+                canvas.addEventListener('mousemove', function(e) {
+                    if (drawing) {
+                        ctx.lineTo(e.offsetX, e.offsetY);
+                        ctx.stroke();
+                    }
+                });
+
+                canvas.addEventListener('mouseup', function() {
+                    drawing = false;
+                });
+
+                canvas.addEventListener('mouseout', function() {
+                    drawing = false;
+                });
+
+                document.getElementById('clear-signature').addEventListener('click', function() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                });
+
+                document.getElementById('save-signature').addEventListener('click', function() {
+                    var signatureData = canvas.toDataURL('image/png');
+                    
+                    if (signatureData === 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==') {
+                        alert('Por favor, faça sua assinatura antes de confirmar.');
+                        return;
+                    }
+
+                    fetch('/tosign/save_signature', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            document_id: document_id,
+                            signature_data: signatureData
+                        })
+                    })
+                    .then(function(response) {
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        if (data.success) {
+                            window.location.href = '/web#id=' + document_id + '&amp;model=tosign.document&amp;view_type=form';
+                        } else {
+                            alert('Erro: ' + data.error);
+                        }
+                    })
+                    .catch(function(error) {
+                        alert('Erro ao salvar assinatura: ' + error);
+                    });
+                });
+            })();
+        </script>
+    </template>
+
+    <template id="tosign_error">
+        <t t-call="web.layout">
+            <t t-set="title">Erro</t>
+            <div class="container mt-5">
+                <div class="alert alert-danger">
+                    <h4>Erro</h4>
+                    <p><t t-esc="error"/></p>
+                    <a href="/web" class="btn btn-primary">Voltar</a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="tosign_upload_page">
+        <t t-call="web.layout">
+            <t t-set="title">Upload de Documento</t>
+            <div class="container mt-5">
+                <div class="row">
+                    <div class="col-md-6 offset-md-3">
+                        <h2>Enviar Documento para Assinatura</h2>
+                        <form action="/tosign/upload" method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="file">Selecione o arquivo (PDF, DOC, DOCX)</label>
+                                <input type="file" name="file" class="form-control" 
+                                       accept=".pdf,.doc,.docx" required="required"/>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="oea_requirement_item_view_graph" model="ir.ui.view">
+        <field name="name">oea.requirement.item.graph</field>
+        <field name="model">oea.requirement.item</field>
+        <field name="arch" type="xml">
+            <graph string="Estatísticas OEA" type="bar" stacked="false">
+                <field name="state" type="row"/>
+                <field name="requirement_modality" type="row"/>
+            </graph>
+        </field>
+    </record>
+</odoo>

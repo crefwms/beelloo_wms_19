@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_picking_form_beeloo_outbound" model="ir.ui.view">
+        <field name="name">stock.picking.form.beeloo.outbound</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_generate_traceability_report" 
+                        string="📄 Gerar Dados NFe (Lastro)" 
+                        type="object" 
+                        class="btn-secondary"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

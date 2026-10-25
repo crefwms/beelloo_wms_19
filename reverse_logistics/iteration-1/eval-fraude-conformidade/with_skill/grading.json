@@ -1,0 +1,36 @@
+{
+  "eval_id": 0,
+  "eval_name": "fraude-conformidade",
+  "expectations": [
+    {
+      "text": "(foto-coleta) Menciona registro fotográfico na coleta ou no recebimento como controle",
+      "passed": true,
+      "evidence": "Camada 1 dedica seção inteira a 'Registro fotográfico obrigatório' no momento da coleta domiciliar/drop-off, com foto da embalagem fechada, aberta, do número de série e do lacre. Camada 2 repete fotos no recebimento."
+    },
+    {
+      "text": "(pesagem) Menciona pesagem / validação por peso como mecanismo de detecção de fraude",
+      "passed": true,
+      "evidence": "'Registre o peso bruto da embalagem no momento da coleta. Um notebook que sai pesando 3,2 kg e volta pesando 3,9 kg já aciona alerta. Configure tolerância de ±5%'"
+    },
+    {
+      "text": "(serial) Menciona verificação de número de série (serial / IMEI) do produto",
+      "passed": true,
+      "evidence": "Coleta: 'Foto do número de série / IMEI visível'. Recebimento: checklist inclui 'Serial / IMEI | Leitura do código de barras e comparação com o pedido original'. KPI: '% devoluções com serial validado | 100%'."
+    },
+    {
+      "text": "(historico-cpf) Menciona histórico de devoluções por cliente (CPF/CNPJ) como controle de abuso",
+      "passed": true,
+      "evidence": "Motor de regras: 'Cliente com > 3 devoluções em 90 dias | Flag antifraude + revisão manual obrigatória'. Semana 2-3: 'Configurar motor de regras básico no portal (threshold de devoluções por CPF)'."
+    },
+    {
+      "text": "(motor-regras) Propõe motor de regras, bloqueio automático ou flag antifraude no portal de devoluções",
+      "passed": true,
+      "evidence": "'Camada 3 — Motor de Regras no Portal' com tabela de condições e ações automáticas, incluindo 'Flag antifraude', 'Bloquear devolução automaticamente' e 'Flag para análise manual'."
+    },
+    {
+      "text": "(idioma-pt) Resposta inteiramente em português do Brasil",
+      "passed": true,
+      "evidence": "Todo o conteúdo está em português do Brasil, sem trechos em outro idioma."
+    }
+  ]
+}

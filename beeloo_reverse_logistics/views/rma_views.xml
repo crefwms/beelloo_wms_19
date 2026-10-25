@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_reverse_logistics_rma_tree" model="ir.ui.view">
+        <field name="name">reverse.logistics.rma.tree</field>
+        <field name="model">reverse.logistics.rma</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="sla_status == 'overdue'" decoration-warning="sla_status == 'warning'">
+                <field name="name"/>
+                <field name="sale_order_id"/>
+                <field name="partner_id"/>
+                <field name="marketplace_type"/>
+                <field name="marketplace_sla_deadline" widget="remaining_days"/>
+                <field name="sla_status" invisible="1"/>
+                <field name="state" widget="badge" decoration-info="state == 'authorized'" decoration-success="state == 'finished'"/>
+                <field name="weight_divergence" widget="progressbar"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_reverse_logistics_rma_form" model="ir.ui.view">
+        <field name="name">reverse.logistics.rma.form</field>
+        <field name="model">reverse.logistics.rma</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_authorize" string="Autorizar Retorno" type="object" invisible="state != 'draft'" class="oe_highlight"/>
+                    <button name="action_collect" string="Confirmar Coleta" type="object" invisible="state != 'authorized'"/>
+                    <button name="action_receive" string="Recebido no CD" type="object" invisible="state != 'collected'"/>
+                    <button name="action_safety_start" string="Iniciar Insp. Segurança" type="object" invisible="state != 'received'"/>
+                    <button name="action_triage_start" string="Iniciar Triagem Técnica" type="object" invisible="state != 'safety_check'"/>
+                    <button name="action_grading_start" string="Definir Grading" type="object" invisible="state != 'inspecting'"/>
+                    <button name="action_finish" string="Finalizar Processo" type="object" invisible="state != 'grading'" class="oe_highlight"/>
+                    <button name="action_reject" string="Rejeitar / Fraude" type="object" invisible="state in ('draft', 'finished', 'rejected')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,authorized,collected,received,safety_check,inspecting,grading,finished"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group name="info" string="Informações Básicas">
+                            <field name="sale_order_id"/>
+                            <field name="partner_id"/>
+                            <field name="marketplace_type"/>
+                        </group>
+                        <group name="sla" string="Marketplace &amp; SLA">
+                            <field name="marketplace_sla_deadline" string="Prazo Limite (Coleta/Retorno)"/>
+                            <field name="sla_status" widget="badge" decoration-danger="sla_status == 'overdue'" decoration-warning="sla_status == 'warning'"/>
+                            <field name="date_collected" readonly="1" invisible="not date_collected"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="collection" string="Coleta">
+                            <group>
+                                <group string="Dados da Coleta">
+                                    <field name="collection_type"/>
+                                    <field name="carrier_tracking_ref"/>
+                                    <field name="collector_id" readonly="1"/>
+                                </group>
+                                <group string="Assinatura do Cliente">
+                                    <field name="collection_signature" widget="signature" nolabel="1"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="weight_declared"/>
+                                <field name="weight_received"/>
+                                <field name="weight_divergence" readonly="1"/>
+                            </group>
+                        </page>
+                        <page name="safety" string="Segurança">
+                            <group>
+                                <field name="receiver_id" readonly="1" string="Recebido por"/>
+                                <field name="triager_id" readonly="1" string="Inspecionado por"/>
+                            </group>
+                            <field name="safety_log_ids"/>
+                        </page>
+                        <page name="grading" string="Grading / Triagem">
+                            <group>
+                                <field name="grader_id" readonly="1"/>
+                            </group>
+                            <field name="grading_ids">
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="checklist_status"/>
+                                    <field name="grade"/>
+                                    <field name="photo_ids" widget="many2many_binary" string="Fotos"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_reverse_logistics_rma" model="ir.actions.act_window">
+        <field name="name">Devoluções (RMA)</field>
+        <field name="res_model">reverse.logistics.rma</field>
+        <field name="view_mode">list,form,kanban</field>
+    </record>
+</odoo>

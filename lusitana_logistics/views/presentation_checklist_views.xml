@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_vehicle_presentation_form_inherit_checklist" model="ir.ui.view">
+            <field name="name">vehicle.presentation.form.inherit.checklist</field>
+            <field name="model">lusitana_logistics.vehicle_presentation</field>
+            <field name="inherit_id" ref="lusitana_logistics.lusitana_logistics_vehicle_presentation_form_view"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//sheet" position="before">
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_checklists"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-check-square-o"
+                            modifiers="{'invisible': [('id', '=', False)]}">
+                            <field name="checklist_count" widget="statinfo" string="Checklists"/>
+                        </button>
+                    </div>
+                </xpath>
+
+                <xpath expr="//notebook" position="inside">
+                    <page string="Checklists" name="checklists">
+                        <field name="checklist_ids" readonly="1">
+                            <list>
+                                <field name="display_name"/>
+                                <field name="status" widget="badge" decoration-success="status == 'concluido_ok'" decoration-danger="status == 'concluido_nok'"/>
+                                <field name="filled_by_id"/>
+                            </list>
+                        </field>
+                    </page>
+                </xpath>
+
+            </field>
+        </record>
+    </data>
+</odoo>

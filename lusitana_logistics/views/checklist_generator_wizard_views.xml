@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="checklist_generator_wizard_form_view" model="ir.ui.view">
+            <field name="name">checklist.generator.wizard.form</field>
+            <field name="model">lusitana_logistics.checklist_generator_wizard</field>
+            <field name="arch" type="xml">
+                <form string="Gerar Checklist">
+                    <group>
+                        <field name="checklist_template_id" options="{'no_create': True, 'no_open': True}"/>
+                    </group>
+                    <footer>
+                        <button name="action_generate_and_open_checklist" string="Gerar e Preencher" type="object" class="btn-primary"/>
+                        <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

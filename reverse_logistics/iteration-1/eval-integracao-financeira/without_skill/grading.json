@@ -1,0 +1,36 @@
+{
+  "eval_id": 2,
+  "eval_name": "integracao-financeira",
+  "expectations": [
+    {
+      "text": "(mapeamento-eventos) Mapeia pelo menos 3 eventos logísticos distintos com sua ação financeira correspondente",
+      "passed": true,
+      "evidence": "5 eventos mapeados (Evento 1-5) com ações financeiras, e matriz de risco reforça: postagem → reservar crédito (nunca liberar); entregue no CD → liberar para baixo valor; triagem aprovada → liberar estorno."
+    },
+    {
+      "text": "(grading-gatilho) Menciona grading (A/B/C-Grade ou equivalente) como gatilho para liberar ou reter o crédito",
+      "passed": false,
+      "evidence": "Não menciona grading A/B/C-Grade. O gatilho de crédito é 'triagem aprovada' vs 'triagem recusada' e threshold de valor (abaixo de R$ 150). Não há classificação por grau de qualidade do produto."
+    },
+    {
+      "text": "(sla-marketplace) Aborda SLA do marketplace (Magalu) e consequências de descumprimento",
+      "passed": false,
+      "evidence": "Menciona reduzir de 15 para 5-7 dias e o contexto da Magalu, mas não aborda explicitamente o SLA contratual do marketplace nem as consequências formais de descumprimento (penalizações, rebaixamento de conta, etc.)."
+    },
+    {
+      "text": "(estorno-parcial-total) Distingue estorno total (produto ok) de estorno parcial ou retido (avaria ou fraude)",
+      "passed": false,
+      "evidence": "Menciona 'Liberar estorno' após triagem aprovada e 'Triagem recusada → Contestação documentada', mas não distingue estorno parcial (produto avariado) de estorno total (produto ok). Não há menção a retenção parcial por avaria."
+    },
+    {
+      "text": "(integracao-gateway) Menciona integração com gateway de pagamento ou API do marketplace para disparar estorno",
+      "passed": true,
+      "evidence": "Seção 3: 'Integração via API do Magalu para aprovação automática ao fim da triagem'. Evento 4: 'Liberar estorno imediatamente via integração com API do Magalu'."
+    },
+    {
+      "text": "(idioma-pt) Resposta inteiramente em português do Brasil",
+      "passed": true,
+      "evidence": "Todo o conteúdo está em português do Brasil, sem trechos em outro idioma."
+    }
+  ]
+}

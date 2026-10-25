@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_reverse_logistics_control_tower_pivot" model="ir.ui.view">
+        <field name="name">reverse.logistics.control.tower.pivot</field>
+        <field name="model">reverse.logistics.control.tower</field>
+        <field name="arch" type="xml">
+            <pivot string="Análise de Devoluções">
+                <field name="marketplace_type" type="row"/>
+                <field name="state" type="col"/>
+                <field name="sla_status" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_reverse_logistics_control_tower" model="ir.actions.act_window">
+        <field name="name">Control Tower</field>
+        <field name="res_model">reverse.logistics.control.tower</field>
+        <field name="view_mode">pivot,graph</field>
+    </record>
+</odoo>

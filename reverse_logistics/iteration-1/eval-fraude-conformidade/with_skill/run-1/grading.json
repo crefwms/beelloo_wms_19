@@ -1,0 +1,46 @@
+{
+  "eval_id": 0,
+  "eval_name": "fraude-conformidade",
+  "summary": {
+    "pass_rate": 1.0,
+    "passed": 6,
+    "failed": 0,
+    "total": 6
+  },
+  "timing": {
+    "total_duration_seconds": 98.4,
+    "total_tokens": 17744
+  },
+  "expectations": [
+    {
+      "text": "Menciona registro fotográfico na coleta ou no recebimento como controle",
+      "passed": true,
+      "evidence": "Camada 1 dedica seção inteira a 'Registro fotográfico obrigatório' no momento da coleta domiciliar/drop-off. Camada 2 repete fotos no recebimento."
+    },
+    {
+      "text": "Menciona pesagem / validação por peso como mecanismo de detecção de fraude",
+      "passed": true,
+      "evidence": "'Registre o peso bruto da embalagem no momento da coleta. Um notebook que sai pesando 3,2 kg e volta pesando 3,9 kg já aciona alerta. Configure tolerância de ±5%'"
+    },
+    {
+      "text": "Menciona verificação de número de série (serial / IMEI) do produto",
+      "passed": true,
+      "evidence": "Coleta: 'Foto do número de série / IMEI visível'. Recebimento: checklist inclui leitura do código de barras e comparação com pedido original."
+    },
+    {
+      "text": "Menciona histórico de devoluções por cliente (CPF/CNPJ) como controle de abuso",
+      "passed": true,
+      "evidence": "Motor de regras: 'Cliente com > 3 devoluções em 90 dias | Flag antifraude + revisão manual obrigatória'."
+    },
+    {
+      "text": "Propõe motor de regras, bloqueio automático ou flag antifraude no portal de devoluções",
+      "passed": true,
+      "evidence": "'Camada 3 — Motor de Regras no Portal' com tabela de condições e ações automáticas, incluindo bloqueio automático e flags."
+    },
+    {
+      "text": "Resposta inteiramente em português do Brasil",
+      "passed": true,
+      "evidence": "Todo o conteúdo está em português do Brasil."
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "skill_name": "odoo-module-creator",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Create a new Odoo 18 module called 'library_management' in the current directory. It should have a model 'library.book' with fields: 'title' (Char, required), 'author_id' (Many2one to 'res.partner'), 'isbn' (Char), and 'state' (Selection: draft, available, borrowed, lost, default='draft'). Include the manifest and security file.",
+      "expected_output": "A complete Odoo 18 module structure with models/library_book.py, __manifest__.py, and security/ir.model.access.csv. The version should be 18.x.x.x.x.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "For the 'library_management' module, create a form view and a tree view for the 'library.book' model. The form view should have a status bar and a sheet with groups. Also create an action and a menuitem for it.",
+      "expected_output": "XML file(s) in views/ with proper ir.ui.view and ir.actions.act_window records. The view IDs should follow best practices (view_library_book_form, etc.).",
+      "files": []
+    }
+  ]
+}

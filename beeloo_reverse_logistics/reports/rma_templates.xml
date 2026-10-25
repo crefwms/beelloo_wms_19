@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_rma_collection_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        
+                        <div class="text-center">
+                            <h2>Comprovante de Coleta (RMA)</h2>
+                            <h3 t-field="doc.name"/>
+                        </div>
+
+                        <div class="row mt32 mb32">
+                            <div class="col-6">
+                                <strong>Cliente:</strong>
+                                <p t-field="doc.partner_id"/>
+                                <strong>Pedido Original:</strong>
+                                <p t-field="doc.sale_order_id"/>
+                            </div>
+                            <div class="col-6 text-right">
+                                <strong>Data da Coleta:</strong>
+                                <p t-field="doc.date_collected"/>
+                                <strong>Marketplace:</strong>
+                                <p t-field="doc.marketplace_type"/>
+                            </div>
+                        </div>
+
+                        <table class="table table-sm o_main_table">
+                            <thead>
+                                <tr>
+                                    <th>Referência de Rastreio</th>
+                                    <th class="text-right">Peso Declarado</th>
+                                    <th class="text-right">Tipo de Coleta</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span t-field="doc.carrier_tracking_ref"/></td>
+                                    <td class="text-right"><span t-field="doc.weight_declared"/> kg</td>
+                                    <td class="text-right"><span t-field="doc.collection_type"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="row mt64">
+                            <div class="col-6">
+                                <p><strong>Motorista / Coletor:</strong></p>
+                                <p t-field="doc.collector_id"/>
+                                <div style="border-top: 1px solid black; width: 80%; margin-top: 20px;">
+                                    Assinatura do Motorista
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <p><strong>Assinatura do Cliente:</strong></p>
+                                <div t-if="doc.collection_signature">
+                                    <img t-att-src="image_data_uri(doc.collection_signature)" style="max-height: 2cm; max-width: 5cm;"/>
+                                </div>
+                                <div style="border-top: 1px solid black; width: 80%; margin-top: 20px;">
+                                    Assinatura do Cliente
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt32">
+                            <p>Este documento serve como comprovante legal de que os itens descritos foram coletados para processamento de logística reversa.</p>
+                        </div>
+
+                        <div class="oe_structure"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

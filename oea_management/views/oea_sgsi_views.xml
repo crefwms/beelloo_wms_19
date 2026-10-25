@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- OEAS IT Asset Views -->
+    <record id="oea_it_asset_view_tree" model="ir.ui.view">
+        <field name="name">oea.it.asset.tree</field>
+        <field name="model">oea.it.asset</field>
+        <field name="arch" type="xml">
+            <list string="Ativos de TI" decoration-success="classification=='public'" decoration-warning="classification=='internal'" decoration-danger="classification=='confidential'" decoration-info="classification=='restricted'">
+                <field name="name"/>
+                <field name="asset_tag"/>
+                <field name="category"/>
+                <field name="classification"/>
+                <field name="criticality" widget="badge"/>
+                <field name="assigned_to"/>
+                <field name="location_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="oea_it_asset_view_form" model="ir.ui.view">
+        <field name="name">oea.it.asset.form</field>
+        <field name="model">oea.it.asset</field>
+        <field name="arch" type="xml">
+            <form string="Ativo de TI">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="asset_tag"/>
+                            <field name="category"/>
+                            <field name="classification"/>
+                        </group>
+                        <group>
+                            <field name="criticality"/>
+                            <field name="active"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="Identificação">
+                        <group>
+                            <field name="serial_number"/>
+                            <field name="lot_number"/>
+                            <field name="barcode"/>
+                        </group>
+                        <group>
+                            <field name="product_id"/>
+                            <field name="vendor_id"/>
+                        </group>
+                    </group>
+                    <group string="Localização e Responsável">
+                        <group>
+                            <field name="location_id"/>
+                            <field name="department_id"/>
+                        </group>
+                        <group>
+                            <field name="assigned_to"/>
+                            <field name="partner_id"/>
+                        </group>
+                    </group>
+                    <group string="Datas e Custo">
+                        <group>
+                            <field name="purchase_date"/>
+                            <field name="warranty_end_date"/>
+                        </group>
+                        <group>
+                            <field name="cost"/>
+                            <field name="currency_id"/>
+                        </group>
+                    </group>
+                    <group string="Vinculação Odoo">
+                        <group>
+                            <field name="odoo_model_id"/>
+                            <field name="odoo_record_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Descrição" name="description">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="oea_it_asset_action" model="ir.actions.act_window">
+        <field name="name">Ativos de TI</field>
+        <field name="res_model">oea.it.asset</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crie seu primeiro ativo de TI
+            </p>
+        </field>
+    </record>
+
+    <!-- Security Incident Views -->
+    <record id="oea_security_incident_view_tree" model="ir.ui.view">
+        <field name="name">oea.security.incident.tree</field>
+        <field name="model">oea.security.incident</field>
+        <field name="arch" type="xml">
+            <list string="Incidentes de Segurança" decoration-success="state=='closed'" decoration-warning="state=='resolved'" decoration-danger="severity in ('high','critical')">
+                <field name="name"/>
+                <field name="incident_date"/>
+                <field name="incident_type"/>
+                <field name="severity" widget="badge"/>
+                <field name="priority" widget="priority"/>
+                <field name="state"/>
+                <field name="asset_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="oea_security_incident_view_form" model="ir.ui.view">
+        <field name="name">oea.security.incident.form</field>
+        <field name="model">oea.security.incident</field>
+        <field name="arch" type="xml">
+            <form string="Incidente de Segurança">
+                <header>
+                    <button name="action_investigate" type="object" string="Iniciar Investigação" class="oe_highlight" invisible="state != 'new'"/>
+                    <button name="action_contain" type="object" string="Conter" class="oe_highlight" invisible="state != 'investigating'"/>
+                    <button name="action_resolve" type="object" string="Resolver" class="oe_success" invisible="state != 'contained'"/>
+                    <button name="action_close" type="object" string="Fechar" invisible="state != 'resolved'"/>
+                    <button name="action_reopen" type="object" string="Reabrir" invisible="state in ('new','investigating')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="new,investigating,contained,resolved,closed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="incident_type"/>
+                            <field name="severity"/>
+                            <field name="priority"/>
+                        </group>
+                        <group>
+                            <field name="incident_date"/>
+                            <field name="detection_date"/>
+                            <field name="active"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="Entidades Envolvidas">
+                        <group>
+                            <field name="asset_id"/>
+                            <field name="user_id"/>
+                        </group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="partner_id"/>
+                        </group>
+                    </group>
+                    <group string="Relacionamento com OEA">
+                        <group>
+                            <field name="category_id"/>
+                            <field name="requirement_item_id"/>
+                        </group>
+                        <group>
+                            <field name="affect_operations"/>
+                            <field name="affect_compliance"/>
+                            <field name="notify_authorities"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Descrição" name="description">
+                            <field name="description"/>
+                        </page>
+                        <page string="Causa Raiz" name="root_cause">
+                            <field name="root_cause"/>
+                        </page>
+                        <page string="Resolução" name="resolution">
+                            <field name="resolution"/>
+                        </page>
+                        <page string="Ações Tomadas" name="actions">
+                            <field name="action_ids">
+                                <list editable="bottom">
+                                    <field name="action_date"/>
+                                    <field name="action_type"/>
+                                    <field name="description"/>
+                                    <field name="performed_by"/>
+                                    <field name="result"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Evidências" name="evidence">
+                            <field name="evidence_attachment_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="file_size"/>
+                                    <field name="create_date"/>
+                                    <field name="create_uid"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="oea_security_incident_action" model="ir.actions.act_window">
+        <field name="name">Incidentes de Segurança</field>
+        <field name="res_model">oea.security.incident</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Registre seu primeiro incidente de segurança
+            </p>
+        </field>
+    </record>
+</odoo>

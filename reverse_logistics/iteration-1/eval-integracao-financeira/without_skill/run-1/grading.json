@@ -1,0 +1,46 @@
+{
+  "eval_id": 2,
+  "eval_name": "integracao-financeira",
+  "summary": {
+    "pass_rate": 0.5,
+    "passed": 3,
+    "failed": 3,
+    "total": 6
+  },
+  "timing": {
+    "total_duration_seconds": 84.2,
+    "total_tokens": 11485
+  },
+  "expectations": [
+    {
+      "text": "Mapeia pelo menos 3 eventos logísticos distintos com sua ação financeira correspondente",
+      "passed": true,
+      "evidence": "5 eventos mapeados com ações financeiras: postagem → reservar; em trânsito → atualizar prazo; entregue no CD → considerar antecipação; triagem aprovada → liberar; triagem recusada → contestação."
+    },
+    {
+      "text": "Menciona grading (A/B/C-Grade ou equivalente) como gatilho para liberar ou reter o crédito",
+      "passed": false,
+      "evidence": "Não menciona grading A/B/C-Grade. O gatilho é 'triagem aprovada' vs 'triagem recusada' e threshold de valor (R$ 150), sem classificação por grau de qualidade."
+    },
+    {
+      "text": "Aborda SLA do marketplace (Magalu) e consequências de descumprimento",
+      "passed": false,
+      "evidence": "Menciona reduzir de 15 para 5-7 dias, mas não aborda SLA contratual do marketplace nem consequências formais (penalizações, rebaixamento de conta)."
+    },
+    {
+      "text": "Distingue estorno total (produto ok) de estorno parcial ou retido (avaria ou fraude)",
+      "passed": false,
+      "evidence": "Menciona 'Liberar estorno' após triagem aprovada e 'Contestação' após recusa, mas não distingue estorno parcial de total por estado do produto."
+    },
+    {
+      "text": "Menciona integração com gateway de pagamento ou API do marketplace para disparar estorno",
+      "passed": true,
+      "evidence": "Seção 3: 'Integração via API do Magalu para aprovação automática ao fim da triagem'."
+    },
+    {
+      "text": "Resposta inteiramente em português do Brasil",
+      "passed": true,
+      "evidence": "Todo o conteúdo está em português do Brasil."
+    }
+  ]
+}

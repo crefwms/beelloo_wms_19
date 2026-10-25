@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_reverse_logistics_batch_tree" model="ir.ui.view">
+        <field name="name">reverse.logistics.batch.tree</field>
+        <field name="model">reverse.logistics.batch</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="driver_id"/>
+                <field name="vehicle_id"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_reverse_logistics_batch_form" model="ir.ui.view">
+        <field name="name">reverse.logistics.batch.form</field>
+        <field name="model">reverse.logistics.batch</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <field name="driver_id"/>
+                        <field name="vehicle_id"/>
+                    </group>
+                    <notebook>
+                        <page string="RMAs em Rota">
+                            <field name="rma_ids"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_reverse_logistics_batch" model="ir.actions.act_window">
+        <field name="name">Coletas / Rotas</field>
+        <field name="res_model">reverse.logistics.batch</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

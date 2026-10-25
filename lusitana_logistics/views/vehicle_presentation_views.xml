@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="lusitana_logistics_vehicle_presentation_list_view" model="ir.ui.view">
+            <field name="name">lusitana_logistics.vehicle.presentation.list</field>
+            <field name="model">lusitana_logistics.vehicle_presentation</field>
+            <field name="arch" type="xml">
+                <list string="Apresentações de Veículo">
+                    <field name="name"/>
+                    <field name="data_apresentacao"/>
+                    <field name="motorista_id"/>
+                    <field name="cavalo_id"/>
+                    <field name="operation_summary"/>
+                    <field name="current_location_id"/>
+                    <field name="data_entrada_patio" optional="hide"/>
+                    <field name="data_inicio_operacao" optional="hide"/>
+                    <field name="monitoramento_datetime" optional="hide"/>
+                    <field name="data_fim_operacao" optional="hide"/>
+                    <field name="data_conclusao" optional="hide"/>
+                    <field name="state" widget="badge" decoration-success="state == 'concluido'" decoration-info="state in ('em_operacao', 'ato', 'monitoramento')" decoration-primary="state == 'entrada'" decoration-warning="state == 'aguardando'"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_operation_line_form" model="ir.ui.view">
+            <field name="name">lusitana.logistics.operation.line.form</field>
+            <field name="model">lusitana_logistics.operation_line</field>
+            <field name="arch" type="xml">
+                <form string="Detalhes da Operação">
+                    <header>
+                        <button name="action_start" string="🚀 Iniciar Operação" type="object" class="oe_highlight" visible_when="state == 'pendente'"/>
+                        <button name="action_finish" string="✅ Finalizar Operação" type="object" class="oe_highlight" visible_when="state == 'em_andamento'"/>
+                        <field name="state" widget="statusbar" statusbar_visible="pendente,em_andamento,concluida"/>
+                    </header>
+                    <sheet>
+                        <field name="is_rpm_product_selected" invisible="1"/>
+
+                        <group string="📦 Conferência" invisible_when="state != 'em_andamento'">
+                            <group>
+                                <field name="dt_documento"/>
+
+                                <field name="operation_type_id" 
+                                               domain="[('direction', '=', parent.tipo_operacao_geral)] if parent.tipo_operacao_geral != 'in_out' else []" 
+                                               context="{'default_direction': parent.tipo_operacao_geral if parent.tipo_operacao_geral != 'in_out' else False}" 
+                                               required="1"/>
+                                
+                                <field name="produto_em_conferencia_id" 
+                                    domain="[('id', 'in', produto_ids_permitidos)]"
+                                    options="{'no_create': True, 'no_open': True}"
+                                    placeholder="Selecione o produto..."/>
+                                <field name="conferencia_progresso" readonly="1" 
+                                    class="text-success" 
+                                    style="font-weight: bold; font-size: 14px;"/>
+                            </group>
+                            <group>
+                                <label for="barcode_scan" string="Código de Barras" invisible_when="is_rpm_product_selected == True"/>
+                                <div class="o_row" invisible_when="is_rpm_product_selected == True">
+                                    <field name="barcode_scan" 
+                                        placeholder="Bipe ou digite a etiqueta..." 
+                                        class="oe_inline" style="width: 70%;"/>
+                                    <button name="action_adicionar_etiqueta"
+                                            string="➕ Adicionar" type="object"
+                                            class="oe_highlight btn-primary"/>
+                                </div>
+                                
+                                <label for="quantidade_manual_a_registrar" string="Quantidade Manual" invisible_when="is_rpm_product_selected == False"/>
+                                <div class="o_row" invisible_when="is_rpm_product_selected == False">
+                                    <field name="quantidade_manual_a_registrar" 
+                                        placeholder="Informe a quantidade..." 
+                                        class="oe_inline" style="width: 70%;"/>
+                                    <button name="action_registrar_quantidade_manual"
+                                            string="✔️ Registrar Qtd." type="object"
+                                            class="oe_highlight btn-success"/>
+                                </div>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="📋 Produtos Agendados">
+                                <field name="agenda_encontrada" invisible="1"/> 
+                                
+                                <field name="agenda_line_ids" readonly="1"> 
+                                    <list 
+                                        decoration-success="quantidade_conferida >= quantidade_paletes or quantidade_conferida_manual >= quantidade_paletes" 
+                                        
+                                        decoration-warning="(quantidade_conferida &lt; quantidade_paletes and not is_rpm) or (quantidade_conferida_manual &lt; quantidade_paletes and is_rpm)"
+                                        >
+                                        
+                                        <field name="product_id" readonly="1"/>
+                                        <field name="is_rpm" invisible="1"/> 
+                                        <field name="quantidade_paletes" string="Qtd. Paletes (Agendado)" readonly="1"/>
+                                        <field name="quantidade" string="Qtd. Unidades" optional="hide" readonly="1"/>
+                                        <field name="quantidade_conferida" string="Qtd. Bipada" readonly="1" sum="Total Bipado" optional="show" invisible_when="is_rpm == True"/>
+                                        <field name="quantidade_conferida_manual" string="Qtd. Manual" readonly="1" sum="Total Manual" optional="show" invisible_when="is_rpm == False"/> 
+                                    </list>
+                                </field>
+                            </page>
+                            
+                            <page string="✅ Etiquetas Conferidas (Bipadas)">
+                                </page>
+                            
+                            </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="lusitana_logistics_vehicle_presentation_form_view" model="ir.ui.view">
+            <field name="name">lusitana_logistics.vehicle.presentation.form</field>
+            <field name="model">lusitana_logistics.vehicle_presentation</field>
+            <field name="arch" type="xml">
+                <form string="Apresentação de Veículo">
+                    <header>
+                        <button name="action_validar" string="Validar" type="object" class="oe_highlight" visible_when="state == 'rascunho'"/>
+                        <button name="action_registrar_entrada" string="Entrada" type="object" class="oe_highlight" visible_when="state == 'aguardando'"/>
+                        <button name="action_enviar_monitoramento" string="Monitoramento" type="object" class="oe_highlight" visible_when="state == 'ato'"/>
+                        <button name="action_aprovar_monitoramento" string="Saída" type="object" class="oe_highlight" visible_when="state == 'monitoramento'"/>
+                        <button name="print_report_button" string="Imprimir" type="object" class="oe_link" icon="fa-print"/>
+                        <button name="action_print_zebra_label" string="Crachá Motorista" type="object" class="oe_link" icon="fa-barcode"/>
+                        <button name="action_cancelar" string="Cancelar" type="object" invisible_when="state in ('concluido', 'cancelado')" groups="lusitana_logistics.group_gerente_logistica"/>
+                        <button name="action_reset_to_draft" string="Resetar para Rascunho" type="object" invisible_when="state != 'cancelado'" groups="lusitana_logistics.group_gerente_logistica"/>
+                        <field name="state" widget="statusbar" statusbar_visible="rascunho,aguardando,entrada,em_operacao,ato,monitoramento,concluido"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1><field name="name"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="data_apresentacao" invisible_when="state in ('concluido', 'cancelado')" oe_read_only="1"/>
+                                <field name="motorista_id" invisible_when="state in ('concluido', 'cancelado')" oe_read_only="1"/>
+                                <field name="tipo_operacao_geral" invisible_when="state in ('concluido', 'cancelado')" oe_read_only="1"/>
+                            </group>
+                            <group>
+                                <field name="user_criacao_id"/>
+                                <field name="current_location_id" invisible_when="state in ('concluido', 'cancelado')" oe_read_only="1"/>
+                            </group>
+                        </group>
+                        <group string="Rastreabilidade das Etapas">
+                            <group>
+                                <field name="validacao_user_id" readonly="1"/>
+                                <field name="validacao_datetime" readonly="1"/>
+                                <field name="entrada_user_id" readonly="1"/>
+                                <field name="data_entrada_patio" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="monitoramento_user_id" readonly="1"/>
+                                <field name="monitoramento_datetime" readonly="1"/>
+                                <field name="conclusao_user_id" readonly="1"/>
+                                <field name="data_conclusao" readonly="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Operações a Realizar" name="operacoes">
+                                <field name="operation_line_ids">
+                                    <list 
+                                          decoration-success="state == 'concluida'" 
+                                          decoration-muted="state == 'pendente'"
+                                          
+                                          decoration-danger="urgency_level == '0'"
+                                          decoration-warning="urgency_level == '1'"
+
+                                          decoration-info="state == 'em_andamento' or urgency_level == '2'"
+                                          >
+                                          
+                                        <field name="urgency_level" invisible="1"/> 
+                                        
+                                        <field name="state" widget="badge" 
+                                               decoration-success="state == 'concluida'" 
+                                               decoration-info="state == 'em_andamento'" 
+                                               decoration-warning="state == 'pendente'"/>
+                                        
+
+                                        <field name="dt_documento"/>
+                                        <field name="nf_referencia"/>
+                                        <field name="prioridade_carregamento_id"/>
+                                        <field name="canal_vendas" optional="hide"/>
+                                        <field name="cliente_id" optional="hide"/>
+                                        <field name="direction" invisible="1"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Veículos e Implementos" name="veiculos">
+                                <group>
+                                    <group>
+                                        <field name="cavalo_id" invisible_when="state != 'rascunho'" oe_read_only="1"/>
+                                        <field name="total_eixos"/>
+                                    </group>
+                                    <group/>
+                                </group>
+                                <separator string="Implementos"/>
+                                <field name="implemento_ids" invisible_when="state in ('concluido', 'cancelado')" oe_read_only="1">
+                                    <list editable="bottom">
+                                        <field name="implemento_id"/>
+                                        <field name="qtde_eixos_implemento"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Lacres" name="lacres">
+                                <group>
+                                    <group>
+                                        <field name="necessita_lacres" widget="boolean_toggle"/>
+                                    </group>
+                                    <group/>
+                                </group>
+                                <group invisible_when="necessita_lacres == False">
+                                    <field name="lacre_armador_manual"/>
+                                    <separator string="Lacres Utilizados"/>
+                                    <field name="lacre_ids" invisible_when="state in ('concluido', 'cancelado')" oe_read_only="1">
+                                        <list editable="bottom">
+                                            <field name="lacre_id"/>
+                                            <field name="imagem_evidencia" widget="image" options="{'size': [50, 50]}"/>
+                                        </list>
+                                    </field>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

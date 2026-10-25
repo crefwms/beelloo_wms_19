@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_beeloo_cycle_count_plan_list" model="ir.ui.view">
+        <field name="name">beeloo.cycle.count.plan.list</field>
+        <field name="model">beeloo.cycle.count.plan</field>
+        <field name="arch" type="xml">
+            <list string="Planos de Contagem">
+                <field name="name"/>
+                <field name="create_date" string="Criado em"/>
+                <field name="inventory_adjustment_id" widget="many2one"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_beeloo_cycle_count_plan_form" model="ir.ui.view">
+        <field name="name">beeloo.cycle.count.plan.form</field>
+        <field name="model">beeloo.cycle.count.plan</field>
+        <field name="arch" type="xml">
+            <form string="Plano de Contagem">
+                <header>
+                    <button name="action_generate_lines" string="Gerar Linhas" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_start_count" string="Iniciar Contagem" type="object" class="oe_highlight" invisible="state != 'generated'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,generated,in_progress,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_adjustment" type="object" class="oe_stat_button" icon="fa-cubes" invisible="not inventory_adjustment_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Ver Ajuste</span></div>
+                        </button>
+                    </div>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group string="Filtros">
+                            <field name="filter_location_ids" widget="many2many_tags"/>
+                            <field name="filter_product_ids" widget="many2many_tags"/>
+                            <field name="filter_category_ids" widget="many2many_tags"/>
+                        </group>
+                        <group string="Referência">
+                             <field name="inventory_adjustment_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Linhas a Contar">
+                            <field name="line_ids">
+                                <list editable="bottom" create="0">
+                                    <field name="product_id"/>
+                                    <field name="location_id"/>
+                                    <field name="lot_id"/>
+                                    <field name="theoretical_qty"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_beeloo_cycle_count_plan" model="ir.actions.act_window">
+        <field name="name">Planos de Contagem</field>
+        <field name="res_model">beeloo.cycle.count.plan</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_beeloo_cycle_count_plan" name="Contagem Cíclica" parent="beeloo_wms_internal.menu_beeloo_wms_internal_root" action="action_beeloo_cycle_count_plan" sequence="10"/>
+</odoo>

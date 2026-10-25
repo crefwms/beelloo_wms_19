@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_vehicle_presentation_graph" model="ir.ui.view">
+            <field name="name">lusitana.logistics.presentation.graph</field>
+            <field name="model">lusitana_logistics.vehicle_presentation</field>
+            <field name="arch" type="xml">
+                <graph string="Análise de Operações" type="bar">
+                    <field name="state" type="row"/>
+                    <field name="operation_summary" type="col"/>
+                </graph>
+            </field>
+        </record>
+
+        <record id="view_vehicle_presentation_pivot" model="ir.ui.view">
+            <field name="name">lusitana.logistics.presentation.pivot</field>
+            <field name="model">lusitana_logistics.vehicle_presentation</field>
+            <field name="arch" type="xml">
+                <pivot string="Análise OTIF" disable_linking="True">
+                    <field name="data_apresentacao" type="col" interval="day"/>
+                    <field name="kpi_is_on_time" type="row"/>
+                    <field name="kpi_is_in_full" type="row"/>
+                </pivot>
+            </field>
+        </record>
+
+        <!-- Action para o gráfico -->
+        <record id="action_vehicle_presentation_graph" model="ir.actions.act_window">
+            <field name="name">Análise de Operações</field>
+            <field name="res_model">lusitana_logistics.vehicle_presentation</field>
+            <field name="view_mode">graph</field>
+            <field name="view_id" ref="view_vehicle_presentation_graph"/>
+        </record>
+
+        <!-- Action para o pivot -->
+        <record id="action_vehicle_presentation_pivot" model="ir.actions.act_window">
+            <field name="name">Análise OTIF</field>
+            <field name="res_model">lusitana_logistics.vehicle_presentation</field>
+            <field name="view_mode">pivot</field>
+            <field name="view_id" ref="view_vehicle_presentation_pivot"/>
+        </record>
+
+        <!-- Dashboard usando Board -->
+        <record id="board_lusitana_logistics_form" model="ir.ui.view">
+            <field name="name">lusitana.logistics.dashboard</field>
+            <field name="model">board.board</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Dashboard de Logística">
+                    <board style="2-1">
+                        <column>
+                            <action name="%(action_vehicle_presentation_graph)d" string="Análise de Operações"/>
+                        </column>
+                        <column>
+                            <action name="%(action_vehicle_presentation_pivot)d" string="Análise OTIF"/>
+                        </column>
+                    </board>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_lusitana_logistics_dashboard" model="ir.actions.act_window">
+            <field name="name">Dashboard de Logística</field>
+            <field name="res_model">board.board</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="board_lusitana_logistics_form"/>
+        </record>
+
+        <menuitem id="menu_lusitana_logistics_dashboard"
+                  name="Dashboard OTIF"
+                  parent="lusitana_logistics_menu_root"
+                  action="action_lusitana_logistics_dashboard"
+                  sequence="5"/>
+    </data>
+</odoo>

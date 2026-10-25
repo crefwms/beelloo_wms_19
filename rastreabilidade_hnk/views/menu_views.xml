@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_rastreabilidade_hnk_root"
+              name="Rastreabilidade HNK"
+              web_icon="rastreabilidade_hnk,static/description/icon.png"
+              sequence="10"/>
+
+    <menuitem id="menu_rastreabilidade_operacional"
+              name="Operações"
+              parent="menu_rastreabilidade_hnk_root"
+              sequence="10"/>
+
+    <record id="action_rastreabilidade_dt" model="ir.actions.act_window">
+        <field name="name">Documentos de Transporte</field>
+        <field name="res_model">rastreabilidade.dt</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_rastreabilidade_dt_item"
+              name="DTs / Conferência"
+              parent="menu_rastreabilidade_operacional"
+              action="action_rastreabilidade_dt"
+              sequence="10"/>
+
+    <menuitem id="menu_rastreabilidade_config"
+              name="Configurações"
+              parent="menu_rastreabilidade_hnk_root"
+              sequence="100"/>
+
+    <record id="action_rastreabilidade_veiculo" model="ir.actions.act_window">
+        <field name="name">Cadastro de Veículos</field>
+        <field name="res_model">rastreabilidade.veiculo</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_rastreabilidade_veiculo_item"
+              name="Veículos"
+              parent="menu_rastreabilidade_config"
+              action="action_rastreabilidade_veiculo"
+              sequence="10"/>
+</odoo>

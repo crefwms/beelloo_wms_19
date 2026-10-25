@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_logistica_legacy_root" 
+              name="Logística Access" 
+              sequence="10" 
+              web_icon="base,static/description/icon.png"/>
+
+    <record id="view_logistica_movimento_list" model="ir.ui.view">
+        <field name="name">logistica.movimento.list</field>
+        <field name="model">logistica.movimento</field>
+        <field name="arch" type="xml">
+            <list string="Movimentações Access" decoration-info="tipo == 'entrada'" decoration-danger="tipo == 'saida'" default_order="data_movimento desc">
+                <field name="data_movimento"/>
+                <field name="tipo" widget="badge" decoration-info="tipo == 'entrada'" decoration-danger="tipo == 'saida'"/>
+                <field name="name" string="Documento (DT/NFe)"/>
+                <field name="registro_origem" string="Registro (ID Carga)" optional="show"/>
+                <field name="produto_codigo"/>
+                <field name="produto_descricao"/>
+                <field name="quantidade_pallets" sum="Total Pallets"/>
+                <field name="nfe_numero" column_invisible="True"/>
+                <field name="mes_ano" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_logistica_movimento_search" model="ir.ui.view">
+        <field name="name">logistica.movimento.search</field>
+        <field name="model">logistica.movimento</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="DT ou NFe"/>
+                <field name="registro_origem"/>
+                <field name="produto_codigo"/>
+                <filter string="Entradas" name="filter_entrada" domain="[('tipo', '=', 'entrada')]"/>
+                <filter string="Saídas" name="filter_saida" domain="[('tipo', '=', 'saida')]"/>
+                <group expand="1" string="Agrupar Por">
+                    <filter string="Tipo" name="group_tipo" context="{'group_by': 'tipo'}"/>
+                    <filter string="Mês" name="group_data" context="{'group_by': 'data_movimento:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_logistica_movimento" model="ir.actions.act_window">
+        <field name="name">Painel Access</field>
+        <field name="res_model">logistica.movimento</field>
+        <field name="view_mode">list,pivot,graph</field>
+        <field name="context">{'search_default_group_data': 1}</field>
+    </record>
+
+    <menuitem id="menu_logistica_movimento" 
+              parent="menu_logistica_legacy_root" 
+              action="action_logistica_movimento" 
+              sequence="1"/>
+
+    <record id="view_logistica_auditoria_list" model="ir.ui.view">
+        <field name="name">logistica.auditoria.list</field>
+        <field name="model">logistica.auditoria</field>
+        <field name="arch" type="xml">
+            <list string="Auditoria de Cargas" decoration-danger="status == 'erro'" decoration-success="status == 'ok'" decoration-muted="status == 'zerado'">
+                <field name="registro_origem"/>
+                <field name="nfe_numero"/>
+                <field name="produto_codigo"/>
+                <field name="qtd_declarada" string="Qtd NFe"/>
+                <field name="qtd_gerada" string="Qtd Loc."/>
+                <field name="divergencia_entrada" column_invisible="True"/>
+                <button icon="fa-exclamation-triangle" invisible="not divergencia_entrada" title="Divergência na Entrada!"/>
+                <field name="qtd_saida"/>
+                <field name="saldo_sistema" decoration-bf="1"/>
+                <field name="status" widget="badge" decoration-success="status == 'ok'" decoration-danger="status == 'erro'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_logistica_auditoria" model="ir.actions.act_window">
+        <field name="name">Auditoria de Estoque</field>
+        <field name="res_model">logistica.auditoria</field>
+        <field name="view_mode">list,pivot</field>
+    </record>
+
+    <menuitem id="menu_logistica_auditoria" 
+              parent="menu_logistica_legacy_root" 
+              action="action_logistica_auditoria" 
+              sequence="2"/>
+
+    <record id="view_logistica_auditoria_saida_list" model="ir.ui.view">
+        <field name="name">logistica.auditoria.saida.list</field>
+        <field name="model">logistica.auditoria.saida</field>
+        <field name="arch" type="xml">
+            <list string="Auditoria de Expedição (DTs)" decoration-danger="status_audit == 'erro'" decoration-warning="status_audit == 'warn'" decoration-success="status_audit == 'ok'">
+                <field name="dt_numero"/>
+                <field name="data_dt"/>
+                <field name="motorista"/>
+                <field name="total_pallets_pedido" sum="Total Pedido"/>
+                <field name="total_pallets_carregado" sum="Total Carregado"/>
+                <field name="status_audit" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_logistica_auditoria_saida_form" model="ir.ui.view">
+        <field name="name">logistica.auditoria.saida.form</field>
+        <field name="model">logistica.auditoria.saida</field>
+        <field name="arch" type="xml">
+            <form string="Detalhes da DT">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>DT: <field name="dt_numero" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="data_dt" readonly="1"/>
+                            <field name="motorista" readonly="1"/>
+                            <field name="placa" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="status_audit" widget="badge"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Produtos e Conferência">
+                            <field name="linha_ids" readonly="1">
+                                <list editable="bottom">
+                                    <field name="produto_codigo"/>
+                                    <field name="qtd_pedido"/>
+                                    <field name="qtd_separada"/>
+                                    <field name="qtd_carregado"/>
+                                    
+                                    <field name="status_msg" decoration-danger="status_linha == 'erro'" decoration-success="status_linha == 'ok'"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_logistica_auditoria_saida" model="ir.actions.act_window">
+        <field name="name">Auditoria de Expedição</field>
+        <field name="res_model">logistica.auditoria.saida</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_logistica_auditoria_saida" 
+              parent="menu_logistica_legacy_root" 
+              action="action_logistica_auditoria_saida" 
+              sequence="3"/>
+    
+    <record id="view_logistica_paletizacao_tree" model="ir.ui.view">
+        <field name="name">logistica.auditoria.paletizacao.tree</field>
+        <field name="model">logistica.auditoria.paletizacao</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="status == 'erro'" decoration-warning="status == 'warn'" decoration-success="status == 'ok'">
+                <field name="registro_carga" string="Registro"/>
+                <field name="data_registro"/> <field name="produto_codigo"/>
+                <field name="paletizacao_padrao" string="Lastro" optional="show"/>
+                <field name="qtd_unidades" sum="Total Unidades" optional="hide"/>
+                <field name="pallets_teorico" string="Pallets (Calc)" sum="Teórico" decoration-bf="1"/>
+                <field name="pallets_sistema" string="Pallets (Carga)" sum="Real" decoration-bf="1"/>
+                <field name="qtd_locacoes" string="Etiquetas Geradas" sum="Total Etiquetas"/>
+                <field name="diferenca"/>
+                <field name="status" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_logistica_paletizacao_search" model="ir.ui.view">
+        <field name="name">logistica.auditoria.paletizacao.search</field>
+        <field name="model">logistica.auditoria.paletizacao</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="registro_carga"/>
+                <field name="produto_codigo"/>
+                <filter string="Com Divergência" name="filter_erro" domain="[('status', '=', 'erro')]"/>
+                <group expand="1" string="Agrupar Por">
+                    <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                    <filter string="Produto" name="group_prod" context="{'group_by': 'produto_codigo'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_logistica_paletizacao" model="ir.actions.act_window">
+        <field name="name">Auditoria de Paletização</field>
+        <field name="res_model">logistica.auditoria.paletizacao</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filter_erro': 1}</field> </record>
+
+    <menuitem id="menu_logistica_paletizacao" 
+              name="Conferência Paletização" 
+              parent="menu_logistica_legacy_root" 
+              action="action_logistica_paletizacao" 
+              sequence="30"/>
+</odoo>

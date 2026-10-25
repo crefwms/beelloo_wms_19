@@ -1,0 +1,46 @@
+{
+  "eval_id": 1,
+  "eval_name": "arquitetura-wms",
+  "summary": {
+    "pass_rate": 1.0,
+    "passed": 6,
+    "failed": 0,
+    "total": 6
+  },
+  "timing": {
+    "total_duration_seconds": 98.4,
+    "total_tokens": 17744
+  },
+  "expectations": [
+    {
+      "text": "Nomeia pelo menos 3 locações distintas para a área de reversa",
+      "passed": true,
+      "evidence": "7 locações nomeadas: QUARENTENA-REVERSA, TRIAGEM-TECNICA, INSPECAO, RECONDICIONAMENTO, ESTOQUE-OUTLET, DESCARTE, BLOQUEADO-FRAUDE."
+    },
+    {
+      "text": "Explica mecanismo concreto para evitar mistura com estoque novo",
+      "passed": true,
+      "evidence": "Status intermediário RETORNO-PENDENTE-VALIDACAO: 'Nenhum produto devolvido volta ao estoque sem passar por esse status.' Fluxo explícito com validação de supervisor."
+    },
+    {
+      "text": "Menciona o Odoo com configuração concreta (locations, picking types, módulos ou campos)",
+      "passed": true,
+      "evidence": "Caminhos concretos: 'Inventário > Configuração > Locações', 'Inventário > Configuração > Tipos de Operação'. Menciona Automated Actions, prefixo DEV-AAAAMM-NNNNN."
+    },
+    {
+      "text": "Apresenta fluxo operacional sequencial com pelo menos 4 etapas numeradas",
+      "passed": true,
+      "evidence": "5 etapas numeradas: 1. CHEGADA, 2. INSPEÇÃO DE SAFETY, 3. TRIAGEM TÉCNICA, 4. DECISÃO DE DESTINO, 5. EVENTO FINANCEIRO."
+    },
+    {
+      "text": "Menciona picking types ou tipos de operação dedicados para movimentos de devolução",
+      "passed": true,
+      "evidence": "Seção 'Picking Types dedicados' com tabela de 5 tipos: Recebimento Devolução, Triagem LR, Classificação LR, Reintegração Estoque, Baixa LR."
+    },
+    {
+      "text": "Resposta inteiramente em português do Brasil",
+      "passed": true,
+      "evidence": "Todo o conteúdo está em português do Brasil."
+    }
+  ]
+}

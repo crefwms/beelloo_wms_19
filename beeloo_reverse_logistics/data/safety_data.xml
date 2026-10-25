@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="safety_checklist_electronics" model="reverse.logistics.safety.checklist">
+            <field name="name">Eletrônicos (Celulares/Tablets)</field>
+            <field name="check_leakage">False</field>
+            <field name="check_battery">True</field>
+            <field name="check_fragile">True</field>
+            <field name="epi_required">glasses</field>
+            <field name="instructions">Verificar estufamento de bateria e integridade da tela.</field>
+        </record>
+
+        <record id="safety_checklist_general" model="reverse.logistics.safety.checklist">
+            <field name="name">Carga Geral</field>
+            <field name="check_leakage">True</field>
+            <field name="check_battery">False</field>
+            <field name="check_fragile">True</field>
+            <field name="epi_required">gloves</field>
+            <field name="instructions">Verificar vazamentos de líquidos e integridade da embalagem.</field>
+        </record>
+    </data>
+</odoo>

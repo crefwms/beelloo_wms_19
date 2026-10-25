@@ -1,0 +1,24 @@
+{
+  "expectations": [
+    {
+      "text": "Module has a manifest with Odoo 18.0 version and LGPL-3 license",
+      "passed": true,
+      "evidence": "Manifest version is 18.0.1.0.0 and license is LGPL-3"
+    },
+    {
+      "text": "Model library.book has proper field strings and selection labels",
+      "passed": true,
+      "evidence": "Fields 'title', 'author_id', and 'state' have Portuguese strings and labels"
+    },
+    {
+      "text": "Model has a _description attribute",
+      "passed": true,
+      "evidence": "self-evident in library_book.py"
+    },
+    {
+      "text": "Security file ir.model.access.csv exists and grants access to library.book",
+      "passed": true,
+      "evidence": "access_library_book,library.book,model_library_book,base.group_user,1,1,1,1 exists"
+    }
+  ]
+}

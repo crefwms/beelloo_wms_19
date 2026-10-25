@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <record id="lacre_batch_wizard_form_view" model="ir.ui.view">
+            <field name="name">lacre.batch.wizard.form</field>
+            <field name="model">lusitana_logistics.lacre_batch_wizard</field>
+            <field name="arch" type="xml">
+                <form string="Entrada de Lacres em Lote">
+                    <p class="o_form_text">
+                        Informe a sequência de lacres que deseja gerar automaticamente.
+                        Lacres já existentes na sequência serão ignorados.
+                    </p>
+                    <group>
+                        <field name="lacre_inicial"/>
+                        <field name="lacre_final"/>
+                        <field name="tipo_lacre"/>
+                    </group>
+                    <footer>
+                        <button name="action_generate_lacres" string="Gerar Lacres" type="object" class="oe_highlight"/>
+                        <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        
+        <record id="action_lacre_batch_wizard" model="ir.actions.act_window">
+            <field name="name">Gerar Lacres em Lote</field>
+            <field name="res_model">lusitana_logistics.lacre_batch_wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        </data>
+</odoo>

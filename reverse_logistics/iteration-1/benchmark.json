@@ -1,0 +1,353 @@
+{
+  "metadata": {
+    "skill_name": "reverse-logistics-architect",
+    "skill_path": "<path/to/skill>",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-03-12T18:24:33Z",
+    "evals_run": [
+      0,
+      1,
+      2
+    ],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 98.4,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Nomeia pelo menos 3 loca\u00c3\u00a7\u00c3\u00b5es distintas para a \u00c3\u00a1rea de reversa",
+          "passed": true,
+          "evidence": "7 loca\u00c3\u00a7\u00c3\u00b5es nomeadas: QUARENTENA-REVERSA, TRIAGEM-TECNICA, INSPECAO, RECONDICIONAMENTO, ESTOQUE-OUTLET, DESCARTE, BLOQUEADO-FRAUDE."
+        },
+        {
+          "text": "Explica mecanismo concreto para evitar mistura com estoque novo",
+          "passed": true,
+          "evidence": "Status intermedi\u00c3\u00a1rio RETORNO-PENDENTE-VALIDACAO: 'Nenhum produto devolvido volta ao estoque sem passar por esse status.' Fluxo expl\u00c3\u00adcito com valida\u00c3\u00a7\u00c3\u00a3o de supervisor."
+        },
+        {
+          "text": "Menciona o Odoo com configura\u00c3\u00a7\u00c3\u00a3o concreta (locations, picking types, m\u00c3\u00b3dulos ou campos)",
+          "passed": true,
+          "evidence": "Caminhos concretos: 'Invent\u00c3\u00a1rio > Configura\u00c3\u00a7\u00c3\u00a3o > Loca\u00c3\u00a7\u00c3\u00b5es', 'Invent\u00c3\u00a1rio > Configura\u00c3\u00a7\u00c3\u00a3o > Tipos de Opera\u00c3\u00a7\u00c3\u00a3o'. Menciona Automated Actions, prefixo DEV-AAAAMM-NNNNN."
+        },
+        {
+          "text": "Apresenta fluxo operacional sequencial com pelo menos 4 etapas numeradas",
+          "passed": true,
+          "evidence": "5 etapas numeradas: 1. CHEGADA, 2. INSPE\u00c3\u2021\u00c3\u0192O DE SAFETY, 3. TRIAGEM T\u00c3\u2030CNICA, 4. DECIS\u00c3\u0192O DE DESTINO, 5. EVENTO FINANCEIRO."
+        },
+        {
+          "text": "Menciona picking types ou tipos de opera\u00c3\u00a7\u00c3\u00a3o dedicados para movimentos de devolu\u00c3\u00a7\u00c3\u00a3o",
+          "passed": true,
+          "evidence": "Se\u00c3\u00a7\u00c3\u00a3o 'Picking Types dedicados' com tabela de 5 tipos: Recebimento Devolu\u00c3\u00a7\u00c3\u00a3o, Triagem LR, Classifica\u00c3\u00a7\u00c3\u00a3o LR, Reintegra\u00c3\u00a7\u00c3\u00a3o Estoque, Baixa LR."
+        },
+        {
+          "text": "Resposta inteiramente em portugu\u00c3\u00aas do Brasil",
+          "passed": true,
+          "evidence": "Todo o conte\u00c3\u00bado est\u00c3\u00a1 em portugu\u00c3\u00aas do Brasil."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 0,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 98.4,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Menciona registro fotogr\u00c3\u00a1fico na coleta ou no recebimento como controle",
+          "passed": true,
+          "evidence": "Camada 1 dedica se\u00c3\u00a7\u00c3\u00a3o inteira a 'Registro fotogr\u00c3\u00a1fico obrigat\u00c3\u00b3rio' no momento da coleta domiciliar/drop-off. Camada 2 repete fotos no recebimento."
+        },
+        {
+          "text": "Menciona pesagem / valida\u00c3\u00a7\u00c3\u00a3o por peso como mecanismo de detec\u00c3\u00a7\u00c3\u00a3o de fraude",
+          "passed": true,
+          "evidence": "'Registre o peso bruto da embalagem no momento da coleta. Um notebook que sai pesando 3,2 kg e volta pesando 3,9 kg j\u00c3\u00a1 aciona alerta. Configure toler\u00c3\u00a2ncia de \u00c2\u00b15%'"
+        },
+        {
+          "text": "Menciona verifica\u00c3\u00a7\u00c3\u00a3o de n\u00c3\u00bamero de s\u00c3\u00a9rie (serial / IMEI) do produto",
+          "passed": true,
+          "evidence": "Coleta: 'Foto do n\u00c3\u00bamero de s\u00c3\u00a9rie / IMEI vis\u00c3\u00advel'. Recebimento: checklist inclui leitura do c\u00c3\u00b3digo de barras e compara\u00c3\u00a7\u00c3\u00a3o com pedido original."
+        },
+        {
+          "text": "Menciona hist\u00c3\u00b3rico de devolu\u00c3\u00a7\u00c3\u00b5es por cliente (CPF/CNPJ) como controle de abuso",
+          "passed": true,
+          "evidence": "Motor de regras: 'Cliente com > 3 devolu\u00c3\u00a7\u00c3\u00b5es em 90 dias | Flag antifraude + revis\u00c3\u00a3o manual obrigat\u00c3\u00b3ria'."
+        },
+        {
+          "text": "Prop\u00c3\u00b5e motor de regras, bloqueio autom\u00c3\u00a1tico ou flag antifraude no portal de devolu\u00c3\u00a7\u00c3\u00b5es",
+          "passed": true,
+          "evidence": "'Camada 3 \u00e2\u20ac\u201d Motor de Regras no Portal' com tabela de condi\u00c3\u00a7\u00c3\u00b5es e a\u00c3\u00a7\u00c3\u00b5es autom\u00c3\u00a1ticas, incluindo bloqueio autom\u00c3\u00a1tico e flags."
+        },
+        {
+          "text": "Resposta inteiramente em portugu\u00c3\u00aas do Brasil",
+          "passed": true,
+          "evidence": "Todo o conte\u00c3\u00bado est\u00c3\u00a1 em portugu\u00c3\u00aas do Brasil."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 119.1,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Mapeia pelo menos 3 eventos log\u00c3\u00adsticos distintos com sua a\u00c3\u00a7\u00c3\u00a3o financeira correspondente",
+          "passed": true,
+          "evidence": "Tabela com 9 eventos mapeados: entrada no CD \u00e2\u2020\u2019 comunicar cliente; A-Grade \u00e2\u2020\u2019 liberar 100%; B-Grade \u00e2\u2020\u2019 estorno parcial; fraude \u00e2\u2020\u2019 bloquear cr\u00c3\u00a9dito."
+        },
+        {
+          "text": "Menciona grading (A/B/C-Grade ou equivalente) como gatilho para liberar ou reter o cr\u00c3\u00a9dito",
+          "passed": true,
+          "evidence": "'Grading A-Grade \u00e2\u2020\u2019 Liberar 100% do estorno imediatamente'; 'Grading B-Grade \u00e2\u2020\u2019 Liberar estorno parcial (ex: 80-90%)'; 'Grading C-Grade \u00e2\u2020\u2019 Acionar garantia do fabricante.'"
+        },
+        {
+          "text": "Aborda SLA do marketplace (Magalu) e consequ\u00c3\u00aancias de descumprimento",
+          "passed": true,
+          "evidence": "'rebaixamento de posi\u00c3\u00a7\u00c3\u00a3o nos resultados de busca e risco de penaliza\u00c3\u00a7\u00c3\u00a3o de conta'; tabela de SLA por etapa; 'fica dentro do SLA da Magalu, elimina reclama\u00c3\u00a7\u00c3\u00b5es e protege sua reputa\u00c3\u00a7\u00c3\u00a3o'."
+        },
+        {
+          "text": "Distingue estorno total (produto ok) de estorno parcial ou retido (avaria ou fraude)",
+          "passed": true,
+          "evidence": "A-Grade = 100%; B-Grade = 'estorno parcial (ex: 80-90%)'; fraude = 'Bloquear cr\u00c3\u00a9dito, acionar jur\u00c3\u00addico'. Distin\u00c3\u00a7\u00c3\u00a3o clara entre os tr\u00c3\u00aas cen\u00c3\u00a1rios."
+        },
+        {
+          "text": "Menciona integra\u00c3\u00a7\u00c3\u00a3o com gateway de pagamento ou API do marketplace para disparar estorno",
+          "passed": true,
+          "evidence": "Semana 3: 'Vincular conclus\u00c3\u00a3o do grading \u00c3\u00a0 libera\u00c3\u00a7\u00c3\u00a3o autom\u00c3\u00a1tica do estorno via gateway.' + 'Notifica\u00c3\u00a7\u00c3\u00a3o autom\u00c3\u00a1tica \u00c3\u00a0 Magalu via API'."
+        },
+        {
+          "text": "Resposta inteiramente em portugu\u00c3\u00aas do Brasil",
+          "passed": true,
+          "evidence": "Todo o conte\u00c3\u00bado est\u00c3\u00a1 em portugu\u00c3\u00aas do Brasil."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 82.7,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Nomeia pelo menos 3 loca\u00c3\u00a7\u00c3\u00b5es distintas para a \u00c3\u00a1rea de reversa",
+          "passed": true,
+          "evidence": "7 loca\u00c3\u00a7\u00c3\u00b5es: LR-RECEBIMENTO, LR-TRIAGEM, LR-APROVADO, LR-REFURBISH, LR-QUARENTENA, LR-DESCARTE, LR-FORNECEDOR."
+        },
+        {
+          "text": "Explica mecanismo concreto para evitar mistura com estoque novo",
+          "passed": true,
+          "evidence": "'Nunca configure as loca\u00c3\u00a7\u00c3\u00b5es de LR como subloca\u00c3\u00a7\u00c3\u00b5es do estoque regular.' + flag 'Reservar Estoque' desativado + prefixo de lote DEV-2024-XXXXX."
+        },
+        {
+          "text": "Menciona o Odoo com configura\u00c3\u00a7\u00c3\u00a3o concreta (locations, picking types, m\u00c3\u00b3dulos ou campos)",
+          "passed": true,
+          "evidence": "'Invent\u00c3\u00a1rio > Configura\u00c3\u00a7\u00c3\u00a3o > Loca\u00c3\u00a7\u00c3\u00b5es', flag 'Reservar Estoque', rastreamento por lote/n\u00c3\u00bamero de s\u00c3\u00a9rie, grupos de usu\u00c3\u00a1rio, automa\u00c3\u00a7\u00c3\u00b5es do Odoo."
+        },
+        {
+          "text": "Apresenta fluxo operacional sequencial com pelo menos 4 etapas numeradas",
+          "passed": true,
+          "evidence": "4 etapas: Etapa 1 (Recebimento), Etapa 2 (Triagem), Etapa 3 (Classifica\u00c3\u00a7\u00c3\u00a3o), Etapa 4 (Reintegra\u00c3\u00a7\u00c3\u00a3o)."
+        },
+        {
+          "text": "Menciona picking types ou tipos de opera\u00c3\u00a7\u00c3\u00a3o dedicados para movimentos de devolu\u00c3\u00a7\u00c3\u00a3o",
+          "passed": true,
+          "evidence": "Se\u00c3\u00a7\u00c3\u00a3o 3.4: 'Crie tipos de opera\u00c3\u00a7\u00c3\u00a3o exclusivos para LR (ex.: Recebimento Devolu\u00c3\u00a7\u00c3\u00a3o, Transfer\u00c3\u00aancia Triagem LR, Reintegra\u00c3\u00a7\u00c3\u00a3o Estoque).'"
+        },
+        {
+          "text": "Resposta inteiramente em portugu\u00c3\u00aas do Brasil",
+          "passed": true,
+          "evidence": "Todo o conte\u00c3\u00bado est\u00c3\u00a1 em portugu\u00c3\u00aas do Brasil."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 0,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.8333,
+        "passed": 5,
+        "failed": 1,
+        "total": 6,
+        "time_seconds": 85.2,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Menciona registro fotogr\u00c3\u00a1fico na coleta ou no recebimento como controle",
+          "passed": true,
+          "evidence": "Se\u00c3\u00a7\u00c3\u00a3o 1 menciona foto na expedi\u00c3\u00a7\u00c3\u00a3o. Se\u00c3\u00a7\u00c3\u00a3o 2 menciona fotografar no recebimento."
+        },
+        {
+          "text": "Menciona pesagem / valida\u00c3\u00a7\u00c3\u00a3o por peso como mecanismo de detec\u00c3\u00a7\u00c3\u00a3o de fraude",
+          "passed": true,
+          "evidence": "'Registre o peso bruto de cada pacote no momento do envio. Diverg\u00c3\u00aancia de peso na devolu\u00c3\u00a7\u00c3\u00a3o j\u00c3\u00a1 \u00c3\u00a9 evid\u00c3\u00aancia de fraude.'"
+        },
+        {
+          "text": "Menciona verifica\u00c3\u00a7\u00c3\u00a3o de n\u00c3\u00bamero de s\u00c3\u00a9rie (serial / IMEI) do produto",
+          "passed": true,
+          "evidence": "Se\u00c3\u00a7\u00c3\u00a3o 1: 'Aplique etiquetas de seguran\u00c3\u00a7a hologr\u00c3\u00a1ficas com n\u00c3\u00bamero de s\u00c3\u00a9rie \u00c3\u00banico'. Checklist: 'N\u00c3\u00bamero de s\u00c3\u00a9rie do produto confere com o registrado no envio?'"
+        },
+        {
+          "text": "Menciona hist\u00c3\u00b3rico de devolu\u00c3\u00a7\u00c3\u00b5es por cliente (CPF/CNPJ) como controle de abuso",
+          "passed": true,
+          "evidence": "Se\u00c3\u00a7\u00c3\u00a3o 3: 'Compradores com m\u00c3\u00baltiplas devolu\u00c3\u00a7\u00c3\u00b5es em curto per\u00c3\u00adodo ou conta recente: perfil de risco elevado.'"
+        },
+        {
+          "text": "Prop\u00c3\u00b5e motor de regras, bloqueio autom\u00c3\u00a1tico ou flag antifraude no portal de devolu\u00c3\u00a7\u00c3\u00b5es",
+          "passed": false,
+          "evidence": "N\u00c3\u00a3o prop\u00c3\u00b5e motor de regras automatizado, bloqueio autom\u00c3\u00a1tico ou flag antifraude em portal. Os controles s\u00c3\u00a3o manuais."
+        },
+        {
+          "text": "Resposta inteiramente em portugu\u00c3\u00aas do Brasil",
+          "passed": true,
+          "evidence": "Todo o conte\u00c3\u00bado est\u00c3\u00a1 em portugu\u00c3\u00aas do Brasil."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 3,
+        "failed": 3,
+        "total": 6,
+        "time_seconds": 84.2,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Mapeia pelo menos 3 eventos log\u00c3\u00adsticos distintos com sua a\u00c3\u00a7\u00c3\u00a3o financeira correspondente",
+          "passed": true,
+          "evidence": "5 eventos mapeados com a\u00c3\u00a7\u00c3\u00b5es financeiras: postagem \u00e2\u2020\u2019 reservar; em tr\u00c3\u00a2nsito \u00e2\u2020\u2019 atualizar prazo; entregue no CD \u00e2\u2020\u2019 considerar antecipa\u00c3\u00a7\u00c3\u00a3o; triagem aprovada \u00e2\u2020\u2019 liberar; triagem recusada \u00e2\u2020\u2019 contesta\u00c3\u00a7\u00c3\u00a3o."
+        },
+        {
+          "text": "Menciona grading (A/B/C-Grade ou equivalente) como gatilho para liberar ou reter o cr\u00c3\u00a9dito",
+          "passed": false,
+          "evidence": "N\u00c3\u00a3o menciona grading A/B/C-Grade. O gatilho \u00c3\u00a9 'triagem aprovada' vs 'triagem recusada' e threshold de valor (R$ 150), sem classifica\u00c3\u00a7\u00c3\u00a3o por grau de qualidade."
+        },
+        {
+          "text": "Aborda SLA do marketplace (Magalu) e consequ\u00c3\u00aancias de descumprimento",
+          "passed": false,
+          "evidence": "Menciona reduzir de 15 para 5-7 dias, mas n\u00c3\u00a3o aborda SLA contratual do marketplace nem consequ\u00c3\u00aancias formais (penaliza\u00c3\u00a7\u00c3\u00b5es, rebaixamento de conta)."
+        },
+        {
+          "text": "Distingue estorno total (produto ok) de estorno parcial ou retido (avaria ou fraude)",
+          "passed": false,
+          "evidence": "Menciona 'Liberar estorno' ap\u00c3\u00b3s triagem aprovada e 'Contesta\u00c3\u00a7\u00c3\u00a3o' ap\u00c3\u00b3s recusa, mas n\u00c3\u00a3o distingue estorno parcial de total por estado do produto."
+        },
+        {
+          "text": "Menciona integra\u00c3\u00a7\u00c3\u00a3o com gateway de pagamento ou API do marketplace para disparar estorno",
+          "passed": true,
+          "evidence": "Se\u00c3\u00a7\u00c3\u00a3o 3: 'Integra\u00c3\u00a7\u00c3\u00a3o via API do Magalu para aprova\u00c3\u00a7\u00c3\u00a3o autom\u00c3\u00a1tica ao fim da triagem'."
+        },
+        {
+          "text": "Resposta inteiramente em portugu\u00c3\u00aas do Brasil",
+          "passed": true,
+          "evidence": "Todo o conte\u00c3\u00bado est\u00c3\u00a1 em portugu\u00c3\u00aas do Brasil."
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 105.3,
+        "stddev": 11.9512,
+        "min": 98.4,
+        "max": 119.1
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.7778,
+        "stddev": 0.2546,
+        "min": 0.5,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 84.0333,
+        "stddev": 1.2583,
+        "min": 82.7,
+        "max": 85.2
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.22",
+      "time_seconds": "+21.3",
+      "tokens": "+0"
+    }
+  },
+  "notes": []
+}

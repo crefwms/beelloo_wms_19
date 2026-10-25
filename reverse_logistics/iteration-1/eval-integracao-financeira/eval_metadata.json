@@ -1,0 +1,13 @@
+{
+  "eval_id": 2,
+  "eval_name": "integracao-financeira",
+  "prompt": "Vendo na Magalu e o prazo de crédito para o cliente está demorando 15 dias. O cliente abre reclamação e minha reputação cai. Como mapear os eventos logísticos da devolução para acelerar a liberação do estorno sem assumir risco financeiro antes da triagem?",
+  "assertions": [
+    {"id": "mapeamento-eventos", "text": "Mapeia pelo menos 3 eventos logísticos distintos com sua ação financeira correspondente"},
+    {"id": "grading-gatilho", "text": "Menciona grading (A/B/C-Grade ou equivalente) como gatilho para liberar ou reter o crédito"},
+    {"id": "sla-marketplace", "text": "Aborda SLA do marketplace (Magalu) e consequências de descumprimento (reputação, penalidade)"},
+    {"id": "estorno-parcial-total", "text": "Distingue estorno total (produto ok) de estorno parcial ou retido (produto com avaria ou fraude)"},
+    {"id": "integracao-gateway", "text": "Menciona integração com gateway de pagamento ou API do marketplace para disparar estorno"},
+    {"id": "idioma-pt", "text": "Resposta inteiramente em português do Brasil"}
+  ]
+}

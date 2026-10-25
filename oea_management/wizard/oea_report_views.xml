@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="oea_report_wizard_view_form" model="ir.ui.view">
+        <field name="name">oea.report.wizard.form</field>
+        <field name="model">oea.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Gerar Relatório OEA">
+                <group>
+                    <group>
+                        <field name="report_type"/>
+                        <field name="company_id"/>
+                    </group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                </group>
+                <group>
+                    <group>
+                        <field name="modality" invisible="report_type not in ['compliance', 'consolidated']"/>
+                        <field name="requirement_ids" invisible="report_type not in ['compliance']" widget="many2many_tags"/>
+                    </group>
+                    <group>
+                        <field name="audit_id" invisible="report_type not in ['audit']"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_generate_report" string="Gerar Relatório" type="object" class="oe_highlight"/>
+                    <button string="Cancelar" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="oea_report_wizard_action" model="ir.actions.act_window">
+        <field name="name">Relatórios OEA</field>
+        <field name="res_model">oea.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="oea_report_menu"
+              name="Relatórios"
+              parent="menu_oea_main"
+              action="oea_report_wizard_action"
+              sequence="100"/>
+</odoo>

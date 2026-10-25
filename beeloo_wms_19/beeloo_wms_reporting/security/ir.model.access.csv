@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_beeloo_wms_kpi_history,access.beeloo.wms.kpi.history,model_beeloo_wms_kpi_history,stock.group_stock_user,1,1,1,1
+access_beeloo_wms_dashboard,access.beeloo.wms.dashboard,model_beeloo_wms_dashboard,stock.group_stock_user,1,0,0,0

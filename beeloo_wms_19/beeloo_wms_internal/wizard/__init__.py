@@ -1,0 +1,1 @@
+from . import beeloo_consolidation_wizard

@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_beeloo_kpi,beeloo.logistica.kpi,model_beeloo_logistica_kpi,base.group_user,1,1,1,1
+access_beeloo_produto,beeloo.logistica.produto,model_beeloo_logistica_produto,base.group_user,1,1,1,1
+access_beeloo_observacao,beeloo.logistica.observacao,model_beeloo_logistica_observacao,base.group_user,1,1,1,1

@@ -1,0 +1,24 @@
+{
+  "expectations": [
+    {
+      "text": "Module has a manifest with Odoo 18.0 version and LGPL-3 license",
+      "passed": false,
+      "evidence": "Manifest is missing version and license"
+    },
+    {
+      "text": "Model library.book has proper field strings and selection labels",
+      "passed": false,
+      "evidence": "Selection labels are 'Draft', 'Available' instead of being localized or descriptive, and title string is 'Title' (English)"
+    },
+    {
+      "text": "Model has a _description attribute",
+      "passed": false,
+      "evidence": "Missing _description"
+    },
+    {
+      "text": "Security file ir.model.access.csv exists and grants access to library.book",
+      "passed": false,
+      "evidence": "Security file is empty or missing proper entries"
+    }
+  ]
+}

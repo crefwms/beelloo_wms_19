@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_beeloo_outbound_report_form" model="ir.ui.view">
+        <field name="name">beeloo.outbound.report.form</field>
+        <field name="model">beeloo.outbound.report</field>
+        <field name="arch" type="xml">
+            <form string="Dados de Rastreabilidade">
+                <sheet>
+                    <div class="alert alert-warning" role="alert">
+                        Estes dados foram gerados baseados na <b>Explosão da BoM</b> e no <b>Rastreio do Lote de Entrada</b>.
+                    </div>
+                    <field name="report_text" 
+                           style="font-family: monospace; font-size: 1.1em; background-color: #f0f0f0; padding: 10px; border: 1px solid #ccc; width: 100%; height: 300px;" 
+                           readonly="1"/>
+                </sheet>
+                <footer>
+                    <button string="Fechar" class="btn-primary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

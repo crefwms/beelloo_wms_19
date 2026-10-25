@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="zpl_template_driver_badge" model="ir.ui.view">
+            <field name="name">zpl.template.driver.badge</field>
+            <field name="type">qweb</field>
+            <field name="arch" type="xml">
+                <t t-name="lusitana_logistics.zpl_template_driver_badge_view">
+                    ^XA
+                    ^CI28
+
+                    ^FO50,50^BQN,2,6^FDQA,<t t-esc="o.name"/>^FS
+
+                    ^FO280,50^A0N,30,30^FDNº APRES.: <t t-esc="o.name"/>^FS
+                    ^FO280,130^A0N,30,30^FDMOTORISTA: <t t-esc="o.motorista_id.name"/>^FS
+                    ^FO280,90^A0N,30,30^FDPLACA: <t t-esc="o.cavalo_id.name"/>^FS
+                    ^FO280,170^A0N,25,25^FDTRANSPORTADORA: <t t-esc="o.cavalo_id.transportadora_id.name"/>^FS
+                    ^FO280,210^A0N,30,30^FDVALIDADE INTEGR.: <t t-esc="o.motorista_id.validade_integracao and o.motorista_id.validade_integracao.strftime('%d/%m/%Y') or 'N/A'"/>^FS
+
+                    ^FO50,280^A0N,25,25^FDHORA APRES.: <t t-esc="o.data_apresentacao and o.data_apresentacao.strftime('%d/%m/%Y %H:%M') or 'N/A'"/>^FS
+                    ^FO50,320^A0N,25,25^FDOPERACAO(S): <t t-esc="o.operation_summary"/>^FS
+                    ^FO50,360^A0N,25,25^FDPRIORIDADE: <t t-esc="o.operation_line_ids and o.operation_line_ids[0].prioridade_carregamento_id.name or ''"/>^FS
+                    
+                    ^XZ
+                </t>
+            </field>
+        </record>
+    </data>
+</odoo>

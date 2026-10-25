@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_reverse_logistics_grading_line_tree" model="ir.ui.view">
+        <field name="name">reverse.logistics.grading.line.tree</field>
+        <field name="model">reverse.logistics.grading.line</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="product_id"/>
+                <field name="checklist_status"/>
+                <field name="grade" widget="badge" decoration-success="grade == 'a'" decoration-warning="grade == 'b'" decoration-danger="grade == 'c'"/>
+                <field name="notes"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_reverse_logistics_grading" model="ir.actions.act_window">
+        <field name="name">Triagem e Grading</field>
+        <field name="res_model">reverse.logistics.grading.line</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

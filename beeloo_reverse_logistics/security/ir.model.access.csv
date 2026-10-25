@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_reverse_logistics_rma,reverse.logistics.rma,model_reverse_logistics_rma,base.group_user,1,1,1,1
+access_reverse_logistics_safety_checklist,reverse.logistics.safety.checklist,model_reverse_logistics_safety_checklist,base.group_user,1,1,1,1
+access_reverse_logistics_safety_log,reverse.logistics.safety.log,model_reverse_logistics_safety_log,base.group_user,1,1,1,1
+access_reverse_logistics_grading_line,reverse.logistics.grading.line,model_reverse_logistics_grading_line,base.group_user,1,1,1,1
+access_reverse_logistics_batch,reverse.logistics.batch,model_reverse_logistics_batch,base.group_user,1,1,1,1
+access_reverse_logistics_control_tower,reverse.logistics.control.tower,model_reverse_logistics_control_tower,base.group_user,1,0,0,0

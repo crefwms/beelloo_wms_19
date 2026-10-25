@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_beeloo_wms_dashboard_form" model="ir.ui.view">
+        <field name="name">beeloo.wms.dashboard.form</field>
+        <field name="model">beeloo.wms.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Dashboard WMS">
+                <sheet>
+                    <div class="oe_title mb-4">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    
+                    <h2 class="mt-4">KPIs de Ocupação (Última Leitura)</h2>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="card shadow-sm"><div class="card-body text-center">
+                                <h5 class="card-title">Ocupação Real (Paletes)</h5>
+                                <h2 class="o_stat_value"><field name="latest_total_pallets_stored" nolabel="1"/></h2>
+                            </div></div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card shadow-sm"><div class="card-body text-center">
+                                <h5 class="card-title">Meta Empilhamento</h5>
+                                <h2 class="o_stat_value"><field name="latest_standard_stacking_factor" nolabel="1" digits="[16,2]"/></h2>
+                            </div></div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card shadow-sm"><div class="card-body text-center">
+                                <h5 class="card-title">Empilhamento Real</h5>
+                                <h2 class="o_stat_value"><field name="latest_avg_stacking_factor" nolabel="1" digits="[16,2]"/></h2>
+                            </div></div>
+                        </div>
+                    </div>
+
+                    </sheet>
+            </form>
+        </field>
+    </record>
+
+    <data noupdate="1">
+        <record id="beeloo_wms_dashboard_default_record" model="beeloo.wms.dashboard">
+            <field name="name">Dashboard de KPIs do Armazém</field>
+        </record>
+    </data>
+
+    <record id="action_beeloo_wms_dashboard" model="ir.actions.act_window">
+        <field name="name">Dashboard WMS</field>
+        <field name="res_model">beeloo.wms.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="res_id" eval="ref('beeloo_wms_dashboard_default_record')"/>
+    </record>
+
+    <menuitem
+        id="menu_beeloo_wms_dashboard"
+        name="Dashboard WMS"
+        parent="stock.menu_stock_root"
+        action="action_beeloo_wms_dashboard"
+        sequence="1"/>
+        
+</odoo>

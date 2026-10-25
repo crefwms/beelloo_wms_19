@@ -1,0 +1,13 @@
+{
+  "eval_id": 0,
+  "eval_name": "fraude-conformidade",
+  "prompt": "Tenho um e-commerce de eletrônicos com 1.800 pedidos/mês no Mercado Livre e Amazon. Minha taxa de devolução está em 7% e tô tomando muito prejuízo porque o produto que volta frequentemente não é o mesmo que saiu — já recebi caixa de notebook com tijolo. Como estruturo controles para esse problema?",
+  "assertions": [
+    {"id": "foto-coleta", "text": "Menciona registro fotográfico na coleta ou no recebimento como controle"},
+    {"id": "pesagem", "text": "Menciona pesagem / validação por peso como mecanismo de detecção de fraude"},
+    {"id": "serial", "text": "Menciona verificação de número de série (serial / IMEI) do produto"},
+    {"id": "historico-cpf", "text": "Menciona histórico de devoluções por cliente (CPF/CNPJ) como controle de abuso"},
+    {"id": "motor-regras", "text": "Propõe motor de regras, bloqueio automático ou flag antifraude no portal de devoluções"},
+    {"id": "idioma-pt", "text": "Resposta inteiramente em português do Brasil"}
+  ]
+}

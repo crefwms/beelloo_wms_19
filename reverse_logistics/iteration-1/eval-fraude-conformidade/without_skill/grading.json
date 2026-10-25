@@ -1,0 +1,36 @@
+{
+  "eval_id": 0,
+  "eval_name": "fraude-conformidade",
+  "expectations": [
+    {
+      "text": "(foto-coleta) Menciona registro fotográfico na coleta ou no recebimento como controle",
+      "passed": true,
+      "evidence": "Seção 1 menciona 'Fotografe o produto com o número de série visível antes de embalar' (expedição). Seção 2 menciona 'Fotografar o Recebimento' da devolução. O registro fotográfico está presente, embora o foco seja na expedição e no recebimento, não na coleta domiciliar especificamente."
+    },
+    {
+      "text": "(pesagem) Menciona pesagem / validação por peso como mecanismo de detecção de fraude",
+      "passed": true,
+      "evidence": "'Registre o peso bruto de cada pacote no momento do envio. Divergência de peso na devolução (notebook de 2,5 kg voltando com 3,5 kg) já é evidência de fraude.' Checklist: 'Peso do pacote recebido confere com o peso registrado no envio?'"
+    },
+    {
+      "text": "(serial) Menciona verificação de número de série (serial / IMEI) do produto",
+      "passed": true,
+      "evidence": "Seção 1: 'Aplique etiquetas de segurança holográficas com número de série único' e 'Registre o número de série de cada unidade no pedido'. Checklist: 'Número de série do produto confere com o registrado no envio?'"
+    },
+    {
+      "text": "(historico-cpf) Menciona histórico de devoluções por cliente (CPF/CNPJ) como controle de abuso",
+      "passed": true,
+      "evidence": "Seção 3: 'Verifique histórico do comprador antes de aprovar devolução. Compradores com múltiplas devoluções em curto período ou conta recente: perfil de risco elevado.' O conceito está presente, embora sem menção explícita a CPF/CNPJ."
+    },
+    {
+      "text": "(motor-regras) Propõe motor de regras, bloqueio automático ou flag antifraude no portal de devoluções",
+      "passed": false,
+      "evidence": "A resposta menciona revisão manual para produtos acima de R$ 800 e verificação de histórico do comprador, mas não propõe motor de regras automatizado, bloqueio automático ou flag antifraude em portal de devoluções. Os controles são manuais."
+    },
+    {
+      "text": "(idioma-pt) Resposta inteiramente em português do Brasil",
+      "passed": true,
+      "evidence": "Todo o conteúdo está em português do Brasil, sem trechos em outro idioma."
+    }
+  ]
+}

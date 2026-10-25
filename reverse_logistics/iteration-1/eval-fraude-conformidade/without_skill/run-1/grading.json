@@ -1,0 +1,46 @@
+{
+  "eval_id": 0,
+  "eval_name": "fraude-conformidade",
+  "summary": {
+    "pass_rate": 0.8333,
+    "passed": 5,
+    "failed": 1,
+    "total": 6
+  },
+  "timing": {
+    "total_duration_seconds": 85.2,
+    "total_tokens": 11137
+  },
+  "expectations": [
+    {
+      "text": "Menciona registro fotográfico na coleta ou no recebimento como controle",
+      "passed": true,
+      "evidence": "Seção 1 menciona foto na expedição. Seção 2 menciona fotografar no recebimento."
+    },
+    {
+      "text": "Menciona pesagem / validação por peso como mecanismo de detecção de fraude",
+      "passed": true,
+      "evidence": "'Registre o peso bruto de cada pacote no momento do envio. Divergência de peso na devolução já é evidência de fraude.'"
+    },
+    {
+      "text": "Menciona verificação de número de série (serial / IMEI) do produto",
+      "passed": true,
+      "evidence": "Seção 1: 'Aplique etiquetas de segurança holográficas com número de série único'. Checklist: 'Número de série do produto confere com o registrado no envio?'"
+    },
+    {
+      "text": "Menciona histórico de devoluções por cliente (CPF/CNPJ) como controle de abuso",
+      "passed": true,
+      "evidence": "Seção 3: 'Compradores com múltiplas devoluções em curto período ou conta recente: perfil de risco elevado.'"
+    },
+    {
+      "text": "Propõe motor de regras, bloqueio automático ou flag antifraude no portal de devoluções",
+      "passed": false,
+      "evidence": "Não propõe motor de regras automatizado, bloqueio automático ou flag antifraude em portal. Os controles são manuais."
+    },
+    {
+      "text": "Resposta inteiramente em português do Brasil",
+      "passed": true,
+      "evidence": "Todo o conteúdo está em português do Brasil."
+    }
+  ]
+}

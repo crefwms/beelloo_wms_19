@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Root Menu -->
+    <menuitem id="menu_osint_root"
+              name="Legal OSINT"
+              sequence="10"
+              web_icon="base,static/description/icon.png"/>
+
+    <!-- Operations Menu -->
+    <menuitem id="menu_osint_ops"
+              name="Operações"
+              parent="menu_osint_root"
+              sequence="10"/>
+
+    <!-- Action Menus -->
+    <menuitem id="menu_osint_target"
+              name="Alvos de Monitoramento"
+              parent="menu_osint_ops"
+              action="action_osint_target"
+              sequence="10"/>
+
+    <menuitem id="menu_osint_result"
+              name="Resultados Capturados"
+              parent="menu_osint_ops"
+              action="action_osint_result"
+              sequence="20"/>
+</odoo>

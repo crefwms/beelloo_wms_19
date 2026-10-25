@@ -1,0 +1,53 @@
+<odoo>
+    <data>
+        <template id="landing_page" name="Landing Page WMS Beeloo">
+            <t t-call="website.layout">
+                <div class="container mt-5 mb-5">
+                    <div class="text-center mb-5">
+                        <h1>Rastreamento de Cargas - Lusitana Caçapava</h1>
+                        <p class="text-muted">Digite o número da remessa para consultar o status.</p>
+                    </div>
+
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <form action="/wms/tracking" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <div class="input-group input-group-lg">
+                                    <input type="text" name="ref_number" class="form-control" placeholder="Ex: Dt - 11111111" required="required"/>
+                                    <button type="submit" class="btn btn-primary">Rastrear</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-center mt-4">
+                        <div class="col-md-8">
+                            
+                            <t t-if="picking">
+                                <div class="card shadow-sm border-success">
+                                    <div class="card-header bg-success text-white">
+                                        <h4 class="m-0">Remessa Encontrada!</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <p><strong>Documento:</strong> <span t-field="picking.name"/></p>
+                                        <p><strong>Cliente/Parceiro:</strong> <span t-field="picking.partner_id.name"/></p>
+                                        <p><strong>Data Prevista:</strong> <span t-field="picking.scheduled_date"/></p>
+                                        <hr/>
+                                        <h3>Status: <span class="badge bg-info text-dark" t-field="picking.state"/></h3>
+                                    </div>
+                                </div>
+                            </t>
+
+                            <t t-elif="search_term and not picking">
+                                <div class="alert alert-danger text-center" role="alert">
+                                    Não encontramos nenhuma remessa com o número <strong><t t-esc="search_term"/></strong>.
+                                </div>
+                            </t>
+
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- View: List (Odoo 18 style) -->
+    <record id="view_osint_target_list" model="ir.ui.view">
+        <field name="name">osint.target.list</field>
+        <field name="model">osint.target</field>
+        <field name="arch" type="xml">
+            <list string="Alvos de Monitoramento">
+                <field name="name"/>
+                <field name="identifier"/>
+                <field name="state" widget="badge" 
+                       decoration-info="state == 'active'" 
+                       decoration-success="state == 'active'"
+                       decoration-muted="state == 'paused'"
+                       decoration-warning="state == 'draft'"/>
+                <field name="last_check"/>
+                <field name="next_check"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- View: Form -->
+    <record id="view_osint_target_form" model="ir.ui.view">
+        <field name="name">osint.target.form</field>
+        <field name="model">osint.target</field>
+        <field name="arch" type="xml">
+            <form string="Alvo de Monitoramento">
+                <header>
+                    <button name="action_check_now" string="Verificar Agora" type="object" class="oe_highlight" invisible="state == 'paused'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,paused"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Ex: João da Silva ou Processo 123456"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="identifier"/>
+                            <field name="project_id"/>
+                            <field name="task_id" domain="[('project_id', '=', project_id)]"/>
+                        </group>
+                        <group>
+                            <field name="last_check"/>
+                            <field name="next_check"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="results" string="Resultados">
+                            <field name="result_ids">
+                                <list string="Resultados Recentes">
+                                    <field name="date"/>
+                                    <field name="name"/>
+                                    <field name="process_number"/>
+                                    <field name="summary"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page name="integrations" string="Configurações de Integração">
+                            <group string="Cloud Storage &amp; Comunicação">
+                                <field name="google_drive_folder_id" placeholder="ID da pasta no G-Drive (ex: 1A2b3C...)" widget="char"/>
+                                <field name="whatsapp_group_id" placeholder="ID da Comunidade ou Grupo" widget="char"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- View: Search -->
+    <record id="view_osint_target_search" model="ir.ui.view">
+        <field name="name">osint.target.search</field>
+        <field name="model">osint.target</field>
+        <field name="arch" type="xml">
+            <search string="Pesquisar Alvos">
+                <field name="name"/>
+                <field name="identifier"/>
+                <filter string="Ativos" name="active" domain="[('state', '=', 'active')]"/>
+                <filter string="Rascunho" name="draft" domain="[('state', '=', 'draft')]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_osint_target" model="ir.actions.act_window">
+        <field name="name">Alvos OSINT</field>
+        <field name="res_model">osint.target</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_osint_target_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crie seu primeiro alvo de monitoramento!
+            </p>
+        </field>
+    </record>
+</odoo>

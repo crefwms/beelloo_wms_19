@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_oea_requirement_search" model="ir.ui.view">
+        <field name="name">oea.requirement.search</field>
+        <field name="model">oea.requirement</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Requisitos">
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="category"/>
+                <filter string="Ativos" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Inativos" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Agrupar por">
+                    <filter string="Modalidade" name="group_modality" context="{'group_by': 'modality'}"/>
+                    <filter string="Tipo" name="group_type" context="{'group_by': 'type'}"/>
+                    <filter string="Complexidade" name="group_complexity" context="{'group_by': 'complexity'}"/>
+                    <filter string="Categoria" name="group_category" context="{'group_by': 'category'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_oea_requirement_tree" model="ir.ui.view">
+        <field name="name">oea.requirement.tree</field>
+        <field name="model">oea.requirement</field>
+        <field name="arch" type="xml">
+            <list string="Requisitos OEA">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="category"/>
+                <field name="type"/>
+                <field name="modality"/>
+                <field name="complexity" widget="badge" decoration-success="complexity == 'low'" decoration-warning="complexity == 'medium'" decoration-danger="complexity == 'high'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_oea_requirement_form" model="ir.ui.view">
+        <field name="name">oea.requirement.form</field>
+        <field name="model">oea.requirement</field>
+        <field name="arch" type="xml">
+            <form string="Requisito OEA">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="ex: 7.1 Ponto de Contato"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="reference"/>
+                            <field name="category"/>
+                            <field name="type"/>
+                            <field name="modality"/>
+                        </group>
+                        <group>
+                            <field name="complexity"/>
+                            <field name="active"/>
+                            <field name="trello_card_id" groups="base.group_no_one"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Descrição Jurídica" name="description">
+                            <field name="description"/>
+                        </page>
+                        <page string="Orientação CRF" name="orientation">
+                            <field name="orientation"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_oea_requirement" model="ir.actions.act_window">
+        <field name="name">Requisitos</field>
+        <field name="res_model">oea.requirement</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crie o primeiro requisito OEA!
+            </p>
+        </field>
+    </record>
+
+    <record id="action_report_oea_compliance" model="ir.actions.report">
+        <field name="name">Relatório de Conformidade</field>
+        <field name="model">oea.requirement</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">oea_management.oea_compliance_report</field>
+        <field name="report_file">oea_management.oea_compliance_report</field>
+    </record>
+</odoo>

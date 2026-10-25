@@ -1,0 +1,46 @@
+{
+  "eval_id": 1,
+  "eval_name": "arquitetura-wms",
+  "summary": {
+    "pass_rate": 1.0,
+    "passed": 6,
+    "failed": 0,
+    "total": 6
+  },
+  "timing": {
+    "total_duration_seconds": 82.7,
+    "total_tokens": 11090
+  },
+  "expectations": [
+    {
+      "text": "Nomeia pelo menos 3 locações distintas para a área de reversa",
+      "passed": true,
+      "evidence": "7 locações: LR-RECEBIMENTO, LR-TRIAGEM, LR-APROVADO, LR-REFURBISH, LR-QUARENTENA, LR-DESCARTE, LR-FORNECEDOR."
+    },
+    {
+      "text": "Explica mecanismo concreto para evitar mistura com estoque novo",
+      "passed": true,
+      "evidence": "'Nunca configure as locações de LR como sublocações do estoque regular.' + flag 'Reservar Estoque' desativado + prefixo de lote DEV-2024-XXXXX."
+    },
+    {
+      "text": "Menciona o Odoo com configuração concreta (locations, picking types, módulos ou campos)",
+      "passed": true,
+      "evidence": "'Inventário > Configuração > Locações', flag 'Reservar Estoque', rastreamento por lote/número de série, grupos de usuário, automações do Odoo."
+    },
+    {
+      "text": "Apresenta fluxo operacional sequencial com pelo menos 4 etapas numeradas",
+      "passed": true,
+      "evidence": "4 etapas: Etapa 1 (Recebimento), Etapa 2 (Triagem), Etapa 3 (Classificação), Etapa 4 (Reintegração)."
+    },
+    {
+      "text": "Menciona picking types ou tipos de operação dedicados para movimentos de devolução",
+      "passed": true,
+      "evidence": "Seção 3.4: 'Crie tipos de operação exclusivos para LR (ex.: Recebimento Devolução, Transferência Triagem LR, Reintegração Estoque).'"
+    },
+    {
+      "text": "Resposta inteiramente em português do Brasil",
+      "passed": true,
+      "evidence": "Todo o conteúdo está em português do Brasil."
+    }
+  ]
+}

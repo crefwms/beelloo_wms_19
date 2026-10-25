@@ -1,0 +1,28 @@
+{
+  "skill_name": "odoo-module-creator",
+  "iterations": [
+    {
+      "iteration_id": 1,
+      "evals": [
+        {
+          "eval_id": 0,
+          "eval_name": "Create library_management module",
+          "results": [
+            {
+              "configuration": "with_skill",
+              "pass_rate": 1.0,
+              "assertions_passed": 4,
+              "assertions_total": 4
+            },
+            {
+              "configuration": "without_skill",
+              "pass_rate": 0.0,
+              "assertions_passed": 0,
+              "assertions_total": 4
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "eval_id": 2,
+  "eval_name": "integracao-financeira",
+  "summary": {
+    "pass_rate": 1.0,
+    "passed": 6,
+    "failed": 0,
+    "total": 6
+  },
+  "timing": {
+    "total_duration_seconds": 119.1,
+    "total_tokens": 16956
+  },
+  "expectations": [
+    {
+      "text": "Mapeia pelo menos 3 eventos logísticos distintos com sua ação financeira correspondente",
+      "passed": true,
+      "evidence": "Tabela com 9 eventos mapeados: entrada no CD → comunicar cliente; A-Grade → liberar 100%; B-Grade → estorno parcial; fraude → bloquear crédito."
+    },
+    {
+      "text": "Menciona grading (A/B/C-Grade ou equivalente) como gatilho para liberar ou reter o crédito",
+      "passed": true,
+      "evidence": "'Grading A-Grade → Liberar 100% do estorno imediatamente'; 'Grading B-Grade → Liberar estorno parcial (ex: 80-90%)'; 'Grading C-Grade → Acionar garantia do fabricante.'"
+    },
+    {
+      "text": "Aborda SLA do marketplace (Magalu) e consequências de descumprimento",
+      "passed": true,
+      "evidence": "'rebaixamento de posição nos resultados de busca e risco de penalização de conta'; tabela de SLA por etapa; 'fica dentro do SLA da Magalu, elimina reclamações e protege sua reputação'."
+    },
+    {
+      "text": "Distingue estorno total (produto ok) de estorno parcial ou retido (avaria ou fraude)",
+      "passed": true,
+      "evidence": "A-Grade = 100%; B-Grade = 'estorno parcial (ex: 80-90%)'; fraude = 'Bloquear crédito, acionar jurídico'. Distinção clara entre os três cenários."
+    },
+    {
+      "text": "Menciona integração com gateway de pagamento ou API do marketplace para disparar estorno",
+      "passed": true,
+      "evidence": "Semana 3: 'Vincular conclusão do grading à liberação automática do estorno via gateway.' + 'Notificação automática à Magalu via API'."
+    },
+    {
+      "text": "Resposta inteiramente em português do Brasil",
+      "passed": true,
+      "evidence": "Todo o conteúdo está em português do Brasil."
+    }
+  ]
+}

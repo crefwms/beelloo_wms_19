@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="lusitana_logistics_body_type_list_view" model="ir.ui.view">
+            <field name="name">lusitana_logistics.body.type.list</field>
+            <field name="model">lusitana_logistics.body_type</field>
+            <field name="arch" type="xml">
+                <list string="Tipos de Carroceria">
+                    <field name="name"/>
+                    <field name="description"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="lusitana_logistics_body_type_form_view" model="ir.ui.view">
+            <field name="name">lusitana_logistics.body.type.form</field>
+            <field name="model">lusitana_logistics.body_type</field>
+            <field name="arch" type="xml">
+                <form string="Tipo de Carroceria">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="description"/>
+                            <field name="is_container_type"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="lusitana_logistics_body_type_action" model="ir.actions.act_window">
+            <field name="name">Tipos de Carroceria</field>
+            <field name="res_model">lusitana_logistics.body_type</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Crie seu primeiro tipo de carroceria!
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_agenda_import_wizard_form" model="ir.ui.view">
+            <field name="name">lusitana.logistics.agenda.import.wizard.form</field>
+            <field name="model">lusitana_logistics.agenda_import_wizard</field>
+            <field name="arch" type="xml">
+                <form string="Importar Agenda de Carregamento">
+                    <group>
+                        <field name="file_upload" filename="file_name"/>
+                        <field name="file_name" invisible="1"/>
+                        <field name="delimiter"/>
+                    </group>
+                    <footer>
+                        <button name="action_import_file" string="Importar" type="object" class="btn-primary" data-hotkey="q"/>
+                        <button string="Cancelar" class="btn-secondary" special="cancel" data-hotkey="z"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+       <record id="action_agenda_import_wizard" model="ir.actions.act_window">
+            <field name="name">Importar Agenda SAP</field>
+            <field name="res_model">lusitana_logistics.agenda_import_wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

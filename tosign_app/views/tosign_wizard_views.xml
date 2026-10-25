@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_tosign_sign_wizard" model="ir.ui.view">
+        <field name="name">tosign.sign.wizard.form</field>
+        <field name="model">tosign.sign.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Assinar Documento">
+                <group>
+                    <field name="document_id" readonly="1"/>
+                    <field name="sign_mode" widget="radio" options="{'horizontal': true}"/>
+                </group>
+                <group string="Assinatura" invisible="sign_mode == 'rub'">
+                    <field name="signature_source" widget="radio" options="{'horizontal': true}"/>
+                    <field name="signature_image" widget="signature" 
+                            options="{'size': [500, 150]}" invisible="signature_source != 'draw'"/>
+                    <field name="signature_upload" widget="image" invisible="signature_source != 'upload'"/>
+                </group>
+                <group string="Rúbrica" invisible="sign_mode == 'sig'">
+                    <field name="rubric_source" widget="radio" options="{'horizontal': true}"/>
+                    <field name="rubric_image" widget="signature" 
+                            options="{'size': [500, 150]}" invisible="rubric_source != 'draw'"/>
+                    <field name="rubric_upload" widget="image" invisible="rubric_source != 'upload'"/>
+                </group>
+                <footer>
+                    <button name="action_sign" string="Confirmar e Gerar PDF" 
+                            type="object" class="btn-primary"/>
+                    <button string="Cancelar" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_sign_wizard" model="ir.actions.act_window">
+        <field name="name">Assinar Documento</field>
+        <field name="res_model">tosign.sign.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_tosign_document"/>
+    </record>
+</odoo>

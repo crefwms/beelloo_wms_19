@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <menuitem id="lusitana_logistics_menu_root"
+                  name="Lusitana Logística"
+                  sequence="10"/>
+
+        <record id="lusitana_logistics_vehicle_presentation_action" model="ir.actions.act_window">
+            <field name="name">Apresentações de Veículo</field>
+            <field name="res_model">lusitana_logistics.vehicle_presentation</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Crie uma nova apresentação de veículo
+                </p><p>
+                    Registre a entrada e saída de veículos, controle motoristas e implementos.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="lusitana_logistics_main_menu_fleet"
+                  name="Frota"
+                  parent="lusitana_logistics_menu_root"
+                  sequence="40"/>
+
+        <menuitem id="lusitana_logistics_config_menu"
+                  name="Configuração"
+                  parent="lusitana_logistics_menu_root"
+                  sequence="100"/>
+        
+        <menuitem id="menu_lusitana_logistics_priority"
+                name="Prioridades de Carregamento"
+                parent="lusitana_logistics_config_menu"
+                action="action_lusitana_logistics_priority"
+                sequence="5"/>
+
+        <menuitem id="lusitana_logistics_vehicle_type_menu"
+                  name="Tipos de Veículo"
+                  parent="lusitana_logistics_config_menu"
+                  action="lusitana_logistics_vehicle_type_action"
+                  sequence="10"/>
+
+        <menuitem id="lusitana_logistics_body_type_menu"
+                  name="Tipos de Carroceria"
+                  parent="lusitana_logistics_config_menu"
+                  action="lusitana_logistics_body_type_action"
+                  sequence="20"/>
+
+        <menuitem id="lusitana_logistics_tie_type_menu"
+                  name="Tipos de Amarração"
+                  parent="lusitana_logistics_config_menu"
+                  action="lusitana_logistics_tie_type_action"
+                  sequence="30"/>
+
+        <menuitem id="lusitana_logistics_tightening_type_menu"
+                  name="Tipos de Aperto"
+                  parent="lusitana_logistics_config_menu"
+                  action="lusitana_logistics_tightening_type_action"
+                  sequence="40"/>
+
+        <menuitem id="lusitana_logistics_vehicle_menu"
+                  name="Veículos"
+                  parent="lusitana_logistics_main_menu_fleet"
+                  action="lusitana_logistics_vehicle_action"
+                  sequence="10"/>
+
+        <menuitem id="lusitana_logistics_lacre_menu"
+                  name="Lacres"
+                  parent="lusitana_logistics_config_menu"
+                  action="lusitana_logistics_lacre_action"
+                  sequence="50"/>
+
+        <menuitem id="lusitana_logistics_operation_type_menu"
+                  name="Tipos de Operação"
+                  parent="lusitana_logistics_config_menu" 
+                  action="lusitana_logistics_operation_type_action"
+                  sequence="60"/>
+
+        <menuitem id="lusitana_logistics_operation_menu"
+                  name="Operação"
+                  parent="lusitana_logistics_menu_root"
+                  sequence="10"/>
+
+        <menuitem id="lusitana_logistics_vehicle_presentation_menu" 
+                  name="Apresentações de Veículo" 
+                  parent="lusitana_logistics_operation_menu" 
+                  action="lusitana_logistics_vehicle_presentation_action" 
+                  sequence="15"/>
+        
+        <menuitem id="menu_agenda_heineken_import"
+                  name="Importar Agenda SAP"
+                  parent="lusitana_logistics_operation_menu"
+                  action="lusitana_logistics.action_agenda_import_wizard"
+                  sequence="16"/>
+
+        <menuitem id="menu_agenda_heineken"
+                  name="Agenda de Carregamento"
+                  parent="lusitana_logistics_operation_menu"
+                  action="lusitana_logistics.action_agenda_heineken"
+                  sequence="30"/>
+        
+         <menuitem id="lusitana_logistics_lacre_menu_root"
+                  name="Controle de Lacres"
+                  parent="lusitana_logistics_menu_root"
+                  sequence="30"/>
+        
+        <menuitem id="lusitana_logistics_lacre_list_menu"
+                  name="Todos os Lacres"
+                  parent="lusitana_logistics_lacre_menu_root"
+                  action="lusitana_logistics_lacre_action"
+                  sequence="10"/>
+        
+        <menuitem id="menu_lacre_batch_wizard"
+                  name="Gerar Lacres em Lote"
+                  parent="lusitana_logistics_lacre_menu_root"
+                  action="lusitana_logistics.action_lacre_batch_wizard"
+                  sequence="20"/>
+                  
+    </data>
+</odoo>

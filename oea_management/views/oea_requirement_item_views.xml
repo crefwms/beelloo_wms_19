@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="oea_requirement_item_view_search" model="ir.ui.view">
+        <field name="name">oea.requirement.item.search</field>
+        <field name="model">oea.requirement.item</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Itens">
+                <field name="name"/>
+                <field name="requirement_id"/>
+                <field name="performed_by"/>
+                <filter string="Meus Itens" name="my_items" domain="[('performed_by', '=', uid)]"/>
+                <filter string="Atrasados" name="overdue" domain="[('due_date', '&lt;', context_today().strftime('%Y-%m-%d')), ('state', 'not in', ['validated', 'not_applicable', 'rejected'])]"/>
+                <filter string="Pendentes" name="pending" domain="[('state', '=', 'pending_review')]"/>
+                <filter string="Em Andamento" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Validados" name="validated" domain="[('state', '=', 'validated')]"/>
+                <filter string="Ativos" name="active" domain="[('active', '=', True)]"/>
+                <group expand="0" string="Agrupar por">
+                    <filter string="Estado" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Modalidade" name="group_by_modality" context="{'group_by': 'requirement_modality'}"/>
+                    <filter string="Requisito" name="group_by_requirement" context="{'group_by': 'requirement_id'}"/>
+                    <filter string="Responsável" name="group_by_performed_by" context="{'group_by': 'performed_by'}"/>
+                    <filter string="Categoria" name="group_by_category" context="{'group_by': 'requirement_category'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="oea_requirement_item_view_tree" model="ir.ui.view">
+        <field name="name">oea.requirement.item.tree</field>
+        <field name="model">oea.requirement.item</field>
+        <field name="arch" type="xml">
+            <list string="Itens de Requisitos" decoration-success="state=='validated'" decoration-warning="state=='in_progress'" decoration-info="state=='pending_review'" decoration-danger="state=='rejected'" decoration-muted="state=='not_applicable'">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="requirement_id"/>
+                <field name="requirement_category"/>
+                <field name="state"/>
+                <field name="performed_by"/>
+                <field name="due_date"/>
+                <field name="performed_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="oea_requirement_item_view_form" model="ir.ui.view">
+        <field name="name">oea.requirement.item.form</field>
+        <field name="model">oea.requirement.item</field>
+        <field name="arch" type="xml">
+            <form string="Item de Requisito">
+                <header>
+                    <button name="action_start" type="object" string="Iniciar" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_pending_review" type="object" string="Enviar para Revisão" class="oe_highlight" invisible="state != 'in_progress'"/>
+                    <button name="action_validate" type="object" string="Validar" class="oe_success" invisible="state != 'pending_review'"/>
+                    <button name="action_reject" type="object" string="Rejeitar" class="oe_danger" invisible="state != 'pending_review'"/>
+                    <button name="action_reset" type="object" string="Resetar" invisible="state in ('draft', 'in_progress')"/>
+                    <button name="action_mark_na" type="object" string="Não Aplicável" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,pending_review,validated"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="requirement_id"/>
+                            <field name="parent_id" domain="[]"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="performed_by"/>
+                            <field name="performed_date"/>
+                            <field name="due_date"/>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                    <group string="Classificação">
+                        <group>
+                            <field name="requirement_type"/>
+                            <field name="requirement_modality"/>
+                        </group>
+                        <group>
+                            <field name="requirement_complexity"/>
+                            <field name="requirement_category"/>
+                            <field name="requirement_reference"/>
+                        </group>
+                    </group>
+                    <group string="Vinculação Odoo">
+                        <group>
+                            <field name="odoo_model_id"/>
+                            <field name="odoo_record_id"/>
+                        </group>
+                        <group>
+                            <field name="odoo_record_ref" widget="reference"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Observações" name="notes">
+                            <field name="notes" widget="html"/>
+                        </page>
+                        <page string="Notas de Validação" name="validation_notes">
+                            <field name="validation_notes" widget="html"/>
+                        </page>
+                        <page string="Evidências" name="evidence">
+                            <field name="evidence_ids" widget="many2many_binary"/>
+                        </page>
+                        <page string="Sub-itens" name="children" invisible="not child_ids">
+                            <field name="child_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="state"/>
+                                    <field name="performed_by"/>
+                                    <field name="due_date"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="oea_requirement_item_view_kanban" model="ir.ui.view">
+        <field name="name">oea.requirement.item.kanban</field>
+        <field name="model">oea.requirement.item</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" on_create="quick_create">
+                <field name="name"/>
+                <field name="state"/>
+                <field name="requirement_id"/>
+                <field name="requirement_modality"/>
+                <field name="performed_by"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="#{!selection_mode ? kanban_color(record.state.raw_value) : ''} oe_kanban_global_click">
+                            <div class="o_kanban_record_top mb16">
+                                <b class="o_kanban_record_title"><field name="name"/></b>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div t-if="record.requirement_id.raw_value">
+                                    <i class="fa fa-book" role="img" aria-label="Requirement"/> <field name="requirement_id"/>
+                                </div>
+                                <div t-if="record.requirement_modality.raw_value">
+                                    <span class="badge bg-info"><field name="requirement_modality"/></span>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <field name="state"/>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <img t-if="record.performed_by.raw_value" t-att-src="kanban_image('res.users', 'avatar_128', record.performed_by.raw_value)" class="o_kanban_avatar o_small_avatar" alt="Avatar"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="oea_requirement_item_action" model="ir.actions.act_window">
+        <field name="name">Itens de Requisitos</field>
+        <field name="res_model">oea.requirement.item</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crie seu primeiro item de requisito
+            </p>
+        </field>
+    </record>
+
+    <record id="oea_requirement_item_dashboard_action" model="ir.actions.act_window">
+        <field name="name">Dashboard OEA</field>
+        <field name="res_model">oea.requirement.item</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{
+            'search_default_group_by_state': 1,
+            'search_default_group_by_requirement_modality': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Comece criando itens de ação para seus requisitos
+            </p>
+        </field>
+    </record>
+</odoo>

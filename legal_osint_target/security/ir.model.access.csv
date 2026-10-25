@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_osint_target_user,osint.target.user,model_osint_target,base.group_user,1,1,1,1
+access_osint_result_user,osint.result.user,model_osint_result,base.group_user,1,1,1,1

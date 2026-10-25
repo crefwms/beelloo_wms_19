@@ -1,0 +1,13 @@
+{
+  "eval_id": 1,
+  "eval_name": "arquitetura-wms",
+  "prompt": "Preciso montar uma área de logística reversa no meu CD em Guarulhos. Meu WMS é o Odoo 17. Quais locações preciso criar, qual fluxo operacional e como evito que produto devolvido misture com estoque novo?",
+  "assertions": [
+    {"id": "tres-locacoes", "text": "Nomeia pelo menos 3 locações distintas para a área de reversa (quarentena, triagem, descarte, outlet, etc.)"},
+    {"id": "segregacao-estoque", "text": "Explica mecanismo concreto para evitar mistura com estoque novo (área segregada, status intermediário ou picking type dedicado)"},
+    {"id": "odoo-especifico", "text": "Menciona o Odoo com configuração concreta (locations, picking types, módulos ou campos)"},
+    {"id": "fluxo-passo-a-passo", "text": "Apresenta fluxo operacional sequencial com pelo menos 4 etapas numeradas"},
+    {"id": "picking-types", "text": "Menciona picking types ou tipos de operação dedicados para movimentos de devolução no WMS"},
+    {"id": "idioma-pt", "text": "Resposta inteiramente em português do Brasil"}
+  ]
+}

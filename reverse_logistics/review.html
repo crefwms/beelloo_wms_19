@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eval Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #faf9f5;
+      --surface: #ffffff;
+      --border: #e8e6dc;
+      --text: #141413;
+      --text-muted: #b0aea5;
+      --accent: #d97757;
+      --accent-hover: #c4613f;
+      --green: #788c5d;
+      --green-bg: #eef2e8;
+      --red: #c44;
+      --red-bg: #fceaea;
+      --header-bg: #141413;
+      --header-text: #faf9f5;
+      --radius: 6px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- Header ---- */
+    .header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .header .instructions {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-top: 0.25rem;
+    }
+    .header .progress {
+      font-size: 0.875rem;
+      opacity: 0.8;
+      text-align: right;
+    }
+
+    /* ---- Main content ---- */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* ---- Sections ---- */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      flex-shrink: 0;
+    }
+    .section-header {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .section-body {
+      padding: 1rem;
+    }
+
+    /* ---- Config badge ---- */
+    .config-badge {
+      display: inline-block;
+      padding: 0.2rem 0.625rem;
+      border-radius: 9999px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-left: 0.75rem;
+      vertical-align: middle;
+    }
+    .config-badge.config-primary {
+      background: rgba(33, 150, 243, 0.12);
+      color: #1976d2;
+    }
+    .config-badge.config-baseline {
+      background: rgba(255, 193, 7, 0.15);
+      color: #f57f17;
+    }
+
+    /* ---- Prompt ---- */
+    .prompt-text {
+      white-space: pre-wrap;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    /* ---- Outputs ---- */
+    .output-file {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .output-file + .output-file {
+      margin-top: 1rem;
+    }
+    .output-file-header {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .output-file-header .dl-btn {
+      font-size: 0.7rem;
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+    .output-file-header .dl-btn:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+    .output-file-content {
+      padding: 0.75rem;
+      overflow-x: auto;
+    }
+    .output-file-content pre {
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+    .output-file-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .output-file-content iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+    }
+    .output-file-content table {
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+      width: 100%;
+    }
+    .output-file-content table td,
+    .output-file-content table th {
+      border: 1px solid var(--border);
+      padding: 0.375rem 0.5rem;
+      text-align: left;
+    }
+    .output-file-content table th {
+      background: var(--bg);
+      font-weight: 600;
+    }
+    .output-file-content .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+    .output-file-content .download-link:hover {
+      background: var(--border);
+    }
+    .empty-state {
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    /* ---- Feedback ---- */
+    .prev-feedback {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.625rem 0.75rem;
+      margin-top: 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .prev-feedback-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.25rem;
+      color: var(--text-muted);
+    }
+    .feedback-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      resize: vertical;
+      color: var(--text);
+    }
+    .feedback-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .feedback-status {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      min-height: 1.1em;
+    }
+
+    /* ---- Grades (collapsible) ---- */
+    .grades-toggle {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .grades-toggle:hover {
+      color: var(--accent);
+    }
+    .grades-toggle .arrow {
+      margin-right: 0.5rem;
+      transition: transform 0.15s;
+      font-size: 0.75rem;
+    }
+    .grades-toggle .arrow.open {
+      transform: rotate(90deg);
+    }
+    .grades-content {
+      display: none;
+      margin-top: 0.75rem;
+    }
+    .grades-content.open {
+      display: block;
+    }
+    .grades-summary {
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .grade-badge {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .grade-pass { background: var(--green-bg); color: var(--green); }
+    .grade-fail { background: var(--red-bg); color: var(--red); }
+    .assertion-list {
+      list-style: none;
+    }
+    .assertion-item {
+      padding: 0.625rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8125rem;
+    }
+    .assertion-item:last-child { border-bottom: none; }
+    .assertion-status {
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    .assertion-status.pass { color: var(--green); }
+    .assertion-status.fail { color: var(--red); }
+    .assertion-evidence {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      padding-left: 1.5rem;
+    }
+
+    /* ---- View tabs ---- */
+    .view-tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 2rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .view-tab {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.625rem 1.25rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .view-tab:hover { color: var(--text); }
+    .view-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .view-panel { display: none; }
+    .view-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+    /* ---- Benchmark view ---- */
+    .benchmark-view {
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .benchmark-table {
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.8125rem;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    .benchmark-table th, .benchmark-table td {
+      padding: 0.625rem 0.75rem;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+    .benchmark-table th {
+      font-family: 'Poppins', sans-serif;
+      background: var(--header-bg);
+      color: var(--header-text);
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .benchmark-table tr:hover { background: var(--bg); }
+    .benchmark-table tr.benchmark-row-with { background: rgba(33, 150, 243, 0.06); }
+    .benchmark-table tr.benchmark-row-without { background: rgba(255, 193, 7, 0.06); }
+    .benchmark-table tr.benchmark-row-with:hover { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-without:hover { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-table tr.benchmark-row-avg { font-weight: 600; border-top: 2px solid var(--border); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-with { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-without { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-delta-positive { color: var(--green); font-weight: 600; }
+    .benchmark-delta-negative { color: var(--red); font-weight: 600; }
+    .benchmark-notes {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+    .benchmark-notes h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+    }
+    .benchmark-notes ul {
+      list-style: disc;
+      padding-left: 1.25rem;
+    }
+    .benchmark-notes li {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      margin-bottom: 0.375rem;
+    }
+    .benchmark-empty {
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      padding: 3rem;
+    }
+
+    /* ---- Navigation ---- */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+    .nav-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: all 0.15s;
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .done-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+    .done-btn:hover {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .done-btn.ready {
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+    }
+    .done-btn.ready:hover {
+      background: var(--accent-hover);
+    }
+    /* ---- Done overlay ---- */
+    .done-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    .done-overlay.visible {
+      display: flex;
+    }
+    .done-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 2rem 3rem;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+    }
+    .done-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .done-card p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .done-card .btn-row {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    .done-card button {
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    .done-card button:hover {
+      background: var(--bg);
+    }
+    /* ---- Toast ---- */
+    .toast {
+      position: fixed;
+      bottom: 5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 200;
+    }
+    .toast.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" style="height:100vh; display:flex; flex-direction:column;">
+    <div class="header">
+      <div>
+        <h1>Eval Review: <span id="skill-name"></span></h1>
+        <div class="instructions">Review each output and leave feedback below. Navigate with arrow keys or buttons. When done, copy feedback and paste into Claude Code.</div>
+      </div>
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- View tabs (only shown when benchmark data exists) -->
+    <div class="view-tabs" id="view-tabs" style="display:none;">
+      <button class="view-tab active" onclick="switchView('outputs')">Outputs</button>
+      <button class="view-tab" onclick="switchView('benchmark')">Benchmark</button>
+    </div>
+
+    <!-- Outputs panel (qualitative review) -->
+    <div class="view-panel active" id="panel-outputs">
+    <div class="main">
+      <!-- Prompt -->
+      <div class="section">
+        <div class="section-header">Prompt <span class="config-badge" id="config-badge" style="display:none;"></span></div>
+        <div class="section-body">
+          <div class="prompt-text" id="prompt-text"></div>
+        </div>
+      </div>
+
+      <!-- Outputs -->
+      <div class="section">
+        <div class="section-header">Output</div>
+        <div class="section-body" id="outputs-body">
+          <div class="empty-state">No output files found</div>
+        </div>
+      </div>
+
+      <!-- Previous Output (collapsible) -->
+      <div class="section" id="prev-outputs-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="togglePrevOutputs()">
+            <span class="arrow" id="prev-outputs-arrow">&#9654;</span>
+            Previous Output
+          </div>
+        </div>
+        <div class="grades-content" id="prev-outputs-content"></div>
+      </div>
+
+      <!-- Grades (collapsible) -->
+      <div class="section" id="grades-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="toggleGrades()">
+            <span class="arrow" id="grades-arrow">&#9654;</span>
+            Formal Grades
+          </div>
+        </div>
+        <div class="grades-content" id="grades-content"></div>
+      </div>
+
+      <!-- Feedback -->
+      <div class="section">
+        <div class="section-header">Your Feedback</div>
+        <div class="section-body">
+          <textarea
+            class="feedback-textarea"
+            id="feedback"
+            placeholder="What do you think of this output? Any issues, suggestions, or things that look great?"
+          ></textarea>
+          <div class="feedback-status" id="feedback-status"></div>
+          <div class="prev-feedback" id="prev-feedback" style="display:none;">
+            <div class="prev-feedback-label">Previous feedback</div>
+            <div id="prev-feedback-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav" id="outputs-nav">
+      <button class="nav-btn" id="prev-btn" onclick="navigate(-1)">&#8592; Previous</button>
+      <button class="done-btn" id="done-btn" onclick="showDoneDialog()">Submit All Reviews</button>
+      <button class="nav-btn" id="next-btn" onclick="navigate(1)">Next &#8594;</button>
+    </div>
+    </div><!-- end panel-outputs -->
+
+    <!-- Benchmark panel (quantitative stats) -->
+    <div class="view-panel" id="panel-benchmark">
+      <div class="benchmark-view" id="benchmark-content">
+        <div class="benchmark-empty">No benchmark data available. Run a benchmark to see quantitative results here.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Done overlay -->
+  <div class="done-overlay" id="done-overlay">
+    <div class="done-card">
+      <h2>Review Complete</h2>
+      <p>Your feedback has been saved. Go back to your Claude Code session and tell Claude you're done reviewing.</p>
+      <div class="btn-row">
+        <button onclick="closeDoneDialog()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ---- Embedded data (injected by generate_review.py) ----
+    const EMBEDDED_DATA = {"skill_name": "reverse-logistics-architect", "runs": [{"id": "eval-fraude-conformidade-with_skill", "prompt": "Tenho um e-commerce de eletr\u00f4nicos com 1.800 pedidos/m\u00eas no Mercado Livre e Amazon. Minha taxa de devolu\u00e7\u00e3o est\u00e1 em 7% e t\u00f4 tomando muito preju\u00edzo porque o produto que volta frequentemente n\u00e3o \u00e9 o mesmo que saiu \u2014 j\u00e1 recebi caixa de notebook com tijolo. Como estruturo controles para esse problema?", "eval_id": 0, "outputs": [{"name": "response.md", "type": "text", "content": "# Controles Antifraude para Devolu\u00e7\u00e3o de Eletr\u00f4nicos \u2014 Mercado Livre e Amazon\n\n## Diagn\u00f3stico da situa\u00e7\u00e3o\n\nCom 1.800 pedidos/m\u00eas e 7% de devolu\u00e7\u00e3o, voc\u00ea tem ~126 devolu\u00e7\u00f5es mensais. A fraude de substitui\u00e7\u00e3o de produto \u2014 devolver tijolo no lugar de notebook \u2014 \u00e9 chamada de **swap fraud** e \u00e9 o tipo mais comum e mais custoso no segmento de eletr\u00f4nicos.\n\nO problema raiz \u00e9 aus\u00eancia de **rastreabilidade bidirecional**: voc\u00ea n\u00e3o tem o estado do produto registrado na sa\u00edda, ent\u00e3o n\u00e3o consegue provar o que voltou \u00e9 diferente do que saiu.\n\nA solu\u00e7\u00e3o tem tr\u00eas camadas: controle na coleta, conformidade no recebimento e preven\u00e7\u00e3o sist\u00eamica.\n\n---\n\n## Camada 1 \u2014 Controles na Coleta (quando o produto sai do cliente)\n\n### Registro fotogr\u00e1fico obrigat\u00f3rio\n\nNo momento da coleta domiciliar ou no drop-off, registre:\n- Foto da embalagem fechada (externa)\n- Foto da embalagem aberta mostrando o produto\n- Foto do n\u00famero de s\u00e9rie / IMEI vis\u00edvel\n- Foto do lacre de seguran\u00e7a (se houver)\n\nEssas fotos ficam vinculadas ao n\u00famero do pedido e ao RMA (autoriza\u00e7\u00e3o de devolu\u00e7\u00e3o). S\u00e3o sua prova jur\u00eddica em disputas no ML e Amazon.\n\n### Pesagem e volume\n\nRegistre o **peso bruto** da embalagem no momento da coleta. Um notebook que sai pesando 3,2 kg e volta pesando 3,9 kg j\u00e1 aciona alerta. Configure toler\u00e2ncia de \u00b15% \u2014 desvios acima disso v\u00e3o para triagem manual.\n\n### Lacre numerado\n\nUse lacres de seguran\u00e7a com numera\u00e7\u00e3o sequencial. O n\u00famero do lacre \u00e9 vinculado ao pedido no sistema. Se o lacre chega violado ou com n\u00famero diferente, o produto vai automaticamente para a \u00e1rea `BLOQUEADO-FRAUDE` no WMS.\n\n---\n\n## Camada 2 \u2014 Conformidade no Recebimento (quando o produto chega no CD)\n\n### Checklist de confer\u00eancia (obrigat\u00f3rio antes de qualquer cr\u00e9dito)\n\n| Item | Como verificar |\n|---|---|\n| Serial / IMEI | Leitura do c\u00f3digo de barras e compara\u00e7\u00e3o com o pedido original |\n| Peso bruto | Balan\u00e7a \u2014 comparar com peso registrado na coleta (toler\u00e2ncia \u00b15%) |\n| Integridade do lacre | Visual \u2014 lacre com mesmo n\u00famero registrado na coleta? |\n| Identidade do produto | Modelo, cor, configura\u00e7\u00e3o batem com o pedido? |\n| Acess\u00f3rios | Todos os acess\u00f3rios inclu\u00eddos na venda est\u00e3o presentes? |\n\n### Fotos no recebimento\n\nFotografe o pacote fechado ao chegar, a abertura, o conte\u00fado completo e o n\u00famero de s\u00e9rie. Compare com as fotos da coleta. Qualquer diverg\u00eancia visual flagrante (caixa diferente, produto diferente) vai para `BLOQUEADO-FRAUDE`.\n\n### \u00c1rea f\u00edsica segregada com c\u00e2mera\n\nA confer\u00eancia de devolu\u00e7\u00f5es deve ocorrer em bancada com c\u00e2mera de seguran\u00e7a. Isso protege voc\u00ea tanto de clientes fraudulentos quanto de conluio interno.\n\n---\n\n## Camada 3 \u2014 Motor de Regras no Portal (preven\u00e7\u00e3o antes da coleta)\n\nConfigure no portal de devolu\u00e7\u00f5es regras autom\u00e1ticas que bloqueiam ou escelam devolu\u00e7\u00f5es suspeitas antes mesmo de a coleta ocorrer:\n\n| Condi\u00e7\u00e3o | A\u00e7\u00e3o autom\u00e1tica |\n|---|---|\n| Cliente com > 3 devolu\u00e7\u00f5es em 90 dias | Flag antifraude + revis\u00e3o manual obrigat\u00f3ria |\n| Produto acima de R$ 800 | Coleta domiciliar com foto obrigat\u00f3ria (n\u00e3o aceita drop-off) |\n| Devolu\u00e7\u00e3o solicitada em < 24h ap\u00f3s entrega | Alerta \u2014 padr\u00e3o de fraude oportunista |\n| Serial n\u00e3o cadastrado na base da transportadora | Bloquear devolu\u00e7\u00e3o automaticamente |\n| Mesmo endere\u00e7o com m\u00faltiplas devolu\u00e7\u00f5es em 30 dias | Flag para an\u00e1lise manual |\n\n---\n\n## Camada 4 \u2014 Integra\u00e7\u00e3o entre sistemas\n\n### No WMS (Odoo)\n- Criar loca\u00e7\u00e3o `BLOQUEADO-FRAUDE` segregada\n- Picking type `Recebimento Devolu\u00e7\u00e3o` obriga preenchimento de serial, peso e foto antes de validar a transfer\u00eancia\n- Automa\u00e7\u00e3o: serial divergente \u2192 move produto para `BLOQUEADO-FRAUDE` e notifica supervisor\n\n### No portal / FastAPI\n- Endpoint de autoriza\u00e7\u00e3o de devolu\u00e7\u00e3o consulta score de risco do cliente antes de aprovar\n- Score calculado com base em: hist\u00f3rico de devolu\u00e7\u00f5es, chargebacks, tempo de conta\n\n### No financeiro\n- Cr\u00e9dito s\u00f3 liberado ap\u00f3s confirma\u00e7\u00e3o de grading A-Grade no WMS\n- Para fraude confirmada: nenhum cr\u00e9dito liberado + abertura autom\u00e1tica de contesta\u00e7\u00e3o no marketplace\n\n---\n\n## Controles espec\u00edficos para ML e Amazon\n\n**Mercado Livre:** Toda devolu\u00e7\u00e3o aprovada sem evid\u00eancia fotogr\u00e1fica pode ser contestada via Central de Disputas com as fotos da coleta vs. recebimento. Prazo: 30 dias ap\u00f3s a resolu\u00e7\u00e3o.\n\n**Amazon:** Use o programa de prote\u00e7\u00e3o ao seller (SAFE-T claim) para reembolsos indevidos. Para acionar, voc\u00ea precisa das fotos de packing + n\u00famero de s\u00e9rie + peso registrado.\n\n---\n\n## Prioridade de implementa\u00e7\u00e3o\n\n**Semana 1 (quick wins):**\n- Ativar registro de serial em todos os pedidos no ERP\n- Comprar lacres numerados (R$ 0,10\u20130,30/unidade)\n- Criar checklist de recebimento impresso para a equipe\n- C\u00e2mera na bancada de confer\u00eancia\n\n**Semana 2-3:**\n- Configurar campo de peso no processo de expedi\u00e7\u00e3o\n- Integrar foto da coleta ao pedido no sistema\n- Configurar motor de regras b\u00e1sico no portal (threshold de devolu\u00e7\u00f5es por CPF)\n\n**M\u00eas 2:**\n- Automa\u00e7\u00f5es no WMS (serial \u2192 valida\u00e7\u00e3o autom\u00e1tica)\n- Dashboard de KPIs de fraude (fraud rate, devolu\u00e7\u00f5es por CPF)\n- Treinamento da equipe em identifica\u00e7\u00e3o de falsificados\n\n---\n\n## KPIs de fraude para monitorar\n\n| KPI | Meta |\n|---|---|\n| Fraud Rate (fraudes confirmadas / devolu\u00e7\u00f5es) | < 0,5% |\n| % devolu\u00e7\u00f5es com serial validado | 100% |\n| Desvio m\u00e9dio de peso nas devolu\u00e7\u00f5es | < 3% |\n| Tempo de detec\u00e7\u00e3o de fraude (da chegada ao bloqueio) | < 4h |\n"}], "grading": {"eval_id": 0, "eval_name": "fraude-conformidade", "expectations": [{"text": "(foto-coleta) Menciona registro fotogr\u00e1fico na coleta ou no recebimento como controle", "passed": true, "evidence": "Camada 1 dedica se\u00e7\u00e3o inteira a 'Registro fotogr\u00e1fico obrigat\u00f3rio' no momento da coleta domiciliar/drop-off, com foto da embalagem fechada, aberta, do n\u00famero de s\u00e9rie e do lacre. Camada 2 repete fotos no recebimento."}, {"text": "(pesagem) Menciona pesagem / valida\u00e7\u00e3o por peso como mecanismo de detec\u00e7\u00e3o de fraude", "passed": true, "evidence": "'Registre o peso bruto da embalagem no momento da coleta. Um notebook que sai pesando 3,2 kg e volta pesando 3,9 kg j\u00e1 aciona alerta. Configure toler\u00e2ncia de \u00b15%'"}, {"text": "(serial) Menciona verifica\u00e7\u00e3o de n\u00famero de s\u00e9rie (serial / IMEI) do produto", "passed": true, "evidence": "Coleta: 'Foto do n\u00famero de s\u00e9rie / IMEI vis\u00edvel'. Recebimento: checklist inclui 'Serial / IMEI | Leitura do c\u00f3digo de barras e compara\u00e7\u00e3o com o pedido original'. KPI: '% devolu\u00e7\u00f5es com serial validado | 100%'."}, {"text": "(historico-cpf) Menciona hist\u00f3rico de devolu\u00e7\u00f5es por cliente (CPF/CNPJ) como controle de abuso", "passed": true, "evidence": "Motor de regras: 'Cliente com > 3 devolu\u00e7\u00f5es em 90 dias | Flag antifraude + revis\u00e3o manual obrigat\u00f3ria'. Semana 2-3: 'Configurar motor de regras b\u00e1sico no portal (threshold de devolu\u00e7\u00f5es por CPF)'."}, {"text": "(motor-regras) Prop\u00f5e motor de regras, bloqueio autom\u00e1tico ou flag antifraude no portal de devolu\u00e7\u00f5es", "passed": true, "evidence": "'Camada 3 \u2014 Motor de Regras no Portal' com tabela de condi\u00e7\u00f5es e a\u00e7\u00f5es autom\u00e1ticas, incluindo 'Flag antifraude', 'Bloquear devolu\u00e7\u00e3o automaticamente' e 'Flag para an\u00e1lise manual'."}, {"text": "(idioma-pt) Resposta inteiramente em portugu\u00eas do Brasil", "passed": true, "evidence": "Todo o conte\u00fado est\u00e1 em portugu\u00eas do Brasil, sem trechos em outro idioma."}]}}, {"id": "eval-fraude-conformidade-without_skill", "prompt": "Tenho um e-commerce de eletr\u00f4nicos com 1.800 pedidos/m\u00eas no Mercado Livre e Amazon. Minha taxa de devolu\u00e7\u00e3o est\u00e1 em 7% e t\u00f4 tomando muito preju\u00edzo porque o produto que volta frequentemente n\u00e3o \u00e9 o mesmo que saiu \u2014 j\u00e1 recebi caixa de notebook com tijolo. Como estruturo controles para esse problema?", "eval_id": 0, "outputs": [{"name": "response.md", "type": "text", "content": "# Controles para Fraude em Devolu\u00e7\u00f5es de E-commerce de Eletr\u00f4nicos\n\n## Diagn\u00f3stico do Problema\n\nCom 1.800 pedidos/m\u00eas e 7% de devolu\u00e7\u00e3o, voc\u00ea tem cerca de 126 devolu\u00e7\u00f5es mensais. Se apenas uma fra\u00e7\u00e3o dessas for fraudulenta (produto substitu\u00eddo por tijolo, produto diferente, produto com pe\u00e7as faltando), o preju\u00edzo financeiro e operacional \u00e9 significativo. Esse tipo de fraude \u00e9 chamado de **return fraud** ou **swap fraud** e \u00e9 estruturado \u2014 n\u00e3o \u00e9 acidente.\n\n---\n\n## 1. Controles na Expedi\u00e7\u00e3o (Antes do Produto Sair)\n\n### Identifica\u00e7\u00e3o \u00danica por Unidade\n- Aplique etiquetas de seguran\u00e7a hologr\u00e1ficas com n\u00famero de s\u00e9rie \u00fanico em cada produto, em local de dif\u00edcil remo\u00e7\u00e3o.\n- Registre o n\u00famero de s\u00e9rie de cada unidade no pedido no seu sistema interno antes do envio.\n- Fotografe o produto com o n\u00famero de s\u00e9rie vis\u00edvel antes de embalar.\n\n### Lacres Inviol\u00e1veis\n- Use lacres de seguran\u00e7a com numera\u00e7\u00e3o sequencial nas caixas. Registre o n\u00famero do lacre associado ao pedido.\n- Para itens de alto valor, use fita de seguran\u00e7a VOID \u2014 ao tentar remover, deixa rastro vis\u00edvel.\n\n### Documenta\u00e7\u00e3o Fotogr\u00e1fica do Pack\n- Foto obrigat\u00f3ria antes do fechamento da caixa: produto aberto mostrando n\u00famero de s\u00e9rie, produto fechado, caixa lacrada com etiqueta do pedido vis\u00edvel.\n- Armazene essas fotos vinculadas ao n\u00famero do pedido.\n\n### Pesagem Antes do Envio\n- Registre o peso bruto de cada pacote no momento do envio.\n- Diverg\u00eancia de peso na devolu\u00e7\u00e3o (notebook de 2,5 kg voltando com 3,5 kg) j\u00e1 \u00e9 evid\u00eancia de fraude.\n\n---\n\n## 2. Controles na Recep\u00e7\u00e3o da Devolu\u00e7\u00e3o\n\n### Checklist de Confer\u00eancia Obrigat\u00f3rio\nAntes de aprovar qualquer reembolso ou troca:\n\n- N\u00famero de s\u00e9rie do produto confere com o registrado no envio?\n- Lacre de seguran\u00e7a est\u00e1 intacto?\n- Peso do pacote recebido confere com o peso registrado no envio?\n- Produto \u00e9 o mesmo modelo/cor/configura\u00e7\u00e3o?\n- Acess\u00f3rios originais est\u00e3o presentes?\n\n### Fotografar o Recebimento\n- Foto do pacote fechado ao chegar, abertura, conte\u00fado completo, n\u00famero de s\u00e9rie.\n- Cria registro de cadeia de cust\u00f3dia para disputas nas plataformas e Boletim de Ocorr\u00eancia.\n\n### Confer\u00eancia em \u00c1rea Espec\u00edfica\n- Confer\u00eancia feita por pessoa diferente de quem embala, em \u00e1rea com c\u00e2mera de seguran\u00e7a.\n\n---\n\n## 3. Gest\u00e3o de Risco por Perfil de Comprador\n\n- Verifique hist\u00f3rico do comprador antes de aprovar devolu\u00e7\u00e3o.\n- Compradores com m\u00faltiplas devolu\u00e7\u00f5es em curto per\u00edodo ou conta recente: perfil de risco elevado.\n- Devolu\u00e7\u00e3o de produto acima de R$ 800 vai para revis\u00e3o manual obrigat\u00f3ria.\n\n---\n\n## 4. Procedimento Quando Confirmar Fraude\n\n1. N\u00e3o reembolse imediatamente \u2014 documente tudo antes de qualquer a\u00e7\u00e3o financeira.\n2. Abra Boletim de Ocorr\u00eancia por estelionato.\n3. Fotografe o produto fraudulento com n\u00famero do pedido vis\u00edvel.\n4. Abra disputa no Mercado Livre ou Amazon com todas as evid\u00eancias.\n\n---\n\n## 5. Comunica\u00e7\u00e3o Preventiva\n\nEnvie mensagem junto ao pedido:\n\n> \"Seu pedido foi embalado com lacre de seguran\u00e7a n\u00ba [XXXX] e as imagens do produto foram registradas. Em caso de devolu\u00e7\u00e3o, o produto ser\u00e1 conferido com base nesse registro.\"\n\nEsse aviso desincentiva fraudes oportunistas.\n\n---\n\n## 6. Prioridade de Implementa\u00e7\u00e3o\n\n**Semana 1:** Comprar lacres numerados e fita VOID; criar processo de foto na expedi\u00e7\u00e3o; criar planilha de registro de n\u00famero de s\u00e9rie; criar checklist de confer\u00eancia.\n\n**Semana 2-3:** Instalar c\u00e2mera na bancada; configurar mensagem p\u00f3s-venda autom\u00e1tica; definir threshold de revis\u00e3o manual.\n\n**M\u00eas 2:** Integrar no ERP; treinar equipe; revisar m\u00e9tricas.\n\n---\n\n## Considera\u00e7\u00f5es Finais\n\nA fraude de substitui\u00e7\u00e3o prospera onde n\u00e3o h\u00e1 rastreabilidade. Com n\u00famero de s\u00e9rie registrado, foto do envio e lacre numerado, voc\u00ea transforma cada pedido em um registro audit\u00e1vel. O custo de setup gira em torno de R$ 500\u20131.500. Com 126 devolu\u00e7\u00f5es/m\u00eas e mesmo que apenas 10% sejam fraudulentas, o retorno financeiro justifica amplamente o investimento.\n"}], "grading": {"eval_id": 0, "eval_name": "fraude-conformidade", "expectations": [{"text": "(foto-coleta) Menciona registro fotogr\u00e1fico na coleta ou no recebimento como controle", "passed": true, "evidence": "Se\u00e7\u00e3o 1 menciona 'Fotografe o produto com o n\u00famero de s\u00e9rie vis\u00edvel antes de embalar' (expedi\u00e7\u00e3o). Se\u00e7\u00e3o 2 menciona 'Fotografar o Recebimento' da devolu\u00e7\u00e3o. O registro fotogr\u00e1fico est\u00e1 presente, embora o foco seja na expedi\u00e7\u00e3o e no recebimento, n\u00e3o na coleta domiciliar especificamente."}, {"text": "(pesagem) Menciona pesagem / valida\u00e7\u00e3o por peso como mecanismo de detec\u00e7\u00e3o de fraude", "passed": true, "evidence": "'Registre o peso bruto de cada pacote no momento do envio. Diverg\u00eancia de peso na devolu\u00e7\u00e3o (notebook de 2,5 kg voltando com 3,5 kg) j\u00e1 \u00e9 evid\u00eancia de fraude.' Checklist: 'Peso do pacote recebido confere com o peso registrado no envio?'"}, {"text": "(serial) Menciona verifica\u00e7\u00e3o de n\u00famero de s\u00e9rie (serial / IMEI) do produto", "passed": true, "evidence": "Se\u00e7\u00e3o 1: 'Aplique etiquetas de seguran\u00e7a hologr\u00e1ficas com n\u00famero de s\u00e9rie \u00fanico' e 'Registre o n\u00famero de s\u00e9rie de cada unidade no pedido'. Checklist: 'N\u00famero de s\u00e9rie do produto confere com o registrado no envio?'"}, {"text": "(historico-cpf) Menciona hist\u00f3rico de devolu\u00e7\u00f5es por cliente (CPF/CNPJ) como controle de abuso", "passed": true, "evidence": "Se\u00e7\u00e3o 3: 'Verifique hist\u00f3rico do comprador antes de aprovar devolu\u00e7\u00e3o. Compradores com m\u00faltiplas devolu\u00e7\u00f5es em curto per\u00edodo ou conta recente: perfil de risco elevado.' O conceito est\u00e1 presente, embora sem men\u00e7\u00e3o expl\u00edcita a CPF/CNPJ."}, {"text": "(motor-regras) Prop\u00f5e motor de regras, bloqueio autom\u00e1tico ou flag antifraude no portal de devolu\u00e7\u00f5es", "passed": false, "evidence": "A resposta menciona revis\u00e3o manual para produtos acima de R$ 800 e verifica\u00e7\u00e3o de hist\u00f3rico do comprador, mas n\u00e3o prop\u00f5e motor de regras automatizado, bloqueio autom\u00e1tico ou flag antifraude em portal de devolu\u00e7\u00f5es. Os controles s\u00e3o manuais."}, {"text": "(idioma-pt) Resposta inteiramente em portugu\u00eas do Brasil", "passed": true, "evidence": "Todo o conte\u00fado est\u00e1 em portugu\u00eas do Brasil, sem trechos em outro idioma."}]}}, {"id": "eval-arquitetura-wms-with_skill", "prompt": "Preciso montar uma \u00e1rea de log\u00edstica reversa no meu CD em Guarulhos. Meu WMS \u00e9 o Odoo 17. Quais loca\u00e7\u00f5es preciso criar, qual fluxo operacional e como evito que produto devolvido misture com estoque novo?", "eval_id": 1, "outputs": [{"name": "response.md", "type": "text", "content": "# Arquitetura de Log\u00edstica Reversa no Odoo 17 \u2014 CD Guarulhos\n\n## Diagn\u00f3stico r\u00e1pido\n\nAntes de propor a estrutura, duas perguntas que mudam a arquitetura:\n- Qual o volume de devolu\u00e7\u00f5es por m\u00eas (unidades)?\n- Os produtos t\u00eam n\u00famero de s\u00e9rie (eletr\u00f4nicos, eletrodom\u00e9sticos)?\n\nAssumindo opera\u00e7\u00e3o de m\u00e9dio volume com produtos serializados, aqui est\u00e1 a arquitetura recomendada.\n\n---\n\n## Loca\u00e7\u00f5es obrigat\u00f3rias no Odoo 17\n\nCrie as seguintes loca\u00e7\u00f5es em **Invent\u00e1rio > Configura\u00e7\u00e3o > Loca\u00e7\u00f5es**, todas como filhas de um n\u00f3 pai `REVERSA` separado do estoque regular:\n\n| Loca\u00e7\u00e3o | Tipo | Fun\u00e7\u00e3o |\n|---|---|---|\n| `QUARENTENA-REVERSA` | Interno | Produto recebido, ainda n\u00e3o inspecionado |\n| `TRIAGEM-TECNICA` | Interno | Em processo de grading pelo t\u00e9cnico |\n| `INSPECAO` | Interno | Aguardando decis\u00e3o ou an\u00e1lise de fraude |\n| `RECONDICIONAMENTO` | Interno | Em reparo/limpeza para B-Grade |\n| `ESTOQUE-OUTLET` | Interno | B-Grade aprovado para venda |\n| `DESCARTE` | Interno | C-Grade aguardando destina\u00e7\u00e3o final |\n| `BLOQUEADO-FRAUDE` | Interno | Item retido por suspeita, aguardando jur\u00eddico |\n\n**Cria\u00e7\u00e3o no Odoo:**\n```\nInvent\u00e1rio > Configura\u00e7\u00e3o > Loca\u00e7\u00f5es\n\u2192 Nova loca\u00e7\u00e3o pai: \"LOGISTICA-REVERSA\" (tipo: Interno)\n\u2192 Criar cada sublocation acima como filha\n\u2192 NUNCA criar como filha do local de estoque regular\n```\n\n---\n\n## Regra cr\u00edtica de segrega\u00e7\u00e3o\n\nCrie um status intermedi\u00e1rio `RETORNO-PENDENTE-VALIDACAO` antes da reintegra\u00e7\u00e3o ao estoque regular. **Nenhum produto devolvido volta ao estoque sem passar por esse status.** Isso evita que A-Grade n\u00e3o validado tecnicamente entre na disponibilidade de venda.\n\nFluxo de reintegra\u00e7\u00e3o:\n```\nTRIAGEM-TECNICA \u2192 [grading A-Grade] \u2192 RETORNO-PENDENTE-VALIDACAO \u2192 [valida\u00e7\u00e3o supervisor] \u2192 Estoque Regular\n```\n\n---\n\n## Fluxo operacional completo\n\n```\n1. CHEGADA\n   \u2192 Scan da etiqueta reversa na doca\n   \u2192 WMS cria transfer\u00eancia: Cliente \u2192 QUARENTENA-REVERSA\n   \u2192 Registro fotogr\u00e1fico + peso bruto\n\n2. INSPE\u00c7\u00c3O DE SAFETY (antes de abrir)\n   \u2192 Checklist: embalagem danificada? bateria? l\u00edquido? odor?\n   \u2192 Se risco: mover para INSPECAO com flag de seguran\u00e7a\n\n3. TRIAGEM T\u00c9CNICA\n   \u2192 Mover para TRIAGEM-TECNICA\n   \u2192 Confer\u00eancia: serial vs. pedido original, pesagem, fotos\n   \u2192 Grading: A / B / C\n\n4. DECIS\u00c3O DE DESTINO\n   \u2192 A-Grade \u2192 RETORNO-PENDENTE-VALIDACAO \u2192 Estoque Regular\n   \u2192 B-Grade \u2192 RECONDICIONAMENTO \u2192 ESTOQUE-OUTLET\n   \u2192 C-Grade \u2192 DESCARTE\n   \u2192 Fraude confirmada \u2192 BLOQUEADO-FRAUDE\n\n5. EVENTO FINANCEIRO\n   \u2192 A-Grade validado: liberar estorno 100%\n   \u2192 B-Grade: liberar estorno parcial (conforme pol\u00edtica)\n   \u2192 C-Grade com defeito de f\u00e1brica: acionar garantia fornecedor\n   \u2192 Fraude: bloquear cr\u00e9dito\n```\n\n---\n\n## Configura\u00e7\u00f5es no Odoo 17\n\n### Picking Types dedicados\n\nCrie em **Invent\u00e1rio > Configura\u00e7\u00e3o > Tipos de Opera\u00e7\u00e3o**:\n\n| Nome | Origem padr\u00e3o | Destino padr\u00e3o |\n|---|---|---|\n| `Recebimento Devolu\u00e7\u00e3o` | Clientes | QUARENTENA-REVERSA |\n| `Triagem LR` | QUARENTENA-REVERSA | TRIAGEM-TECNICA |\n| `Classifica\u00e7\u00e3o LR` | TRIAGEM-TECNICA | (definido na triagem) |\n| `Reintegra\u00e7\u00e3o Estoque` | RETORNO-PENDENTE-VALIDACAO | Estoque Regular |\n| `Baixa LR` | DESCARTE | Virtual/Perdas |\n\n### Rastreamento por n\u00famero de s\u00e9rie\n- Ative `Rastreamento: Por N\u00famero de S\u00e9rie` no produto\n- Ao receber a devolu\u00e7\u00e3o, leia o serial e valide contra o pedido original\n- Prefixo recomendado para lotes de devolu\u00e7\u00e3o: `DEV-AAAAMM-NNNNN`\n\n### Controle de acesso\n- Apenas `Gerente de Log\u00edstica Reversa` executa o picking type `Reintegra\u00e7\u00e3o Estoque`\n- Operadores de triagem operam apenas `Triagem LR` e `Classifica\u00e7\u00e3o LR`\n\n### Automa\u00e7\u00f5es (Odoo Automated Actions)\n- Alerta: produto em `QUARENTENA-REVERSA` h\u00e1 mais de 24h sem movimenta\u00e7\u00e3o \u2192 notifica\u00e7\u00e3o supervisor\n- Alerta: produto em `INSPECAO` h\u00e1 mais de 48h \u2192 escalonamento autom\u00e1tico\n- Trigger: conclus\u00e3o de `Reintegra\u00e7\u00e3o Estoque` \u2192 disparar evento de estorno no financeiro\n\n---\n\n## Separa\u00e7\u00e3o f\u00edsica no CD\n\nO sistema resolve a segrega\u00e7\u00e3o l\u00f3gica. A f\u00edsica precisa da sua aten\u00e7\u00e3o:\n\n- Demarca\u00e7\u00e3o de \u00e1rea com fita ou gradis \u2014 separado da \u00e1rea de picking de pedidos novos\n- C\u00e2mera na bancada de triagem (essencial para evid\u00eancia em disputas)\n- Prateleiras exclusivas com etiquetas coloridas:\n  - \ud83d\udd34 Vermelho: quarentena / triagem\n  - \ud83d\udfe1 Amarelo: recondicionamento / inspe\u00e7\u00e3o\n  - \ud83d\udfe2 Verde: aprovado aguardando reintegra\u00e7\u00e3o\n  - \u26ab Cinza: descarte\n\n---\n\n## KPIs que voc\u00ea deve monitorar desde o dia 1\n\n| KPI | Meta inicial |\n|---|---|\n| Dock-to-Stock (A-Grade) | < 48h |\n| Tempo m\u00e9dio em quarentena | < 24h |\n| % reclassifica\u00e7\u00f5es ap\u00f3s grading | < 2% |\n| Itens parados > 5 dias na reversa | 0 |\n\n---\n\n## Checklist de implanta\u00e7\u00e3o\n\n- [ ] Criar estrutura de loca\u00e7\u00f5es no Odoo separada do estoque regular\n- [ ] Configurar picking types dedicados para cada etapa\n- [ ] Ativar rastreamento por serial nos SKUs relevantes\n- [ ] Configurar grupos de acesso por perfil\n- [ ] Configurar automa\u00e7\u00f5es de alerta para itens parados\n- [ ] Delimitar fisicamente a \u00e1rea no CD\n- [ ] Treinar equipe no fluxo e nos crit\u00e9rios de grading\n- [ ] Definir SLA por etapa e monitorar semanalmente\n"}], "grading": {"eval_id": 1, "eval_name": "arquitetura-wms", "expectations": [{"text": "(tres-locacoes) Nomeia pelo menos 3 loca\u00e7\u00f5es distintas para a \u00e1rea de reversa", "passed": true, "evidence": "7 loca\u00e7\u00f5es nomeadas: QUARENTENA-REVERSA, TRIAGEM-TECNICA, INSPECAO, RECONDICIONAMENTO, ESTOQUE-OUTLET, DESCARTE, BLOQUEADO-FRAUDE \u2014 todas filhas do n\u00f3 pai LOGISTICA-REVERSA."}, {"text": "(segregacao-estoque) Explica mecanismo concreto para evitar mistura com estoque novo", "passed": true, "evidence": "'NUNCA criar como filha do local de estoque regular'. Status intermedi\u00e1rio RETORNO-PENDENTE-VALIDACAO: 'Nenhum produto devolvido volta ao estoque sem passar por esse status.' Fluxo expl\u00edcito de reintegra\u00e7\u00e3o com valida\u00e7\u00e3o de supervisor."}, {"text": "(odoo-especifico) Menciona o Odoo com configura\u00e7\u00e3o concreta (locations, picking types, m\u00f3dulos ou campos)", "passed": true, "evidence": "Caminhos concretos: 'Invent\u00e1rio > Configura\u00e7\u00e3o > Loca\u00e7\u00f5es', 'Invent\u00e1rio > Configura\u00e7\u00e3o > Tipos de Opera\u00e7\u00e3o'. Menciona Automated Actions, rastreamento por n\u00famero de s\u00e9rie no produto, grupos de acesso, e o campo de prefixo DEV-AAAAMM-NNNNN."}, {"text": "(fluxo-passo-a-passo) Apresenta fluxo operacional sequencial com pelo menos 4 etapas numeradas", "passed": true, "evidence": "Fluxo com 5 etapas numeradas: 1. CHEGADA, 2. INSPE\u00c7\u00c3O DE SAFETY, 3. TRIAGEM T\u00c9CNICA, 4. DECIS\u00c3O DE DESTINO, 5. EVENTO FINANCEIRO."}, {"text": "(picking-types) Menciona picking types ou tipos de opera\u00e7\u00e3o dedicados para movimentos de devolu\u00e7\u00e3o", "passed": true, "evidence": "Se\u00e7\u00e3o 'Picking Types dedicados' com tabela de 5 tipos: Recebimento Devolu\u00e7\u00e3o, Triagem LR, Classifica\u00e7\u00e3o LR, Reintegra\u00e7\u00e3o Estoque, Baixa LR \u2014 cada um com origem e destino padr\u00e3o."}, {"text": "(idioma-pt) Resposta inteiramente em portugu\u00eas do Brasil", "passed": true, "evidence": "Todo o conte\u00fado est\u00e1 em portugu\u00eas do Brasil, sem trechos em outro idioma."}]}}, {"id": "eval-arquitetura-wms-without_skill", "prompt": "Preciso montar uma \u00e1rea de log\u00edstica reversa no meu CD em Guarulhos. Meu WMS \u00e9 o Odoo 17. Quais loca\u00e7\u00f5es preciso criar, qual fluxo operacional e como evito que produto devolvido misture com estoque novo?", "eval_id": 1, "outputs": [{"name": "response.md", "type": "text", "content": "# Log\u00edstica Reversa no CD de Guarulhos com Odoo 17\n\n## 1. Loca\u00e7\u00f5es a Criar no Odoo 17\n\nNo Odoo 17, as loca\u00e7\u00f5es s\u00e3o configuradas em **Invent\u00e1rio > Configura\u00e7\u00e3o > Loca\u00e7\u00f5es**. Para log\u00edstica reversa, voc\u00ea precisar\u00e1 das seguintes loca\u00e7\u00f5es, todas filhas de um local pai dedicado:\n\n### Estrutura de Loca\u00e7\u00f5es Recomendada\n\n```\nCD Guarulhos (Virtual/Pai)\n\u251c\u2500\u2500 ESTOQUE REGULAR (Interno)\n\u2502   \u251c\u2500\u2500 Picking\n\u2502   \u251c\u2500\u2500 Packing\n\u2502   \u2514\u2500\u2500 Expedi\u00e7\u00e3o\n\u2514\u2500\u2500 LOG\u00cdSTICA REVERSA (Interno)\n    \u251c\u2500\u2500 LR-RECEBIMENTO        \u2192 Doca de entrada exclusiva para devolu\u00e7\u00f5es\n    \u251c\u2500\u2500 LR-TRIAGEM            \u2192 Onde o produto \u00e9 inspecionado e classificado\n    \u251c\u2500\u2500 LR-APROVADO           \u2192 Produto avaliado como BOM, apto para retornar ao estoque\n    \u251c\u2500\u2500 LR-REFURBISH          \u2192 Produto que precisa de recondicionamento/manuten\u00e7\u00e3o\n    \u251c\u2500\u2500 LR-QUARENTENA         \u2192 Produto aguardando decis\u00e3o ou laudo t\u00e9cnico\n    \u251c\u2500\u2500 LR-DESCARTE           \u2192 Produto sem condi\u00e7\u00e3o de retorno ou revenda\n    \u2514\u2500\u2500 LR-FORNECEDOR         \u2192 Produto a ser devolvido ao fornecedor\n```\n\n> **Regra fundamental**: Nenhuma dessas loca\u00e7\u00f5es de LR deve ser filha de \"Estoque Regular\". Isso garante separa\u00e7\u00e3o f\u00edsica e sist\u00eamica.\n\n---\n\n## 2. Fluxo Operacional de Log\u00edstica Reversa\n\n### Etapa 1 \u2014 Recebimento da Devolu\u00e7\u00e3o\n\n1. O operador recebe o pedido de devolu\u00e7\u00e3o (RMA) criado pelo setor comercial ou atendimento.\n2. No Odoo, abre-se uma **Transfer\u00eancia de Recebimento** com origem externa (cliente) e destino `LR-RECEBIMENTO`.\n3. A mercadoria entra fisicamente pela **doca exclusiva de devolu\u00e7\u00e3o** (separada da doca de recebimento de fornecedores).\n4. O produto \u00e9 bipado/contado e a transfer\u00eancia \u00e9 validada no sistema.\n\n### Etapa 2 \u2014 Triagem e Inspe\u00e7\u00e3o\n\n1. O produto \u00e9 movido de `LR-RECEBIMENTO` para `LR-TRIAGEM` via transfer\u00eancia interna.\n2. O t\u00e9cnico/operador de triagem realiza inspe\u00e7\u00e3o f\u00edsica e registra o resultado em um campo personalizado.\n3. Com base no resultado, o produto \u00e9 direcionado para uma das loca\u00e7\u00f5es de destino.\n\n### Etapa 3 \u2014 Classifica\u00e7\u00e3o e Destina\u00e7\u00e3o\n\n| Resultado da Triagem | Loca\u00e7\u00e3o de Destino | A\u00e7\u00e3o no Odoo |\n|---|---|---|\n| Produto sem avaria, lacrado | LR-APROVADO | Transfer\u00eancia interna para LR-APROVADO, depois reintegra\u00e7\u00e3o ao estoque regular |\n| Produto com defeito recuper\u00e1vel | LR-REFURBISH | Transfer\u00eancia para LR-REFURBISH + ordem de manuten\u00e7\u00e3o |\n| Produto com suspeita/laudo pendente | LR-QUARENTENA | Transfer\u00eancia para LR-QUARENTENA + nota interna |\n| Produto irrecuper\u00e1vel | LR-DESCARTE | Transfer\u00eancia para LR-DESCARTE + baixa (scrap) |\n| Defeito de fabrica\u00e7\u00e3o | LR-FORNECEDOR | Transfer\u00eancia para LR-FORNECEDOR + RMA ao fornecedor |\n\n### Etapa 4 \u2014 Reintegra\u00e7\u00e3o ao Estoque (quando aprovado)\n\n1. Produto em `LR-APROVADO` \u00e9 transferido para a loca\u00e7\u00e3o correta do Estoque Regular.\n2. Obrigat\u00f3rio verificar lote/s\u00e9rie e data de validade antes da reintegra\u00e7\u00e3o.\n3. A transfer\u00eancia deve exigir confirma\u00e7\u00e3o de supervisor (valida\u00e7\u00e3o em dois passos).\n\n---\n\n## 3. Como Evitar Mistura com Estoque Novo\n\n### 3.1 Separa\u00e7\u00e3o por Loca\u00e7\u00e3o (Controle Sist\u00eamico)\n\n- Nunca configure as loca\u00e7\u00f5es de LR como subloca\u00e7\u00f5es do estoque regular.\n- Desative o flag **\"Reservar Estoque\"** nas loca\u00e7\u00f5es LR para que n\u00e3o entrem nos c\u00e1lculos de disponibilidade de venda.\n\n### 3.2 Separa\u00e7\u00e3o por Lote/N\u00famero de S\u00e9rie\n\n- Ative rastreamento por lote ou n\u00famero de s\u00e9rie para os produtos que passam por devolu\u00e7\u00e3o.\n- Ao receber a devolu\u00e7\u00e3o, crie um novo lote com prefixo identificador (ex.: `DEV-2024-XXXXX`).\n\n### 3.3 Sinaliza\u00e7\u00e3o F\u00edsica no CD\n\n- Use etiquetas coloridas: vermelha para triagem, amarela para quarentena, verde para aprovado.\n- Delimite fisicamente a \u00e1rea de LR com fita zebrada ou gradis.\n- Use prateleiras/porta-paletes exclusivos para LR.\n\n### 3.4 Regras de Rotas e Opera\u00e7\u00f5es no Odoo\n\n- Crie tipos de opera\u00e7\u00e3o exclusivos para LR (ex.: \"Recebimento Devolu\u00e7\u00e3o\", \"Transfer\u00eancia Triagem LR\", \"Reintegra\u00e7\u00e3o Estoque\").\n- Use regras de roteamento para que movimenta\u00e7\u00f5es de devolu\u00e7\u00f5es nunca tenham como destino direto o estoque regular.\n\n### 3.5 Controle de Acesso\n\n- Restrinja via grupos de usu\u00e1rio quem pode executar a transfer\u00eancia de `LR-APROVADO \u2192 Estoque Regular`.\n- Apenas supervisores ou respons\u00e1vel pela qualidade devem ter essa permiss\u00e3o.\n\n### 3.6 Relat\u00f3rios e Rastreabilidade\n\n- Configure alertas autom\u00e1ticos (automa\u00e7\u00f5es do Odoo) para notificar o supervisor quando um produto permanecer em LR-QUARENTENA por mais de X dias sem movimenta\u00e7\u00e3o.\n\n---\n\n## 4. Checklist de Implanta\u00e7\u00e3o\n\n- [ ] Criar estrutura de loca\u00e7\u00f5es LR no Odoo (separada do estoque regular)\n- [ ] Desativar flag de reserva de estoque nas loca\u00e7\u00f5es LR\n- [ ] Ativar rastreamento por lote/s\u00e9rie nos SKUs relevantes\n- [ ] Criar tipos de opera\u00e7\u00e3o exclusivos para cada etapa do fluxo LR\n- [ ] Configurar grupos de acesso por perfil de usu\u00e1rio\n- [ ] Delimitar fisicamente a \u00e1rea no CD com sinaliza\u00e7\u00e3o\n- [ ] Treinar operadores no fluxo e nas regras de triagem\n- [ ] Definir SLA por categoria (triagem em at\u00e9 24h, quarentena m\u00e1x. 5 dias \u00fateis)\n- [ ] Configurar automa\u00e7\u00f5es/alertas para itens parados em quarentena\n- [ ] Documentar o procedimento operacional padr\u00e3o (POP) para a equipe\n\n---\n\n## 5. Resumo dos Pontos Cr\u00edticos\n\n1. **Separa\u00e7\u00e3o f\u00edsica + sist\u00eamica**: a loca\u00e7\u00e3o LR deve ser completamente independente do estoque regular no Odoo e no layout do CD.\n2. **Fluxo obrigat\u00f3rio de triagem**: nenhum produto devolvido vai direto para o estoque \u2014 sempre passa por `LR-RECEBIMENTO` e `LR-TRIAGEM` antes de qualquer decis\u00e3o.\n3. **Rastreabilidade por lote**: o prefixo de lote diferenciado permite identificar a origem do produto em qualquer ponto da cadeia.\n4. **Aprova\u00e7\u00e3o humana na reintegra\u00e7\u00e3o**: o retorno ao estoque regular deve ser uma a\u00e7\u00e3o deliberada e controlada, n\u00e3o autom\u00e1tica.\n5. **Gest\u00e3o de SLA**: produtos parados em quarentena ou triagem geram custo e risco; defina prazos e monitore ativamente.\n"}], "grading": {"eval_id": 1, "eval_name": "arquitetura-wms", "expectations": [{"text": "(tres-locacoes) Nomeia pelo menos 3 loca\u00e7\u00f5es distintas para a \u00e1rea de reversa", "passed": true, "evidence": "7 loca\u00e7\u00f5es nomeadas: LR-RECEBIMENTO, LR-TRIAGEM, LR-APROVADO, LR-REFURBISH, LR-QUARENTENA, LR-DESCARTE, LR-FORNECEDOR \u2014 todas filhas de LOG\u00cdSTICA REVERSA."}, {"text": "(segregacao-estoque) Explica mecanismo concreto para evitar mistura com estoque novo", "passed": true, "evidence": "Se\u00e7\u00e3o 3: 'Nunca configure as loca\u00e7\u00f5es de LR como subloca\u00e7\u00f5es do estoque regular.' + 'Desative o flag Reservar Estoque nas loca\u00e7\u00f5es LR para que n\u00e3o entrem nos c\u00e1lculos de disponibilidade de venda.' + prefixo de lote DEV-2024-XXXXX."}, {"text": "(odoo-especifico) Menciona o Odoo com configura\u00e7\u00e3o concreta (locations, picking types, m\u00f3dulos ou campos)", "passed": true, "evidence": "'Invent\u00e1rio > Configura\u00e7\u00e3o > Loca\u00e7\u00f5es', flag 'Reservar Estoque', rastreamento por lote/n\u00famero de s\u00e9rie, tipos de opera\u00e7\u00e3o exclusivos, grupos de usu\u00e1rio, automa\u00e7\u00f5es do Odoo \u2014 configura\u00e7\u00f5es concretas no Odoo 17."}, {"text": "(fluxo-passo-a-passo) Apresenta fluxo operacional sequencial com pelo menos 4 etapas numeradas", "passed": true, "evidence": "Etapa 1 (Recebimento), Etapa 2 (Triagem e Inspe\u00e7\u00e3o), Etapa 3 (Classifica\u00e7\u00e3o e Destina\u00e7\u00e3o), Etapa 4 (Reintegra\u00e7\u00e3o ao Estoque) \u2014 4 etapas sequenciais numeradas com sub-passos."}, {"text": "(picking-types) Menciona picking types ou tipos de opera\u00e7\u00e3o dedicados para movimentos de devolu\u00e7\u00e3o", "passed": true, "evidence": "Se\u00e7\u00e3o 3.4: 'Crie tipos de opera\u00e7\u00e3o exclusivos para LR (ex.: Recebimento Devolu\u00e7\u00e3o, Transfer\u00eancia Triagem LR, Reintegra\u00e7\u00e3o Estoque).' Checklist tamb\u00e9m lista 'Criar tipos de opera\u00e7\u00e3o exclusivos para cada etapa do fluxo LR'."}, {"text": "(idioma-pt) Resposta inteiramente em portugu\u00eas do Brasil", "passed": true, "evidence": "Todo o conte\u00fado est\u00e1 em portugu\u00eas do Brasil, sem trechos em outro idioma."}]}}, {"id": "eval-integracao-financeira-with_skill", "prompt": "Vendo na Magalu e o prazo de cr\u00e9dito para o cliente est\u00e1 demorando 15 dias. O cliente abre reclama\u00e7\u00e3o e minha reputa\u00e7\u00e3o cai. Como mapear os eventos log\u00edsticos da devolu\u00e7\u00e3o para acelerar a libera\u00e7\u00e3o do estorno sem assumir risco financeiro antes da triagem?", "eval_id": 2, "outputs": [{"name": "response.md", "type": "text", "content": "# Mapeamento de Eventos Log\u00edsticos para Acelerar Estorno na Magalu sem Risco Financeiro Prematuro\n\n## Diagn\u00f3stico do Problema\n\nVoc\u00ea est\u00e1 operando na Magalu com um ciclo reverso que demora 15 dias para liberar o cr\u00e9dito ao cliente. Esse prazo est\u00e1 gerando reclama\u00e7\u00f5es e impactando sua reputa\u00e7\u00e3o no canal \u2014 o que, na Magalu, significa rebaixamento de posi\u00e7\u00e3o nos resultados de busca e risco de penaliza\u00e7\u00e3o de conta.\n\nO problema central n\u00e3o \u00e9 o prazo em si, mas a **aus\u00eancia de gatilhos financeiros vinculados a eventos log\u00edsticos**. Sem esse v\u00ednculo, o time financeiro aguarda a conclus\u00e3o total do processo antes de liberar qualquer cr\u00e9dito, criando um gargalo artificial de 15 dias.\n\nA solu\u00e7\u00e3o \u00e9 **fragmentar o ciclo em eventos audit\u00e1veis** e vincular cada evento a uma a\u00e7\u00e3o financeira espec\u00edfica, liberando o cr\u00e9dito de forma progressiva e controlada \u2014 nunca antes da triagem, mas muito antes do dia 15.\n\n---\n\n## Mapeamento Completo: Evento Log\u00edstico \u2192 A\u00e7\u00e3o Financeira\n\n| # | Evento Log\u00edstico | O que acontece no sistema | A\u00e7\u00e3o Financeira |\n|---|---|---|---|\n| 1 | Cliente abre solicita\u00e7\u00e3o de devolu\u00e7\u00e3o | Portal registra motivo, fotos, dados do pedido | Reserva de cr\u00e9dito no ERP \u2014 bloqueado, n\u00e3o liberado |\n| 2 | Autoriza\u00e7\u00e3o emitida, etiqueta reversa gerada | RMA gerado | Notifica\u00e7\u00e3o ao cliente com prazo estimado. Nenhuma libera\u00e7\u00e3o ainda |\n| 3 | Produto postado/coletado | Evento de rastreamento | SLA interno come\u00e7a. Nenhuma libera\u00e7\u00e3o ainda |\n| 4 | Produto em tr\u00e2nsito reverso | Evento de rastreamento | Notifica\u00e7\u00e3o proativa ao cliente |\n| 5 | Produto entrado no CD (scan WMS) | WMS: entrada em QUARENTENA-REVERSA | Comunicar ao cliente: \"recebemos seu produto, an\u00e1lise em at\u00e9 X horas\" |\n| 6 | Grading A-Grade confirmado | WMS move para RETORNO-PENDENTE-VALIDACAO | **Liberar 100% do estorno imediatamente** |\n| 7 | Grading B-Grade confirmado | WMS move para ESTOQUE-OUTLET | Liberar estorno parcial (ex: 80-90%) |\n| 8 | Grading C-Grade (defeito confirmado) | WMS move para DESCARTE | Acionar garantia do fabricante ou seguro |\n| 9 | Fraude identificada | WMS move para BLOQUEADO-FRAUDE | Bloquear cr\u00e9dito, acionar jur\u00eddico |\n\n---\n\n## Por Que o Ciclo Demora 15 Dias Hoje\n\n1. Aus\u00eancia de rastreamento ativo do retorno \u2014 o produto some entre postagem e chegada no CD\n2. Triagem feita em lote, n\u00e3o em fluxo \u2014 produtos ficam na quarentena por dias\n3. Gatilho financeiro \u00fanico no final \u2014 cr\u00e9dito s\u00f3 liberado quando todo o processo conclui\n4. Falta de separa\u00e7\u00e3o entre risco real e burocracia \u2014 A-Grade de R$200 tratado igual a eletr\u00f4nico de R$3.000 com suspeita de fraude\n\n---\n\n## Meta de SLA: Ciclo em 5-7 Dias \u00dateis\n\n| Etapa | SLA alvo |\n|---|---|\n| Autoriza\u00e7\u00e3o da devolu\u00e7\u00e3o | At\u00e9 4 horas |\n| Coleta/postagem pelo cliente | At\u00e9 2 dias corridos |\n| Tr\u00e2nsito reverso | At\u00e9 3 dias corridos |\n| Entrada no CD + triagem | At\u00e9 24 horas ap\u00f3s chegada |\n| Libera\u00e7\u00e3o do cr\u00e9dito (A-Grade) | Imediata ap\u00f3s grading |\n| **Ciclo total** | **\u2264 7 dias corridos** |\n\n---\n\n## Quick Wins em menos de 30 dias\n\n**Semana 1:** Ativar rastreamento ativo dos retornos com atualiza\u00e7\u00e3o autom\u00e1tica ao cliente. Criar alerta: produtos em quarentena > 24h sem triagem geram notifica\u00e7\u00e3o interna.\n\n**Semana 2:** Reorganizar o CD para triagem di\u00e1ria (n\u00e3o semanal). Padronizar checklist de grading com registro fotogr\u00e1fico obrigat\u00f3rio.\n\n**Semana 3:** Vincular conclus\u00e3o do grading \u00e0 libera\u00e7\u00e3o autom\u00e1tica do estorno via gateway. Para A-Grade: estorno imediato. Notifica\u00e7\u00e3o autom\u00e1tica \u00e0 Magalu via API.\n\n**Semana 4:** Mensagem autom\u00e1tica ao cliente em cada evento de rastreamento com prazo estimado din\u00e2mico.\n\n---\n\n## Ponto Cr\u00edtico: Desacoplar Fiscal do Cr\u00e9dito ao Cliente\n\nO erro comum \u00e9 aguardar a NF-e de entrada para liberar o cr\u00e9dito. Esses s\u00e3o processos paralelos, n\u00e3o sequenciais:\n\n- **Cr\u00e9dito ao cliente:** liberado no evento de grading\n- **NF-e de entrada:** emitida em paralelo, n\u00e3o bloqueia o cr\u00e9dito\n- **Recupera\u00e7\u00e3o de ICMS/PIS/COFINS:** processada na escritura\u00e7\u00e3o normal do per\u00edodo\n\nConfigure o ERP para emitir a NF-e de entrada automaticamente quando o produto entra no WMS, antes mesmo da triagem. Isso desacopla fiscal de financeiro.\n\n---\n\n## KPIs para Monitorar a Melhora\n\n| KPI | Situa\u00e7\u00e3o atual | Meta em 60 dias |\n|---|---|---|\n| Reverse Cycle Time | 15 dias | \u2264 7 dias corridos |\n| Dock-to-Stock (entrada \u2192 cr\u00e9dito A-Grade) | N\u00e3o medido | < 24 horas |\n| % de estornos liberados antes do dia 7 | ~0% | > 80% |\n| Tempo m\u00e9dio de triagem ap\u00f3s entrada no CD | N\u00e3o medido | < 4 horas |\n\n---\n\n## Resumo Executivo\n\nO prazo de 15 dias n\u00e3o \u00e9 um problema de velocidade log\u00edstica \u2014 \u00e9 um problema de aus\u00eancia de eventos intermedi\u00e1rios vinculados a a\u00e7\u00f5es financeiras. O produto provavelmente chega ao CD em 5-6 dias, mas fica parado na quarentena aguardando triagem em lote e um gatilho financeiro que s\u00f3 dispara no final de tudo.\n\nA solu\u00e7\u00e3o: rastrear ativamente, triagear em fluxo di\u00e1rio, vincular grading ao estorno (A-Grade = imediato), e desacoplar conformidade fiscal do cr\u00e9dito ao cliente. Com isso voc\u00ea fica dentro do SLA da Magalu, elimina as reclama\u00e7\u00f5es e protege sua reputa\u00e7\u00e3o sem assumir risco financeiro antes de conhecer o estado real do produto.\n"}], "grading": {"eval_id": 2, "eval_name": "integracao-financeira", "expectations": [{"text": "(mapeamento-eventos) Mapeia pelo menos 3 eventos log\u00edsticos distintos com sua a\u00e7\u00e3o financeira correspondente", "passed": true, "evidence": "Tabela com 9 eventos, cada um com a\u00e7\u00e3o financeira: ex. Evento 5 (entrada no CD) \u2192 comunicar cliente; Evento 6 (A-Grade) \u2192 liberar 100%; Evento 7 (B-Grade) \u2192 estorno parcial; Evento 9 (fraude) \u2192 bloquear cr\u00e9dito."}, {"text": "(grading-gatilho) Menciona grading (A/B/C-Grade ou equivalente) como gatilho para liberar ou reter o cr\u00e9dito", "passed": true, "evidence": "'Grading A-Grade confirmado \u2192 Liberar 100% do estorno imediatamente'; 'Grading B-Grade confirmado \u2192 Liberar estorno parcial (ex: 80-90%)'; 'Grading C-Grade (defeito confirmado) \u2192 Acionar garantia do fabricante ou seguro'."}, {"text": "(sla-marketplace) Aborda SLA do marketplace (Magalu) e consequ\u00eancias de descumprimento", "passed": true, "evidence": "'rebaixamento de posi\u00e7\u00e3o nos resultados de busca e risco de penaliza\u00e7\u00e3o de conta'; tabela 'Meta de SLA: Ciclo em 5-7 Dias \u00dateis'; 'fica dentro do SLA da Magalu, elimina as reclama\u00e7\u00f5es e protege sua reputa\u00e7\u00e3o'."}, {"text": "(estorno-parcial-total) Distingue estorno total (produto ok) de estorno parcial ou retido (avaria ou fraude)", "passed": true, "evidence": "A-Grade = 100% estorno; B-Grade = 'estorno parcial (ex: 80-90%)'; fraude = 'Bloquear cr\u00e9dito, acionar jur\u00eddico'. Distin\u00e7\u00e3o clara entre os tr\u00eas cen\u00e1rios."}, {"text": "(integracao-gateway) Menciona integra\u00e7\u00e3o com gateway de pagamento ou API do marketplace para disparar estorno", "passed": true, "evidence": "Semana 3: 'Vincular conclus\u00e3o do grading \u00e0 libera\u00e7\u00e3o autom\u00e1tica do estorno via gateway.' + 'Notifica\u00e7\u00e3o autom\u00e1tica \u00e0 Magalu via API'."}, {"text": "(idioma-pt) Resposta inteiramente em portugu\u00eas do Brasil", "passed": true, "evidence": "Todo o conte\u00fado est\u00e1 em portugu\u00eas do Brasil, sem trechos em outro idioma."}]}}, {"id": "eval-integracao-financeira-without_skill", "prompt": "Vendo na Magalu e o prazo de cr\u00e9dito para o cliente est\u00e1 demorando 15 dias. O cliente abre reclama\u00e7\u00e3o e minha reputa\u00e7\u00e3o cai. Como mapear os eventos log\u00edsticos da devolu\u00e7\u00e3o para acelerar a libera\u00e7\u00e3o do estorno sem assumir risco financeiro antes da triagem?", "eval_id": 2, "outputs": [{"name": "response.md", "type": "text", "content": "# Mapeamento de Eventos Log\u00edsticos para Acelera\u00e7\u00e3o do Estorno em Devolu\u00e7\u00f5es na Magalu\n\n## Contexto do Problema\n\nAo vender no Magalu (Magazine Luiza), o prazo de cr\u00e9dito de 15 dias ap\u00f3s uma devolu\u00e7\u00e3o gera insatisfa\u00e7\u00e3o no cliente, reclama\u00e7\u00f5es e queda de reputa\u00e7\u00e3o do seller. O desafio \u00e9 **mapear eventos log\u00edsticos verific\u00e1veis** para antecipar a libera\u00e7\u00e3o do estorno sem assumir risco financeiro antes da triagem.\n\n---\n\n## 1. Entendendo o Fluxo Atual de Devolu\u00e7\u00e3o no Magalu\n\nO processo padr\u00e3o segue estas etapas:\n\n1. Cliente solicita devolu\u00e7\u00e3o\n2. Aprova\u00e7\u00e3o da solicita\u00e7\u00e3o\n3. Gera\u00e7\u00e3o de etiqueta de postagem reversa\n4. Cliente posta o produto\n5. Objeto em tr\u00e2nsito (rastreamento ativo)\n6. Recebimento no CD do seller ou do Magalu\n7. Triagem/inspe\u00e7\u00e3o f\u00edsica\n8. Aprova\u00e7\u00e3o do estorno pelo seller\n9. Processamento do reembolso pelo Magalu\n\nO gargalo est\u00e1 nas etapas 6 a 9.\n\n---\n\n## 2. Mapeamento dos Eventos Log\u00edsticos como Gatilhos de Decis\u00e3o\n\n**Evento 1 - Postagem pelo cliente:** Iniciar comunica\u00e7\u00e3o proativa; n\u00e3o liberar cr\u00e9dito.\n\n**Evento 2 - Objeto em tr\u00e2nsito:** Atualizar prazo estimado ao cliente.\n\n**Evento 3 - Objeto entregue no CD:** Evento cr\u00edtico \u2014 iniciar triagem com SLA de 24-48h; para produtos de baixo valor sem hist\u00f3rico de fraude, considerar antecipa\u00e7\u00e3o do estorno.\n\n**Evento 4 - Triagem aprovada:** Liberar estorno imediatamente via integra\u00e7\u00e3o com API do Magalu.\n\n**Evento 5 - Triagem recusada:** Iniciar contesta\u00e7\u00e3o com registro fotogr\u00e1fico como evid\u00eancia.\n\n---\n\n## 3. Estrat\u00e9gia para Antecipar Sem Assumir Risco\n\n- **Estorno condicional p\u00f3s-entrega no CD** para produtos abaixo de threshold de valor (ex: R$ 150) com cliente sem hist\u00f3rico de fraude\n- **SLA interno de triagem em 24-48h** com check-list padronizado e registro fotogr\u00e1fico obrigat\u00f3rio\n- **Integra\u00e7\u00e3o via API do Magalu** para aprova\u00e7\u00e3o autom\u00e1tica ao fim da triagem\n- **Comunica\u00e7\u00e3o proativa por evento** para reduzir reclama\u00e7\u00f5es independente do prazo\n\n---\n\n## 4. Matriz de Risco por Evento\n\n| Evento | A\u00e7\u00e3o | Risco | Condi\u00e7\u00e3o |\n|---|---|---|---|\n| Solicita\u00e7\u00e3o criada | Comunicar in\u00edcio | Nenhum | Sempre |\n| Objeto postado | Reservar cr\u00e9dito internamente | Alto | Nunca liberar |\n| Em tr\u00e2nsito | Atualizar prazo ao cliente | Alto | Nunca liberar |\n| Entregue no CD | Liberar para baixo valor | Baixo | Valor < threshold + sem fraude |\n| Triagem aprovada | Liberar estorno | Zero | Sempre |\n| Triagem recusada | Contesta\u00e7\u00e3o documentada | Gerenciado | Com evid\u00eancia |\n\n---\n\n## 5. Conclus\u00e3o\n\nAo transformar o processo de devolu\u00e7\u00e3o em um **pipeline orientado a eventos**, \u00e9 poss\u00edvel reduzir o prazo real de 15 para 5-7 dias, reduzir reclama\u00e7\u00f5es via comunica\u00e7\u00e3o proativa, e antecipar estornos com seguran\u00e7a para produtos de baixo valor \u2014 mantendo a triagem como prote\u00e7\u00e3o financeira para produtos de maior valor.\n"}], "grading": {"eval_id": 2, "eval_name": "integracao-financeira", "expectations": [{"text": "(mapeamento-eventos) Mapeia pelo menos 3 eventos log\u00edsticos distintos com sua a\u00e7\u00e3o financeira correspondente", "passed": true, "evidence": "5 eventos mapeados (Evento 1-5) com a\u00e7\u00f5es financeiras, e matriz de risco refor\u00e7a: postagem \u2192 reservar cr\u00e9dito (nunca liberar); entregue no CD \u2192 liberar para baixo valor; triagem aprovada \u2192 liberar estorno."}, {"text": "(grading-gatilho) Menciona grading (A/B/C-Grade ou equivalente) como gatilho para liberar ou reter o cr\u00e9dito", "passed": false, "evidence": "N\u00e3o menciona grading A/B/C-Grade. O gatilho de cr\u00e9dito \u00e9 'triagem aprovada' vs 'triagem recusada' e threshold de valor (abaixo de R$ 150). N\u00e3o h\u00e1 classifica\u00e7\u00e3o por grau de qualidade do produto."}, {"text": "(sla-marketplace) Aborda SLA do marketplace (Magalu) e consequ\u00eancias de descumprimento", "passed": false, "evidence": "Menciona reduzir de 15 para 5-7 dias e o contexto da Magalu, mas n\u00e3o aborda explicitamente o SLA contratual do marketplace nem as consequ\u00eancias formais de descumprimento (penaliza\u00e7\u00f5es, rebaixamento de conta, etc.)."}, {"text": "(estorno-parcial-total) Distingue estorno total (produto ok) de estorno parcial ou retido (avaria ou fraude)", "passed": false, "evidence": "Menciona 'Liberar estorno' ap\u00f3s triagem aprovada e 'Triagem recusada \u2192 Contesta\u00e7\u00e3o documentada', mas n\u00e3o distingue estorno parcial (produto avariado) de estorno total (produto ok). N\u00e3o h\u00e1 men\u00e7\u00e3o a reten\u00e7\u00e3o parcial por avaria."}, {"text": "(integracao-gateway) Menciona integra\u00e7\u00e3o com gateway de pagamento ou API do marketplace para disparar estorno", "passed": true, "evidence": "Se\u00e7\u00e3o 3: 'Integra\u00e7\u00e3o via API do Magalu para aprova\u00e7\u00e3o autom\u00e1tica ao fim da triagem'. Evento 4: 'Liberar estorno imediatamente via integra\u00e7\u00e3o com API do Magalu'."}, {"text": "(idioma-pt) Resposta inteiramente em portugu\u00eas do Brasil", "passed": true, "evidence": "Todo o conte\u00fado est\u00e1 em portugu\u00eas do Brasil, sem trechos em outro idioma."}]}}], "previous_feedback": {}, "previous_outputs": {}, "benchmark": {"metadata": {"skill_name": "reverse-logistics-architect", "skill_path": "<path/to/skill>", "executor_model": "<model-name>", "analyzer_model": "<model-name>", "timestamp": "2026-03-12T18:24:33Z", "evals_run": [0, 1, 2], "runs_per_configuration": 3}, "runs": [{"eval_id": 1, "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 6, "failed": 0, "total": 6, "time_seconds": 98.4, "tokens": 0, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "Nomeia pelo menos 3 loca\u00c3\u00a7\u00c3\u00b5es distintas para a \u00c3\u00a1rea de reversa", "passed": true, "evidence": "7 loca\u00c3\u00a7\u00c3\u00b5es nomeadas: QUARENTENA-REVERSA, TRIAGEM-TECNICA, INSPECAO, RECONDICIONAMENTO, ESTOQUE-OUTLET, DESCARTE, BLOQUEADO-FRAUDE."}, {"text": "Explica mecanismo concreto para evitar mistura com estoque novo", "passed": true, "evidence": "Status intermedi\u00c3\u00a1rio RETORNO-PENDENTE-VALIDACAO: 'Nenhum produto devolvido volta ao estoque sem passar por esse status.' Fluxo expl\u00c3\u00adcito com valida\u00c3\u00a7\u00c3\u00a3o de supervisor."}, {"text": "Menciona o Odoo com configura\u00c3\u00a7\u00c3\u00a3o concreta (locations, picking types, m\u00c3\u00b3dulos ou campos)", "passed": true, "evidence": "Caminhos concretos: 'Invent\u00c3\u00a1rio > Configura\u00c3\u00a7\u00c3\u00a3o > Loca\u00c3\u00a7\u00c3\u00b5es', 'Invent\u00c3\u00a1rio > Configura\u00c3\u00a7\u00c3\u00a3o > Tipos de Opera\u00c3\u00a7\u00c3\u00a3o'. Menciona Automated Actions, prefixo DEV-AAAAMM-NNNNN."}, {"text": "Apresenta fluxo operacional sequencial com pelo menos 4 etapas numeradas", "passed": true, "evidence": "5 etapas numeradas: 1. CHEGADA, 2. INSPE\u00c3\u2021\u00c3\u0192O DE SAFETY, 3. TRIAGEM T\u00c3\u2030CNICA, 4. DECIS\u00c3\u0192O DE DESTINO, 5. EVENTO FINANCEIRO."}, {"text": "Menciona picking types ou tipos de opera\u00c3\u00a7\u00c3\u00a3o dedicados para movimentos de devolu\u00c3\u00a7\u00c3\u00a3o", "passed": true, "evidence": "Se\u00c3\u00a7\u00c3\u00a3o 'Picking Types dedicados' com tabela de 5 tipos: Recebimento Devolu\u00c3\u00a7\u00c3\u00a3o, Triagem LR, Classifica\u00c3\u00a7\u00c3\u00a3o LR, Reintegra\u00c3\u00a7\u00c3\u00a3o Estoque, Baixa LR."}, {"text": "Resposta inteiramente em portugu\u00c3\u00aas do Brasil", "passed": true, "evidence": "Todo o conte\u00c3\u00bado est\u00c3\u00a1 em portugu\u00c3\u00aas do Brasil."}], "notes": []}, {"eval_id": 0, "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 6, "failed": 0, "total": 6, "time_seconds": 98.4, "tokens": 0, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "Menciona registro fotogr\u00c3\u00a1fico na coleta ou no recebimento como controle", "passed": true, "evidence": "Camada 1 dedica se\u00c3\u00a7\u00c3\u00a3o inteira a 'Registro fotogr\u00c3\u00a1fico obrigat\u00c3\u00b3rio' no momento da coleta domiciliar/drop-off. Camada 2 repete fotos no recebimento."}, {"text": "Menciona pesagem / valida\u00c3\u00a7\u00c3\u00a3o por peso como mecanismo de detec\u00c3\u00a7\u00c3\u00a3o de fraude", "passed": true, "evidence": "'Registre o peso bruto da embalagem no momento da coleta. Um notebook que sai pesando 3,2 kg e volta pesando 3,9 kg j\u00c3\u00a1 aciona alerta. Configure toler\u00c3\u00a2ncia de \u00c2\u00b15%'"}, {"text": "Menciona verifica\u00c3\u00a7\u00c3\u00a3o de n\u00c3\u00bamero de s\u00c3\u00a9rie (serial / IMEI) do produto", "passed": true, "evidence": "Coleta: 'Foto do n\u00c3\u00bamero de s\u00c3\u00a9rie / IMEI vis\u00c3\u00advel'. Recebimento: checklist inclui leitura do c\u00c3\u00b3digo de barras e compara\u00c3\u00a7\u00c3\u00a3o com pedido original."}, {"text": "Menciona hist\u00c3\u00b3rico de devolu\u00c3\u00a7\u00c3\u00b5es por cliente (CPF/CNPJ) como controle de abuso", "passed": true, "evidence": "Motor de regras: 'Cliente com > 3 devolu\u00c3\u00a7\u00c3\u00b5es em 90 dias | Flag antifraude + revis\u00c3\u00a3o manual obrigat\u00c3\u00b3ria'."}, {"text": "Prop\u00c3\u00b5e motor de regras, bloqueio autom\u00c3\u00a1tico ou flag antifraude no portal de devolu\u00c3\u00a7\u00c3\u00b5es", "passed": true, "evidence": "'Camada 3 \u00e2\u20ac\u201d Motor de Regras no Portal' com tabela de condi\u00c3\u00a7\u00c3\u00b5es e a\u00c3\u00a7\u00c3\u00b5es autom\u00c3\u00a1ticas, incluindo bloqueio autom\u00c3\u00a1tico e flags."}, {"text": "Resposta inteiramente em portugu\u00c3\u00aas do Brasil", "passed": true, "evidence": "Todo o conte\u00c3\u00bado est\u00c3\u00a1 em portugu\u00c3\u00aas do Brasil."}], "notes": []}, {"eval_id": 2, "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 6, "failed": 0, "total": 6, "time_seconds": 119.1, "tokens": 0, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "Mapeia pelo menos 3 eventos log\u00c3\u00adsticos distintos com sua a\u00c3\u00a7\u00c3\u00a3o financeira correspondente", "passed": true, "evidence": "Tabela com 9 eventos mapeados: entrada no CD \u00e2\u2020\u2019 comunicar cliente; A-Grade \u00e2\u2020\u2019 liberar 100%; B-Grade \u00e2\u2020\u2019 estorno parcial; fraude \u00e2\u2020\u2019 bloquear cr\u00c3\u00a9dito."}, {"text": "Menciona grading (A/B/C-Grade ou equivalente) como gatilho para liberar ou reter o cr\u00c3\u00a9dito", "passed": true, "evidence": "'Grading A-Grade \u00e2\u2020\u2019 Liberar 100% do estorno imediatamente'; 'Grading B-Grade \u00e2\u2020\u2019 Liberar estorno parcial (ex: 80-90%)'; 'Grading C-Grade \u00e2\u2020\u2019 Acionar garantia do fabricante.'"}, {"text": "Aborda SLA do marketplace (Magalu) e consequ\u00c3\u00aancias de descumprimento", "passed": true, "evidence": "'rebaixamento de posi\u00c3\u00a7\u00c3\u00a3o nos resultados de busca e risco de penaliza\u00c3\u00a7\u00c3\u00a3o de conta'; tabela de SLA por etapa; 'fica dentro do SLA da Magalu, elimina reclama\u00c3\u00a7\u00c3\u00b5es e protege sua reputa\u00c3\u00a7\u00c3\u00a3o'."}, {"text": "Distingue estorno total (produto ok) de estorno parcial ou retido (avaria ou fraude)", "passed": true, "evidence": "A-Grade = 100%; B-Grade = 'estorno parcial (ex: 80-90%)'; fraude = 'Bloquear cr\u00c3\u00a9dito, acionar jur\u00c3\u00addico'. Distin\u00c3\u00a7\u00c3\u00a3o clara entre os tr\u00c3\u00aas cen\u00c3\u00a1rios."}, {"text": "Menciona integra\u00c3\u00a7\u00c3\u00a3o com gateway de pagamento ou API do marketplace para disparar estorno", "passed": true, "evidence": "Semana 3: 'Vincular conclus\u00c3\u00a3o do grading \u00c3\u00a0 libera\u00c3\u00a7\u00c3\u00a3o autom\u00c3\u00a1tica do estorno via gateway.' + 'Notifica\u00c3\u00a7\u00c3\u00a3o autom\u00c3\u00a1tica \u00c3\u00a0 Magalu via API'."}, {"text": "Resposta inteiramente em portugu\u00c3\u00aas do Brasil", "passed": true, "evidence": "Todo o conte\u00c3\u00bado est\u00c3\u00a1 em portugu\u00c3\u00aas do Brasil."}], "notes": []}, {"eval_id": 1, "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 6, "failed": 0, "total": 6, "time_seconds": 82.7, "tokens": 0, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "Nomeia pelo menos 3 loca\u00c3\u00a7\u00c3\u00b5es distintas para a \u00c3\u00a1rea de reversa", "passed": true, "evidence": "7 loca\u00c3\u00a7\u00c3\u00b5es: LR-RECEBIMENTO, LR-TRIAGEM, LR-APROVADO, LR-REFURBISH, LR-QUARENTENA, LR-DESCARTE, LR-FORNECEDOR."}, {"text": "Explica mecanismo concreto para evitar mistura com estoque novo", "passed": true, "evidence": "'Nunca configure as loca\u00c3\u00a7\u00c3\u00b5es de LR como subloca\u00c3\u00a7\u00c3\u00b5es do estoque regular.' + flag 'Reservar Estoque' desativado + prefixo de lote DEV-2024-XXXXX."}, {"text": "Menciona o Odoo com configura\u00c3\u00a7\u00c3\u00a3o concreta (locations, picking types, m\u00c3\u00b3dulos ou campos)", "passed": true, "evidence": "'Invent\u00c3\u00a1rio > Configura\u00c3\u00a7\u00c3\u00a3o > Loca\u00c3\u00a7\u00c3\u00b5es', flag 'Reservar Estoque', rastreamento por lote/n\u00c3\u00bamero de s\u00c3\u00a9rie, grupos de usu\u00c3\u00a1rio, automa\u00c3\u00a7\u00c3\u00b5es do Odoo."}, {"text": "Apresenta fluxo operacional sequencial com pelo menos 4 etapas numeradas", "passed": true, "evidence": "4 etapas: Etapa 1 (Recebimento), Etapa 2 (Triagem), Etapa 3 (Classifica\u00c3\u00a7\u00c3\u00a3o), Etapa 4 (Reintegra\u00c3\u00a7\u00c3\u00a3o)."}, {"text": "Menciona picking types ou tipos de opera\u00c3\u00a7\u00c3\u00a3o dedicados para movimentos de devolu\u00c3\u00a7\u00c3\u00a3o", "passed": true, "evidence": "Se\u00c3\u00a7\u00c3\u00a3o 3.4: 'Crie tipos de opera\u00c3\u00a7\u00c3\u00a3o exclusivos para LR (ex.: Recebimento Devolu\u00c3\u00a7\u00c3\u00a3o, Transfer\u00c3\u00aancia Triagem LR, Reintegra\u00c3\u00a7\u00c3\u00a3o Estoque).'"}, {"text": "Resposta inteiramente em portugu\u00c3\u00aas do Brasil", "passed": true, "evidence": "Todo o conte\u00c3\u00bado est\u00c3\u00a1 em portugu\u00c3\u00aas do Brasil."}], "notes": []}, {"eval_id": 0, "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 0.8333, "passed": 5, "failed": 1, "total": 6, "time_seconds": 85.2, "tokens": 0, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "Menciona registro fotogr\u00c3\u00a1fico na coleta ou no recebimento como controle", "passed": true, "evidence": "Se\u00c3\u00a7\u00c3\u00a3o 1 menciona foto na expedi\u00c3\u00a7\u00c3\u00a3o. Se\u00c3\u00a7\u00c3\u00a3o 2 menciona fotografar no recebimento."}, {"text": "Menciona pesagem / valida\u00c3\u00a7\u00c3\u00a3o por peso como mecanismo de detec\u00c3\u00a7\u00c3\u00a3o de fraude", "passed": true, "evidence": "'Registre o peso bruto de cada pacote no momento do envio. Diverg\u00c3\u00aancia de peso na devolu\u00c3\u00a7\u00c3\u00a3o j\u00c3\u00a1 \u00c3\u00a9 evid\u00c3\u00aancia de fraude.'"}, {"text": "Menciona verifica\u00c3\u00a7\u00c3\u00a3o de n\u00c3\u00bamero de s\u00c3\u00a9rie (serial / IMEI) do produto", "passed": true, "evidence": "Se\u00c3\u00a7\u00c3\u00a3o 1: 'Aplique etiquetas de seguran\u00c3\u00a7a hologr\u00c3\u00a1ficas com n\u00c3\u00bamero de s\u00c3\u00a9rie \u00c3\u00banico'. Checklist: 'N\u00c3\u00bamero de s\u00c3\u00a9rie do produto confere com o registrado no envio?'"}, {"text": "Menciona hist\u00c3\u00b3rico de devolu\u00c3\u00a7\u00c3\u00b5es por cliente (CPF/CNPJ) como controle de abuso", "passed": true, "evidence": "Se\u00c3\u00a7\u00c3\u00a3o 3: 'Compradores com m\u00c3\u00baltiplas devolu\u00c3\u00a7\u00c3\u00b5es em curto per\u00c3\u00adodo ou conta recente: perfil de risco elevado.'"}, {"text": "Prop\u00c3\u00b5e motor de regras, bloqueio autom\u00c3\u00a1tico ou flag antifraude no portal de devolu\u00c3\u00a7\u00c3\u00b5es", "passed": false, "evidence": "N\u00c3\u00a3o prop\u00c3\u00b5e motor de regras automatizado, bloqueio autom\u00c3\u00a1tico ou flag antifraude em portal. Os controles s\u00c3\u00a3o manuais."}, {"text": "Resposta inteiramente em portugu\u00c3\u00aas do Brasil", "passed": true, "evidence": "Todo o conte\u00c3\u00bado est\u00c3\u00a1 em portugu\u00c3\u00aas do Brasil."}], "notes": []}, {"eval_id": 2, "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 0.5, "passed": 3, "failed": 3, "total": 6, "time_seconds": 84.2, "tokens": 0, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "Mapeia pelo menos 3 eventos log\u00c3\u00adsticos distintos com sua a\u00c3\u00a7\u00c3\u00a3o financeira correspondente", "passed": true, "evidence": "5 eventos mapeados com a\u00c3\u00a7\u00c3\u00b5es financeiras: postagem \u00e2\u2020\u2019 reservar; em tr\u00c3\u00a2nsito \u00e2\u2020\u2019 atualizar prazo; entregue no CD \u00e2\u2020\u2019 considerar antecipa\u00c3\u00a7\u00c3\u00a3o; triagem aprovada \u00e2\u2020\u2019 liberar; triagem recusada \u00e2\u2020\u2019 contesta\u00c3\u00a7\u00c3\u00a3o."}, {"text": "Menciona grading (A/B/C-Grade ou equivalente) como gatilho para liberar ou reter o cr\u00c3\u00a9dito", "passed": false, "evidence": "N\u00c3\u00a3o menciona grading A/B/C-Grade. O gatilho \u00c3\u00a9 'triagem aprovada' vs 'triagem recusada' e threshold de valor (R$ 150), sem classifica\u00c3\u00a7\u00c3\u00a3o por grau de qualidade."}, {"text": "Aborda SLA do marketplace (Magalu) e consequ\u00c3\u00aancias de descumprimento", "passed": false, "evidence": "Menciona reduzir de 15 para 5-7 dias, mas n\u00c3\u00a3o aborda SLA contratual do marketplace nem consequ\u00c3\u00aancias formais (penaliza\u00c3\u00a7\u00c3\u00b5es, rebaixamento de conta)."}, {"text": "Distingue estorno total (produto ok) de estorno parcial ou retido (avaria ou fraude)", "passed": false, "evidence": "Menciona 'Liberar estorno' ap\u00c3\u00b3s triagem aprovada e 'Contesta\u00c3\u00a7\u00c3\u00a3o' ap\u00c3\u00b3s recusa, mas n\u00c3\u00a3o distingue estorno parcial de total por estado do produto."}, {"text": "Menciona integra\u00c3\u00a7\u00c3\u00a3o com gateway de pagamento ou API do marketplace para disparar estorno", "passed": true, "evidence": "Se\u00c3\u00a7\u00c3\u00a3o 3: 'Integra\u00c3\u00a7\u00c3\u00a3o via API do Magalu para aprova\u00c3\u00a7\u00c3\u00a3o autom\u00c3\u00a1tica ao fim da triagem'."}, {"text": "Resposta inteiramente em portugu\u00c3\u00aas do Brasil", "passed": true, "evidence": "Todo o conte\u00c3\u00bado est\u00c3\u00a1 em portugu\u00c3\u00aas do Brasil."}], "notes": []}], "run_summary": {"with_skill": {"pass_rate": {"mean": 1.0, "stddev": 0.0, "min": 1.0, "max": 1.0}, "time_seconds": {"mean": 105.3, "stddev": 11.9512, "min": 98.4, "max": 119.1}, "tokens": {"mean": 0.0, "stddev": 0.0, "min": 0, "max": 0}}, "without_skill": {"pass_rate": {"mean": 0.7778, "stddev": 0.2546, "min": 0.5, "max": 1.0}, "time_seconds": {"mean": 84.0333, "stddev": 1.2583, "min": 82.7, "max": 85.2}, "tokens": {"mean": 0.0, "stddev": 0.0, "min": 0, "max": 0}}, "delta": {"pass_rate": "+0.22", "time_seconds": "+21.3", "tokens": "+0"}}, "notes": []}};
+
+    // ---- State ----
+    let feedbackMap = {};  // run_id -> feedback text
+    let currentIndex = 0;
+    let visitedRuns = new Set();
+
+    // ---- Init ----
+    async function init() {
+      // Load saved feedback from server — but only if this isn't a fresh
+      // iteration (indicated by previous_feedback being present). When
+      // previous feedback exists, the feedback.json on disk is stale from
+      // the prior iteration and should not pre-fill the textareas.
+      const hasPrevious = Object.keys(EMBEDDED_DATA.previous_feedback || {}).length > 0
+        || Object.keys(EMBEDDED_DATA.previous_outputs || {}).length > 0;
+      if (!hasPrevious) {
+        try {
+          const resp = await fetch("/api/feedback");
+          const data = await resp.json();
+          if (data.reviews) {
+            for (const r of data.reviews) feedbackMap[r.run_id] = r.feedback;
+          }
+        } catch { /* first run, no feedback yet */ }
+      }
+
+      document.getElementById("skill-name").textContent = EMBEDDED_DATA.skill_name;
+      showRun(0);
+
+      // Wire up feedback auto-save
+      const textarea = document.getElementById("feedback");
+      let saveTimeout = null;
+      textarea.addEventListener("input", () => {
+        clearTimeout(saveTimeout);
+        document.getElementById("feedback-status").textContent = "";
+        saveTimeout = setTimeout(() => saveCurrentFeedback(), 800);
+      });
+    }
+
+    // ---- Navigation ----
+    function navigate(delta) {
+      const newIndex = currentIndex + delta;
+      if (newIndex >= 0 && newIndex < EMBEDDED_DATA.runs.length) {
+        saveCurrentFeedback();
+        showRun(newIndex);
+      }
+    }
+
+    function updateNavButtons() {
+      document.getElementById("prev-btn").disabled = currentIndex === 0;
+      document.getElementById("next-btn").disabled =
+        currentIndex === EMBEDDED_DATA.runs.length - 1;
+    }
+
+    // ---- Show a run ----
+    function showRun(index) {
+      currentIndex = index;
+      const run = EMBEDDED_DATA.runs[index];
+
+      // Progress
+      document.getElementById("progress").textContent =
+        `${index + 1} of ${EMBEDDED_DATA.runs.length}`;
+
+      // Prompt
+      document.getElementById("prompt-text").textContent = run.prompt;
+
+      // Config badge
+      const badge = document.getElementById("config-badge");
+      const configMatch = run.id.match(/(with_skill|without_skill|new_skill|old_skill)/);
+      if (configMatch) {
+        const config = configMatch[1];
+        const isBaseline = config === "without_skill" || config === "old_skill";
+        badge.textContent = config.replace(/_/g, " ");
+        badge.className = "config-badge " + (isBaseline ? "config-baseline" : "config-primary");
+        badge.style.display = "inline-block";
+      } else {
+        badge.style.display = "none";
+      }
+
+      // Outputs
+      renderOutputs(run);
+
+      // Previous outputs
+      renderPrevOutputs(run);
+
+      // Grades
+      renderGrades(run);
+
+      // Previous feedback
+      const prevFb = (EMBEDDED_DATA.previous_feedback || {})[run.id];
+      const prevEl = document.getElementById("prev-feedback");
+      if (prevFb) {
+        document.getElementById("prev-feedback-text").textContent = prevFb;
+        prevEl.style.display = "block";
+      } else {
+        prevEl.style.display = "none";
+      }
+
+      // Feedback
+      document.getElementById("feedback").value = feedbackMap[run.id] || "";
+      document.getElementById("feedback-status").textContent = "";
+
+      updateNavButtons();
+
+      // Track visited runs and promote done button when all visited
+      visitedRuns.add(index);
+      const doneBtn = document.getElementById("done-btn");
+      if (visitedRuns.size >= EMBEDDED_DATA.runs.length) {
+        doneBtn.classList.add("ready");
+      }
+
+      // Scroll main content to top
+      document.querySelector(".main").scrollTop = 0;
+    }
+
+    // ---- Render outputs ----
+    function renderOutputs(run) {
+      const container = document.getElementById("outputs-body");
+      container.innerHTML = "";
+
+      const outputs = run.outputs || [];
+      if (outputs.length === 0) {
+        container.innerHTML = '<div class="empty-state">No output files</div>';
+        return;
+      }
+
+      for (const file of outputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        // Always show file header with download link
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const content = document.createElement("div");
+        content.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          content.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          content.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          content.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(content, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          content.appendChild(a);
+        } else if (file.type === "error") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          pre.style.color = "var(--red)";
+          content.appendChild(pre);
+        }
+
+        fileDiv.appendChild(content);
+        container.appendChild(fileDiv);
+      }
+    }
+
+    // ---- XLSX rendering via SheetJS ----
+    function renderXlsx(container, b64Data) {
+      try {
+        const raw = Uint8Array.from(atob(b64Data), c => c.charCodeAt(0));
+        const wb = XLSX.read(raw, { type: "array" });
+
+        for (let i = 0; i < wb.SheetNames.length; i++) {
+          const sheetName = wb.SheetNames[i];
+          const ws = wb.Sheets[sheetName];
+
+          if (wb.SheetNames.length > 1) {
+            const sheetLabel = document.createElement("div");
+            sheetLabel.style.cssText =
+              "font-weight:600; font-size:0.8rem; color:#b0aea5; margin-top:0.5rem; margin-bottom:0.25rem;";
+            sheetLabel.textContent = "Sheet: " + sheetName;
+            container.appendChild(sheetLabel);
+          }
+
+          const htmlStr = XLSX.utils.sheet_to_html(ws, { editable: false });
+          const wrapper = document.createElement("div");
+          wrapper.innerHTML = htmlStr;
+          container.appendChild(wrapper);
+        }
+      } catch (err) {
+        container.textContent = "Error rendering spreadsheet: " + err.message;
+      }
+    }
+
+    // ---- Grades ----
+    function renderGrades(run) {
+      const section = document.getElementById("grades-section");
+      const content = document.getElementById("grades-content");
+
+      if (!run.grading) {
+        section.style.display = "none";
+        return;
+      }
+
+      const grading = run.grading;
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("grades-arrow").classList.remove("open");
+
+      const summary = grading.summary || {};
+      const expectations = grading.expectations || [];
+
+      let html = '<div style="padding: 1rem;">';
+
+      // Summary line
+      const passRate = summary.pass_rate != null
+        ? Math.round(summary.pass_rate * 100) + "%"
+        : "?";
+      const badgeClass = summary.pass_rate >= 0.8 ? "grade-pass" : summary.pass_rate >= 0.5 ? "" : "grade-fail";
+      html += '<div class="grades-summary">';
+      html += '<span class="grade-badge ' + badgeClass + '">' + passRate + '</span>';
+      html += '<span>' + (summary.passed || 0) + ' passed, ' + (summary.failed || 0) + ' failed of ' + (summary.total || 0) + '</span>';
+      html += '</div>';
+
+      // Assertions list
+      html += '<ul class="assertion-list">';
+      for (const exp of expectations) {
+        const statusClass = exp.passed ? "pass" : "fail";
+        const statusIcon = exp.passed ? "\u2713" : "\u2717";
+        html += '<li class="assertion-item">';
+        html += '<span class="assertion-status ' + statusClass + '">' + statusIcon + '</span>';
+        html += '<span>' + escapeHtml(exp.text) + '</span>';
+        if (exp.evidence) {
+          html += '<div class="assertion-evidence">' + escapeHtml(exp.evidence) + '</div>';
+        }
+        html += '</li>';
+      }
+      html += '</ul>';
+
+      html += '</div>';
+      content.innerHTML = html;
+    }
+
+    function toggleGrades() {
+      const content = document.getElementById("grades-content");
+      const arrow = document.getElementById("grades-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Previous outputs (collapsible) ----
+    function renderPrevOutputs(run) {
+      const section = document.getElementById("prev-outputs-section");
+      const content = document.getElementById("prev-outputs-content");
+      const prevOutputs = (EMBEDDED_DATA.previous_outputs || {})[run.id];
+
+      if (!prevOutputs || prevOutputs.length === 0) {
+        section.style.display = "none";
+        return;
+      }
+
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("prev-outputs-arrow").classList.remove("open");
+
+      // Render the files into the content area
+      content.innerHTML = "";
+      const wrapper = document.createElement("div");
+      wrapper.style.padding = "1rem";
+
+      for (const file of prevOutputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const fc = document.createElement("div");
+        fc.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          fc.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          fc.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          fc.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(fc, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          fc.appendChild(a);
+        }
+
+        fileDiv.appendChild(fc);
+        wrapper.appendChild(fileDiv);
+      }
+
+      content.appendChild(wrapper);
+    }
+
+    function togglePrevOutputs() {
+      const content = document.getElementById("prev-outputs-content");
+      const arrow = document.getElementById("prev-outputs-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Feedback (saved to server -> feedback.json) ----
+    function saveCurrentFeedback() {
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // Build reviews array from map
+      const reviews = [];
+      for (const [run_id, feedback] of Object.entries(feedbackMap)) {
+        if (feedback.trim()) {
+          reviews.push({ run_id, feedback, timestamp: new Date().toISOString() });
+        }
+      }
+
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviews, status: "in_progress" }),
+      }).then(() => {
+        document.getElementById("feedback-status").textContent = "Saved";
+      }).catch(() => {
+        // Static mode or server unavailable — no-op on auto-save,
+        // feedback will be downloaded on final submit
+        document.getElementById("feedback-status").textContent = "Will download on submit";
+      });
+    }
+
+    // ---- Done ----
+    function showDoneDialog() {
+      // Save current textarea to feedbackMap (but don't POST yet)
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // POST once with status: complete — include ALL runs so the model
+      // can distinguish "no feedback" (looks good) from "not reviewed"
+      const reviews = [];
+      const ts = new Date().toISOString();
+      for (const r of EMBEDDED_DATA.runs) {
+        reviews.push({ run_id: r.id, feedback: feedbackMap[r.id] || "", timestamp: ts });
+      }
+      const payload = JSON.stringify({ reviews, status: "complete" }, null, 2);
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+      }).then(() => {
+        document.getElementById("done-overlay").classList.add("visible");
+      }).catch(() => {
+        // Server not available (static mode) — download as file
+        const blob = new Blob([payload], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "feedback.json";
+        a.click();
+        URL.revokeObjectURL(url);
+        document.getElementById("done-overlay").classList.add("visible");
+      });
+    }
+
+    function closeDoneDialog() {
+      // Reset status back to in_progress
+      saveCurrentFeedback();
+      document.getElementById("done-overlay").classList.remove("visible");
+    }
+
+    // ---- Toast ----
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("visible");
+      setTimeout(() => toast.classList.remove("visible"), 2000);
+    }
+
+    // ---- Keyboard nav ----
+    document.addEventListener("keydown", (e) => {
+      // Don't capture when typing in textarea
+      if (e.target.tagName === "TEXTAREA") return;
+
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        navigate(-1);
+      } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        navigate(1);
+      }
+    });
+
+    // ---- Util ----
+    function getDownloadUri(file) {
+      if (file.data_uri) return file.data_uri;
+      if (file.data_b64) return "data:application/octet-stream;base64," + file.data_b64;
+      if (file.type === "text") return "data:text/plain;charset=utf-8," + encodeURIComponent(file.content);
+      return "#";
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ---- View switching ----
+    function switchView(view) {
+      document.querySelectorAll(".view-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".view-panel").forEach(p => p.classList.remove("active"));
+      document.querySelector(`[onclick="switchView('${view}')"]`).classList.add("active");
+      document.getElementById("panel-" + view).classList.add("active");
+    }
+
+    // ---- Benchmark rendering ----
+    function renderBenchmark() {
+      const data = EMBEDDED_DATA.benchmark;
+      if (!data) return;
+
+      // Show the tabs
+      document.getElementById("view-tabs").style.display = "flex";
+
+      const container = document.getElementById("benchmark-content");
+      const summary = data.run_summary || {};
+      const metadata = data.metadata || {};
+      const notes = data.notes || [];
+
+      let html = "";
+
+      // Header
+      html += "<h2 style='font-family: Poppins, sans-serif; margin-bottom: 0.5rem;'>Benchmark Results</h2>";
+      html += "<p style='color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem;'>";
+      if (metadata.skill_name) html += "<strong>" + escapeHtml(metadata.skill_name) + "</strong> &mdash; ";
+      if (metadata.timestamp) html += metadata.timestamp + " &mdash; ";
+      if (metadata.evals_run) html += "Evals: " + metadata.evals_run.join(", ") + " &mdash; ";
+      html += (metadata.runs_per_configuration || "?") + " runs per configuration";
+      html += "</p>";
+
+      // Summary table
+      html += '<table class="benchmark-table">';
+
+      function fmtStat(stat, pct) {
+        if (!stat) return "—";
+        const suffix = pct ? "%" : "";
+        const m = pct ? (stat.mean * 100).toFixed(0) : stat.mean.toFixed(1);
+        const s = pct ? (stat.stddev * 100).toFixed(0) : stat.stddev.toFixed(1);
+        return m + suffix + " ± " + s + suffix;
+      }
+
+      function deltaClass(val) {
+        if (!val) return "";
+        const n = parseFloat(val);
+        if (n > 0) return "benchmark-delta-positive";
+        if (n < 0) return "benchmark-delta-negative";
+        return "";
+      }
+
+      // Discover config names dynamically (everything except "delta")
+      const configs = Object.keys(summary).filter(k => k !== "delta");
+      const configA = configs[0] || "config_a";
+      const configB = configs[1] || "config_b";
+      const labelA = configA.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const labelB = configB.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const a = summary[configA] || {};
+      const b = summary[configB] || {};
+      const delta = summary.delta || {};
+
+      html += "<thead><tr><th>Metric</th><th>" + escapeHtml(labelA) + "</th><th>" + escapeHtml(labelB) + "</th><th>Delta</th></tr></thead>";
+      html += "<tbody>";
+
+      html += "<tr><td><strong>Pass Rate</strong></td>";
+      html += "<td>" + fmtStat(a.pass_rate, true) + "</td>";
+      html += "<td>" + fmtStat(b.pass_rate, true) + "</td>";
+      html += '<td class="' + deltaClass(delta.pass_rate) + '">' + (delta.pass_rate || "—") + "</td></tr>";
+
+      // Time (only show row if data exists)
+      if (a.time_seconds || b.time_seconds) {
+        html += "<tr><td><strong>Time (s)</strong></td>";
+        html += "<td>" + fmtStat(a.time_seconds, false) + "</td>";
+        html += "<td>" + fmtStat(b.time_seconds, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.time_seconds) + '">' + (delta.time_seconds ? delta.time_seconds + "s" : "—") + "</td></tr>";
+      }
+
+      // Tokens (only show row if data exists)
+      if (a.tokens || b.tokens) {
+        html += "<tr><td><strong>Tokens</strong></td>";
+        html += "<td>" + fmtStat(a.tokens, false) + "</td>";
+        html += "<td>" + fmtStat(b.tokens, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.tokens) + '">' + (delta.tokens || "—") + "</td></tr>";
+      }
+
+      html += "</tbody></table>";
+
+      // Per-eval breakdown (if runs data available)
+      const runs = data.runs || [];
+      if (runs.length > 0) {
+        const evalIds = [...new Set(runs.map(r => r.eval_id))].sort((a, b) => a - b);
+
+        html += "<h3 style='font-family: Poppins, sans-serif; margin-bottom: 0.75rem;'>Per-Eval Breakdown</h3>";
+
+        const hasTime = runs.some(r => r.result && r.result.time_seconds != null);
+        const hasErrors = runs.some(r => r.result && r.result.errors > 0);
+
+        for (const evalId of evalIds) {
+          const evalRuns = runs.filter(r => r.eval_id === evalId);
+          const evalName = evalRuns[0] && evalRuns[0].eval_name ? evalRuns[0].eval_name : "Eval " + evalId;
+
+          html += "<h4 style='font-family: Poppins, sans-serif; margin: 1rem 0 0.5rem; color: var(--text);'>" + escapeHtml(evalName) + "</h4>";
+          html += '<table class="benchmark-table">';
+          html += "<thead><tr><th>Config</th><th>Run</th><th>Pass Rate</th>";
+          if (hasTime) html += "<th>Time (s)</th>";
+          if (hasErrors) html += "<th>Crashes During Execution</th>";
+          html += "</tr></thead>";
+          html += "<tbody>";
+
+          // Group by config and render with average rows
+          const configGroups = [...new Set(evalRuns.map(r => r.configuration))];
+          for (let ci = 0; ci < configGroups.length; ci++) {
+            const config = configGroups[ci];
+            const configRuns = evalRuns.filter(r => r.configuration === config);
+            if (configRuns.length === 0) continue;
+
+            const rowClass = ci === 0 ? "benchmark-row-with" : "benchmark-row-without";
+            const configLabel = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+
+            for (const run of configRuns) {
+              const r = run.result || {};
+              const prClass = r.pass_rate >= 0.8 ? "benchmark-delta-positive" : r.pass_rate < 0.5 ? "benchmark-delta-negative" : "";
+              html += '<tr class="' + rowClass + '">';
+              html += "<td>" + configLabel + "</td>";
+              html += "<td>" + run.run_number + "</td>";
+              html += '<td class="' + prClass + '">' + ((r.pass_rate || 0) * 100).toFixed(0) + "% (" + (r.passed || 0) + "/" + (r.total || 0) + ")</td>";
+              if (hasTime) html += "<td>" + (r.time_seconds != null ? r.time_seconds.toFixed(1) : "—") + "</td>";
+              if (hasErrors) html += "<td>" + (r.errors || 0) + "</td>";
+              html += "</tr>";
+            }
+
+            // Average row
+            const rates = configRuns.map(r => (r.result || {}).pass_rate || 0);
+            const avgRate = rates.reduce((a, b) => a + b, 0) / rates.length;
+            const avgPrClass = avgRate >= 0.8 ? "benchmark-delta-positive" : avgRate < 0.5 ? "benchmark-delta-negative" : "";
+            html += '<tr class="benchmark-row-avg ' + rowClass + '">';
+            html += "<td>" + configLabel + "</td>";
+            html += "<td>Avg</td>";
+            html += '<td class="' + avgPrClass + '">' + (avgRate * 100).toFixed(0) + "%</td>";
+            if (hasTime) {
+              const times = configRuns.map(r => (r.result || {}).time_seconds).filter(t => t != null);
+              html += "<td>" + (times.length ? (times.reduce((a, b) => a + b, 0) / times.length).toFixed(1) : "—") + "</td>";
+            }
+            if (hasErrors) html += "<td></td>";
+            html += "</tr>";
+          }
+          html += "</tbody></table>";
+
+          // Per-assertion detail for this eval
+          const runsWithExpectations = {};
+          for (const config of configGroups) {
+            runsWithExpectations[config] = evalRuns.filter(r => r.configuration === config && r.expectations && r.expectations.length > 0);
+          }
+          const hasAnyExpectations = Object.values(runsWithExpectations).some(runs => runs.length > 0);
+          if (hasAnyExpectations) {
+            // Collect all unique assertion texts across all configs
+            const allAssertions = [];
+            const seen = new Set();
+            for (const config of configGroups) {
+              for (const run of runsWithExpectations[config]) {
+                for (const exp of (run.expectations || [])) {
+                  if (!seen.has(exp.text)) {
+                    seen.add(exp.text);
+                    allAssertions.push(exp.text);
+                  }
+                }
+              }
+            }
+
+            html += '<table class="benchmark-table" style="margin-top: 0.5rem;">';
+            html += "<thead><tr><th>Assertion</th>";
+            for (const config of configGroups) {
+              const label = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+              html += "<th>" + escapeHtml(label) + "</th>";
+            }
+            html += "</tr></thead><tbody>";
+
+            for (const assertionText of allAssertions) {
+              html += "<tr><td>" + escapeHtml(assertionText) + "</td>";
+
+              for (const config of configGroups) {
+                html += "<td>";
+                for (const run of runsWithExpectations[config]) {
+                  const exp = (run.expectations || []).find(e => e.text === assertionText);
+                  if (exp) {
+                    const cls = exp.passed ? "benchmark-delta-positive" : "benchmark-delta-negative";
+                    const icon = exp.passed ? "\u2713" : "\u2717";
+                    html += '<span class="' + cls + '" title="Run ' + run.run_number + ': ' + escapeHtml(exp.evidence || "") + '">' + icon + "</span> ";
+                  } else {
+                    html += "— ";
+                  }
+                }
+                html += "</td>";
+              }
+              html += "</tr>";
+            }
+            html += "</tbody></table>";
+          }
+        }
+      }
+
+      // Notes
+      if (notes.length > 0) {
+        html += '<div class="benchmark-notes">';
+        html += "<h3>Analysis Notes</h3>";
+        html += "<ul>";
+        for (const note of notes) {
+          html += "<li>" + escapeHtml(note) + "</li>";
+        }
+        html += "</ul></div>";
+      }
+
+      container.innerHTML = html;
+    }
+
+    // ---- Start ----
+    init();
+    renderBenchmark();
+  </script>
+</body>
+</html>
